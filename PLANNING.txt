@@ -1,0 +1,21 @@
+NEXT STEPS:
+
+- Feedback for successful answer
+- Wizard style navigation for problem sets
+- Logins
+- Quiz questions from database
+- Masks for data types
+- Make it look nice
+
+
+LONG TERM
+
+It'd be great to have a simple way to update question banks outside of Canvas.
+
+- Questions aren't always going to be code questions. Need templates for:
+    - Fill in the blank
+    - Multiple choice
+- Use different template strings for these? E.g.:
+    - {{text}} = text
+    - {{select}} = multiple choice
+- Firestore integration

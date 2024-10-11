@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import QuizQuestion from './components/QuizQuestion';
+import { QuizQuestion, InputType } from './components/QuizQuestion';
 
 const App = () => {
   const [result, setResult] = useState<string | null>(null);
@@ -19,6 +19,7 @@ const App = () => {
   };
 
   // This and the jsCode below will eventually be pulled from a database
+  // This example doesn't really make sense but... whatever we'll get to real questions later
   const pythonCode = `
 x = 5
 y = 3
@@ -26,6 +27,7 @@ y = 3
 if x {{}} y:
     print('x is greater than y')
 `;
+
   const jsCode = `
 let x = 5;
 let y = 3;
@@ -43,6 +45,15 @@ if (x {{}} y) {
           <h2>Question</h2>
           <QuizQuestion
             questionTemplate={pythonCode}
+
+            // TEST 1 - Text input
+            // inputType={InputType.Text}
+            // inputType={InputType.Number}
+
+            // TEST 2 - Multiple choice
+            inputType={InputType.Select}
+            selectOptions={['==', '!=', '>', '<', '>=', '<=']}
+
             onAnswer={(userInput) => handleAnswer(userInput, jsCode)}
           />
         </div>

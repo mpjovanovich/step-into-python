@@ -1,46 +1,92 @@
 import React, { useState } from 'react';
 
+enum InputType {
+  Number = 'number',
+  Text = 'text',
+  Select = 'select'
+}
+
 interface QuizQuestionProps {
   questionTemplate: string;
+  inputType: InputType;
+  selectOptions?: string[];
   onAnswer: (answer: string) => void;
 }
 
 const QuizQuestion = ({ 
     questionTemplate,
-    onAnswer 
+    onAnswer,
+    inputType,
+    selectOptions,
 }: QuizQuestionProps) => {
-  const [userInput, setUserInput] = useState('');
+  const [textInput, setTextInput] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onAnswer(userInput);
+  const handleAnswer = () => {
+    if (inputType === InputType.Text) {
+      onAnswer(textInput.trim());
+    }
   };
 
-  // Currently only supports one {{}} in the template
+  const renderInput = () => {
+    if (inputType === InputType.Number) {
+        return (
+            <input  
+                type="number"
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value.trim())}
+                style={{ width: '50px' }}
+            />
+        )
+    } else if (inputType === InputType.Text) {
+      return (
+        <input
+          type="text"
+          value={textInput}
+          onChange={(e) => setTextInput(e.target.value.trim())}
+          style={{ width: '50px' }}
+        />
+      );
+    } else if (inputType === InputType.Select && selectOptions) {
+      return (
+        <select
+          onChange={(e) => onAnswer(e.target.value)}
+          style={{ width: 'auto', minWidth: '50px' }}
+        >
+          <option value=""></option>
+          {selectOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      );
+    }
+    return null;
+  };
+
   const renderTemplate = () => {
     const parts = questionTemplate.split('{{}}');
     return (
       <>
         {parts[0]}
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          style={{ width: '50px' }}
-        />
+        {renderInput()}
         {parts[1]}
       </>
     );
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <pre>
         <code>{renderTemplate()}</code>
       </pre>
-      <button type="submit">Submit</button>
-    </form>
+      {inputType === InputType.Text && (
+        <button type="button" onClick={handleAnswer}>
+          Run
+        </button>
+      )}
+    </div>
   );
 };
 
-export default QuizQuestion;
+export { QuizQuestion, InputType };
