@@ -28,14 +28,30 @@ if x {{}} y:
     print('x is greater than y')
 `;
 
-  const jsCode = `
+const jsCode = `
+// //////////////////////////////////////////////////////////////////////////////
+// Test a bunch of ways to print text embedded in a string.
+// //////////////////////////////////////////////////////////////////////////////
 let x = 5;
-let y = 3;
+let y = 3.14159;
 
-if (x {{}} y) {
-    return 'x is greater than y';
-}
-`;
+// Normal stuff. Have to use template strings since we're using them below.
+let bunchOfText = \`test1\n\`;
+
+// Embedded template strings:
+bunchOfText += \`x is \${x}\n\`;
+bunchOfText += \`y is \${y.toFixed(2)}\n\`;
+bunchOfText += \`x in binary: \${x.toString(2).padStart(8, '0')}\n\`;
+bunchOfText += \`y as percentage: \${(y * 100).toFixed(2)}%\n\`;
+
+// Tabular format
+bunchOfText += \`\n\`
+bunchOfText += \`\${'x'.padStart(10, ' ')} \${'y'.padStart(10, ' ')}\n\`;
+bunchOfText += \`\${''.padStart(10, '-')} \${''.padStart(10, '-')}\n\`;
+bunchOfText += \`\${x.toString().padStart(10, ' ')} \${y.toFixed(2).padStart(10, ' ')}\n\`;
+
+return bunchOfText;
+`
 
   return (
     <div className="App" style={styles.app}>
