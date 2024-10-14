@@ -17,6 +17,8 @@ const App = () => {
   const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
   // Use an array of booleans to track correctness for each answer
   const [solvedAnswers, setSolvedAnswers] = useState<boolean[]>([]);
+  // This is the program output that the user is building.
+  const [programOutput, setProgramOutput] = useState("");
 
   /* ************************
    * CONSTANTS
@@ -24,9 +26,9 @@ const App = () => {
   // This will be encoded in a JSON serialized map.
   // For this prototype we'll just hardcode it.
   const questionTemplate = `1?print("BEGIN PROGRAM")
-1?print("Hello, {{sun}}!")
-2?print("Hello, earth!")
-3?print("Hello, moon!")
+1?print("Hello, earth!")
+2?print("Hello, moon!")
+3?print("Hello, {{sun}}!")
 1?print("END PROGRAM")`;
 
   // Get the max step in the template.
@@ -41,19 +43,16 @@ const App = () => {
   // The user is shown all lines that are <= the step.
   // Answers are provided for lines that are < the step, since the user has
   // already answered them.
-  const getCurrentTemplate = () => {
+  const getTemplate = (step: number, includeCurrentStep: boolean) => {
     let currentTemplate = "";
 
     // Make a currentTemplate string that only includes lines up to the step.
     questionTemplate.split("\n").map((line) => {
       const [lineStep, code] = line.split("?");
-      if (parseInt(lineStep) <= step) {
-        // If this line is < the step then we need to unwrap the answer in the {{}}
-        if (parseInt(lineStep) < step) {
-          currentTemplate += code.replace("{{", "").replace("}}", "") + "\n";
-        } else {
-          currentTemplate += code + "\n";
-        }
+      if (parseInt(lineStep) < step) {
+        currentTemplate += code.replace("{{", "").replace("}}", "") + "\n";
+      } else if (parseInt(lineStep) === step && includeCurrentStep) {
+        currentTemplate += code + "\n";
       }
     });
 
@@ -61,18 +60,22 @@ const App = () => {
   };
 
   useEffect(() => {
-    const template = getCurrentTemplate();
+    // Update everything based on the new template.
+    const template = getTemplate(step, true);
     const answers =
       template.match(BLANK_REGEX)?.map((p) => p.slice(2, -2)) || [];
-
     setCurrentTemplate(template);
     setCorrectAnswers(answers);
+
+    // Reset the user's input.
     setUserAnswers(Array(answers.length).fill(""));
     setSolvedAnswers(
       // If there are no answers, we don't want to show the Check button,
       // so we'll set solvedAnswers to [true].
       answers.length === 0 ? [true] : Array(answers.length).fill(false)
     );
+
+    setProgramOutput(getTemplate(step, false));
   }, [step]);
 
   const handleCheckAnswer = () => {
@@ -81,6 +84,11 @@ const App = () => {
       return answer === userAnswers[i];
     });
     setSolvedAnswers(answers);
+    // Doesn't work - side effect in a function.
+    // // Update the program output with what the user has written so far if all is correct.
+    // if (answers.every((correct) => correct)) {
+    //   setProgramOutput(getTemplate(step, false));
+    // }
   };
 
   /* ************************
@@ -102,7 +110,7 @@ const App = () => {
             <button onClick={handleCheckAnswer}>Check</button>
           )}
           {/* Show if all answers are correct and there are more questions. */}
-          {solvedAnswers.every((correct) => correct) && step < maxStep && (
+          {solvedAnswers.every((correct) => correct) && step <= maxStep && (
             <button
               onClick={() => {
                 setStep(step + 1);
@@ -114,14 +122,17 @@ const App = () => {
             </button>
           )}
           {/* Show submit button if it's the last question. */}
-          {solvedAnswers.every((correct) => correct) && step === maxStep && (
-            <button onClick={handleCheckAnswer}>Submit</button>
-          )}
+          {solvedAnswers.every((correct) => correct) &&
+            step === maxStep + 1 && (
+              <button onClick={handleCheckAnswer}>Submit</button>
+            )}
         </div>
 
         <div style={styles.column}>
           <h2>Complete Program</h2>
-          <div style={styles.output}></div>
+          <div style={styles.output}>
+            <pre>{programOutput}</pre>
+          </div>
         </div>
       </div>
     </div>
