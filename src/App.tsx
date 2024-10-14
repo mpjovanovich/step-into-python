@@ -3,12 +3,24 @@ import { QuizQuestion } from "./components/QuizQuestion";
 import { BLANK_REGEX } from "./constants";
 
 const App = () => {
+  /* ************************
+   * STATE
+   ************************ */
+  // This is the current step in the multistep program.
+  const [step, setStep] = useState(1);
+  // This is the current template that the user is answering.
+  const [currentTemplate, setCurrentTemplate] = useState("");
   // Since there may be several answers, we'll use an array instead of one
   // string to store state for the user's answers.
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [step, setStep] = useState(1);
+  // Store the correct answers for each question in an array.
+  const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
+  // Use an array of booleans to track correctness for each answer
+  const [solvedAnswers, setSolvedAnswers] = useState<boolean[]>([]);
 
+  /* ************************
+   * CONSTANTS
+   ************************ */
   // This will be encoded in a JSON serialized map.
   // For this prototype we'll just hardcode it.
   const questionTemplate = `1?print("BEGIN PROGRAM")
@@ -22,6 +34,9 @@ const App = () => {
     ...questionTemplate.split("\n").map((line) => parseInt(line.split("?")[0]))
   );
 
+  /* ************************
+   * FUNCTIONS
+   ************************ */
   // Get the template based on the current step.
   // The user is shown all lines that are <= the step.
   // Answers are provided for lines that are < the step, since the user has
@@ -45,31 +60,32 @@ const App = () => {
     return currentTemplate;
   };
 
-  const currentTemplate = getCurrentTemplate();
-
-  // Sometimes there are no blanks in the template.
-  // If this is the case then we show the "Next" button instead of the "Check" button.
   useEffect(() => {
-    const blanks = currentTemplate.match(BLANK_REGEX);
-    if (!blanks || blanks.length === 0) {
-      setIsCorrect(true);
-    }
-  }, [currentTemplate]);
+    const template = getCurrentTemplate();
+    const answers =
+      template.match(BLANK_REGEX)?.map((p) => p.slice(2, -2)) || [];
+
+    setCurrentTemplate(template);
+    setCorrectAnswers(answers);
+    setUserAnswers(Array(answers.length).fill(""));
+    setSolvedAnswers(
+      // If there are no answers, we don't want to show the Check button,
+      // so we'll set solvedAnswers to [true].
+      answers.length === 0 ? [true] : Array(answers.length).fill(false)
+    );
+  }, [step]);
 
   const handleCheckAnswer = () => {
-    // Answers to the current question.
-    const answers =
-      questionTemplate.match(BLANK_REGEX)?.map((p) => p.slice(2, -2)) || [];
-
     // Check against user responses.
-    const isCorrect =
-      answers.length === userAnswers.length &&
-      answers.every((answer, i) => answer === userAnswers[i]);
-
-    setIsCorrect(isCorrect);
-    console.log("Answer is", isCorrect ? "correct" : "incorrect");
+    const answers = correctAnswers.map((answer, i) => {
+      return answer === userAnswers[i];
+    });
+    setSolvedAnswers(answers);
   };
 
+  /* ************************
+   * UI
+   ************************ */
   return (
     <div className="App" style={styles.app}>
       <h1 style={styles.title}>Python Operator Quiz</h1>
@@ -81,24 +97,24 @@ const App = () => {
             userAnswers={userAnswers}
             setUserAnswers={setUserAnswers}
           />
-
-          {/* Show if the answer is incorrect or incomplete. */}
-          {!isCorrect && <button onClick={handleCheckAnswer}>Check</button>}
-
-          {/* Show if the answer is correct and there are more questions. */}
-          {isCorrect && step < maxStep && (
+          {/* Show if any answer is incorrect or incomplete. */}
+          {solvedAnswers.some((correct) => !correct) && (
+            <button onClick={handleCheckAnswer}>Check</button>
+          )}
+          {/* Show if all answers are correct and there are more questions. */}
+          {solvedAnswers.every((correct) => correct) && step < maxStep && (
             <button
               onClick={() => {
                 setStep(step + 1);
-                setIsCorrect(false);
+                // setSolvedAnswers(false);
+                setSolvedAnswers(Array(userAnswers.length).fill(false));
               }}
             >
               Next
             </button>
           )}
-
           {/* Show submit button if it's the last question. */}
-          {isCorrect && step === maxStep && (
+          {solvedAnswers.every((correct) => correct) && step === maxStep && (
             <button onClick={handleCheckAnswer}>Submit</button>
           )}
         </div>
@@ -114,6 +130,9 @@ const App = () => {
 
 export default App;
 
+/* ************************
+ * STYLES
+ ************************ */
 const styles = {
   app: {
     fontFamily: "Arial, sans-serif",
