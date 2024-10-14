@@ -1,78 +1,36 @@
-import React, { useState } from 'react';
-
-enum InputType {
-  Number = 'number',
-  Text = 'text',
-  Select = 'select'
-}
+import React, { useState } from "react";
 
 interface QuizQuestionProps {
   questionTemplate: string;
-  inputType: InputType;
-  selectOptions?: string[];
-  onAnswer: (answer: string) => void;
+  // onAnswer: (answer: string) => void;
 }
 
-const QuizQuestion = ({ 
-    questionTemplate,
-    onAnswer,
-    inputType,
-    selectOptions,
-}: QuizQuestionProps) => {
-  const [textInput, setTextInput] = useState('');
-
-  const handleAnswer = () => {
-    if (inputType === InputType.Text) {
-      onAnswer(textInput.trim());
-    }
-  };
-
-  const renderInput = () => {
-    if (inputType === InputType.Number) {
-        return (
-            <input  
-                type="number"
-                value={textInput}
-                onChange={(e) => setTextInput(e.target.value.trim())}
-                style={{ width: '50px' }}
-            />
-        )
-    } else if (inputType === InputType.Text) {
-      return (
-        <input
-          type="text"
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value.trim())}
-          style={{ width: '50px' }}
-        />
-      );
-    } else if (inputType === InputType.Select && selectOptions) {
-      return (
-        <select
-          onChange={(e) => onAnswer(e.target.value)}
-          style={{ width: 'auto', minWidth: '50px' }}
-        >
-          <option value=""></option>
-          {selectOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      );
-    }
-    return null;
-  };
+const QuizQuestion = ({ questionTemplate }: QuizQuestionProps) => {
+  const [textInput, setTextInput] = useState("");
+  const InputField = (
+    <input
+      type="text"
+      value={textInput}
+      onChange={(e) => setTextInput(e.target.value)}
+      style={{ width: "120px" }}
+    />
+  );
 
   const renderTemplate = () => {
-    const parts = questionTemplate.split('{{}}');
-    return (
-      <>
-        {parts[0]}
-        {renderInput()}
-        {parts[1]}
-      </>
-    );
+    // Split the template into parts, ignoring the {{}}
+    const parts = questionTemplate.split(/{{.*?}}/);
+
+    // The values in the {{}} are the correct answers.
+    const answers =
+      questionTemplate.match(/{{(.*?)}}/g)?.map((p) => p.slice(2, -2)) || [];
+
+    // Stubs in an input field for each {{}} in the template
+    return parts.map((part, index) => (
+      <React.Fragment key={index}>
+        {part}
+        {index < parts.length - 1 && InputField}
+      </React.Fragment>
+    ));
   };
 
   return (
@@ -80,13 +38,8 @@ const QuizQuestion = ({
       <pre>
         <code>{renderTemplate()}</code>
       </pre>
-      {inputType === InputType.Text && (
-        <button type="button" onClick={handleAnswer}>
-          Run
-        </button>
-      )}
     </div>
   );
 };
 
-export { QuizQuestion, InputType };
+export { QuizQuestion };

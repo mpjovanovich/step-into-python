@@ -1,7 +1,5 @@
 NEXT STEPS:
 
-- Hot updates
-- Multiline print output from code
 - Feedback for successful answer
 - Wizard style navigation for problem sets
 - Logins
