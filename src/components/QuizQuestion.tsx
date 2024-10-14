@@ -1,10 +1,10 @@
 import React, { useState } from "react";
+import { BLANK_REGEX } from "../constants";
 
 interface QuizQuestionProps {
   questionTemplate: string;
   userAnswers: string[];
   setUserAnswers: (answers: string[]) => void;
-  // onCheckAnswer: (correct: boolean) => void;
 }
 
 /* **********************************************************************
@@ -15,22 +15,13 @@ const QuizQuestion = ({
   questionTemplate,
   userAnswers,
   setUserAnswers,
-}: // onCheckAnswer,
-QuizQuestionProps) => {
-  // These are the actual answers provided via the template.
-  const answers =
-    questionTemplate.match(/{{(.*?)}}/g)?.map((p) => p.slice(2, -2)) || [];
-
-  const checkAnswer = () => {
-    const isCorrect =
-      answers.length === userAnswers.length &&
-      answers.every((answer, i) => answer === userAnswers[i]);
-    // onCheckAnswer(isCorrect);
-  };
-
+}: QuizQuestionProps) => {
   const renderTemplate = () => {
-    // Split the template into parts, ignoring the {{}}
-    const parts = questionTemplate.split(/{{.*?}}/);
+    /* *************************************
+     * Render lines of code that are not the current step.
+     **************************************/
+    // Split the template into parts at each blank placeholder.
+    const parts = questionTemplate.split(BLANK_REGEX);
 
     // Stubs in an input field for each {{}} in the template
     return parts.map((part, i) => (
@@ -39,7 +30,7 @@ QuizQuestionProps) => {
         {part}
         {/* The input field for the user's answer */}
         {/* Don't render for the last part in the template */}
-        {i < answers.length && (
+        {i < parts.length - 1 && (
           <input
             type="text"
             value={userAnswers[i] || ""}
@@ -62,7 +53,6 @@ QuizQuestionProps) => {
     <div>
       <pre>
         <code>{renderTemplate()}</code>
-        {/* <button onClick={checkAnswer}>Check</button> */}
       </pre>
     </div>
   );

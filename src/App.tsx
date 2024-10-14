@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { QuizQuestion } from "./components/QuizQuestion";
+import { BLANK_REGEX } from "./constants";
 
 const App = () => {
   // Since there may be several answers, we'll use an array instead of one
@@ -10,17 +11,55 @@ const App = () => {
 
   // This will be encoded in a JSON serialized map.
   // For this prototype we'll just hardcode it.
-  const templateCode = `print("Hello, {{sun}}!")
-print("Hello, moon!")
-`;
-  // const codeMapString = JSON.stringify(codeMap);
-  const codeMap: Map<Number, String> = new Map([[1, templateCode]]);
+  const questionTemplate = `1?print("BEGIN PROGRAM")
+1?print("Hello, {{sun}}!")
+2?print("Hello, earth!")
+3?print("Hello, moon!")
+1?print("END PROGRAM")`;
+
+  // Get the max step in the template.
+  const maxStep = Math.max(
+    ...questionTemplate.split("\n").map((line) => parseInt(line.split("?")[0]))
+  );
+
+  // Get the template based on the current step.
+  // The user is shown all lines that are <= the step.
+  // Answers are provided for lines that are < the step, since the user has
+  // already answered them.
+  const getCurrentTemplate = () => {
+    let currentTemplate = "";
+
+    // Make a currentTemplate string that only includes lines up to the step.
+    questionTemplate.split("\n").map((line) => {
+      const [lineStep, code] = line.split("?");
+      if (parseInt(lineStep) <= step) {
+        // If this line is < the step then we need to unwrap the answer in the {{}}
+        if (parseInt(lineStep) < step) {
+          currentTemplate += code.replace("{{", "").replace("}}", "") + "\n";
+        } else {
+          currentTemplate += code + "\n";
+        }
+      }
+    });
+
+    return currentTemplate;
+  };
+
+  const currentTemplate = getCurrentTemplate();
+
+  // Sometimes there are no blanks in the template.
+  // If this is the case then we show the "Next" button instead of the "Check" button.
+  useEffect(() => {
+    const blanks = currentTemplate.match(BLANK_REGEX);
+    if (!blanks || blanks.length === 0) {
+      setIsCorrect(true);
+    }
+  }, [currentTemplate]);
 
   const handleCheckAnswer = () => {
     // Answers to the current question.
-    const questionTemplate = codeMap.get(step)?.toString() ?? "";
     const answers =
-      questionTemplate.match(/{{(.*?)}}/g)?.map((p) => p.slice(2, -2)) || [];
+      questionTemplate.match(BLANK_REGEX)?.map((p) => p.slice(2, -2)) || [];
 
     // Check against user responses.
     const isCorrect =
@@ -38,7 +77,7 @@ print("Hello, moon!")
         <div style={styles.column}>
           <h2>Development Code</h2>
           <QuizQuestion
-            questionTemplate={codeMap.get(step)?.toString() ?? ""}
+            questionTemplate={currentTemplate}
             userAnswers={userAnswers}
             setUserAnswers={setUserAnswers}
           />
@@ -47,7 +86,7 @@ print("Hello, moon!")
           {!isCorrect && <button onClick={handleCheckAnswer}>Check</button>}
 
           {/* Show if the answer is correct and there are more questions. */}
-          {isCorrect && step < codeMap.size && (
+          {isCorrect && step < maxStep && (
             <button
               onClick={() => {
                 setStep(step + 1);
@@ -59,10 +98,11 @@ print("Hello, moon!")
           )}
 
           {/* Show submit button if it's the last question. */}
-          {isCorrect && step === codeMap.size && (
+          {isCorrect && step === maxStep && (
             <button onClick={handleCheckAnswer}>Submit</button>
           )}
         </div>
+
         <div style={styles.column}>
           <h2>Complete Program</h2>
           <div style={styles.output}></div>
