@@ -10,13 +10,13 @@ const App = () => {
   const [step, setStep] = useState(1);
   // This is the current template that the user is answering.
   const [currentTemplate, setCurrentTemplate] = useState("");
-  // Since there may be several answers, we'll use an array instead of one
-  // string to store state for the user's answers.
+  // Since there may be several answers in a given template, we'll use an array
+  // instead of one string to store state for the user's answers.
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  // Store the correct answers for each question in an array.
+  // Store the correct answers for each template in an array.
   const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
-  // Use an array of booleans to track correctness for each answer
-  const [solvedAnswers, setSolvedAnswers] = useState<boolean[]>([]);
+  // Use an array of booleans to track correctness for each answer in the template.
+  const [solvedAnswers, setSolvedAnswers] = useState<(boolean | null)[]>([]);
   // This is the program output that the user is building.
   const [programOutput, setProgramOutput] = useState("");
 
@@ -25,10 +25,13 @@ const App = () => {
    ************************ */
   // This will be encoded in a JSON serialized map.
   // For this prototype we'll just hardcode it.
+  //   const questionTemplate = `1?print("BEGIN PROGRAM")
+  // 1?print("Hello, earth!")
+  // 2?print("Hello, moon!")
+  // 3?print("Hello, {{sun}}!")
+  // 1?print("END PROGRAM")`;
   const questionTemplate = `1?print("BEGIN PROGRAM")
-1?print("Hello, earth!")
-2?print("Hello, moon!")
-3?print("Hello, {{sun}}!")
+1?print("Hello, {{sun}}!")
 1?print("END PROGRAM")`;
 
   // Get the max step in the template.
@@ -59,6 +62,11 @@ const App = () => {
     return currentTemplate;
   };
 
+  // Every time the step changes, we need to:
+  // - Update the template
+  // - Update the answers
+  // - Reset the user's input
+  // - Update the solvedAnswers
   useEffect(() => {
     // Update everything based on the new template.
     const template = getTemplate(step, true);
@@ -72,7 +80,7 @@ const App = () => {
     setSolvedAnswers(
       // If there are no answers, we don't want to show the Check button,
       // so we'll set solvedAnswers to [true].
-      answers.length === 0 ? [true] : Array(answers.length).fill(false)
+      answers.length === 0 ? [true] : Array(answers.length).fill(null)
     );
 
     setProgramOutput(getTemplate(step, false));
@@ -84,11 +92,6 @@ const App = () => {
       return answer === userAnswers[i];
     });
     setSolvedAnswers(answers);
-    // Doesn't work - side effect in a function.
-    // // Update the program output with what the user has written so far if all is correct.
-    // if (answers.every((correct) => correct)) {
-    //   setProgramOutput(getTemplate(step, false));
-    // }
   };
 
   /* ************************
@@ -103,6 +106,7 @@ const App = () => {
           <QuizQuestion
             questionTemplate={currentTemplate}
             userAnswers={userAnswers}
+            solvedAnswers={solvedAnswers}
             setUserAnswers={setUserAnswers}
           />
           {/* Show if any answer is incorrect or incomplete. */}
@@ -114,7 +118,6 @@ const App = () => {
             <button
               onClick={() => {
                 setStep(step + 1);
-                // setSolvedAnswers(false);
                 setSolvedAnswers(Array(userAnswers.length).fill(false));
               }}
             >
