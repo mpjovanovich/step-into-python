@@ -1,0 +1,64 @@
+.app {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+  color: #333;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.column {
+  flex: 1;
+}
+
+.template {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  line-height: 1.5;
+  /* font-weight: bold; */
+}
+
+.output {
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  min-height: 100px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.copyButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #666;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copyButton:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.copyButton:active {
+  background-color: #f8f8f8;
+  transform: translateY(1px);
+}

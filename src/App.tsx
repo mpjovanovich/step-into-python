@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { QuizQuestion } from "./components/QuizQuestion";
 import { BLANK_REGEX } from "./constants";
+import styles from "./App.module.css";
 
 const App = () => {
   /* ************************
@@ -19,6 +20,7 @@ const App = () => {
   const [solvedAnswers, setSolvedAnswers] = useState<(boolean | null)[]>([]);
   // This is the program output that the user is building.
   const [programOutput, setProgramOutput] = useState("");
+  const [copyText, setCopyText] = useState("Copy");
 
   /* ************************
    * CONSTANTS
@@ -98,47 +100,53 @@ const App = () => {
    * UI
    ************************ */
   return (
-    <div className="App" style={styles.app}>
-      <h1 style={styles.title}>Python Operator Quiz</h1>
-      <div style={styles.container}>
-        <div style={styles.column}>
+    <div className={styles.app}>
+      <h1 className={styles.title}>Python Operator Quiz</h1>
+      <div className={styles.container}>
+        <div className={styles.column}>
           <h2>Development Code</h2>
-          <QuizQuestion
-            questionTemplate={currentTemplate}
-            userAnswers={userAnswers}
-            solvedAnswers={solvedAnswers}
-            setUserAnswers={setUserAnswers}
-          />
-          {/* Show if any answer is incorrect or incomplete. */}
-          {solvedAnswers.some((correct) => !correct) && (
-            <button onClick={handleCheckAnswer}>Check</button>
-          )}
-          {/* Show if all answers are correct and there are more questions. */}
-          {solvedAnswers.every((correct) => correct) && step <= maxStep && (
-            <button
-              onClick={() => {
-                setStep(step + 1);
-                setSolvedAnswers(Array(userAnswers.length).fill(false));
-              }}
-            >
-              Next
-            </button>
-          )}
-          {/* Show submit button if it's the last question. */}
-          {solvedAnswers.every((correct) => correct) &&
-            step === maxStep + 1 && (
-              <button onClick={handleCheckAnswer}>Submit</button>
+          <div className={styles.template}>
+            <QuizQuestion
+              questionTemplate={currentTemplate}
+              userAnswers={userAnswers}
+              solvedAnswers={solvedAnswers}
+              setUserAnswers={setUserAnswers}
+            />
+            {/* Show if any answer is incorrect or incomplete. */}
+            {solvedAnswers.some((correct) => !correct) && (
+              <button onClick={handleCheckAnswer}>Check</button>
             )}
+            {/* Show if all answers are correct and there are more questions. */}
+            {solvedAnswers.every((correct) => correct) && step <= maxStep && (
+              <button
+                onClick={() => {
+                  setStep(step + 1);
+                  setSolvedAnswers(Array(userAnswers.length).fill(false));
+                }}
+              >
+                Next
+              </button>
+            )}
+            {/* Show submit button if it's the last question. */}
+            {solvedAnswers.every((correct) => correct) &&
+              step === maxStep + 1 && (
+                <button onClick={handleCheckAnswer}>Submit</button>
+              )}
+          </div>
         </div>
 
-        <div style={styles.column}>
+        <div className={styles.column}>
           <h2>Complete Program</h2>
-          <div style={styles.output}>
+          <div className={styles.output}>
             <button
-              onClick={() => navigator.clipboard.writeText(programOutput)}
-              style={styles.copyButton}
+              className={styles.copyButton}
+              onClick={() => {
+                navigator.clipboard.writeText(programOutput);
+                setCopyText("Copied!");
+                setTimeout(() => setCopyText("Copy"), 2000);
+              }}
             >
-              Copy
+              {copyText}
             </button>
             <pre>{programOutput}</pre>
           </div>
@@ -149,58 +157,3 @@ const App = () => {
 };
 
 export default App;
-
-/* ************************
- * STYLES
- ************************ */
-const styles = {
-  app: {
-    fontFamily: "Arial, sans-serif",
-    maxWidth: "800px",
-    margin: "0 auto",
-    padding: "20px",
-  },
-  title: {
-    textAlign: "center" as const,
-    color: "#333",
-  },
-  container: {
-    display: "flex",
-    gap: "20px",
-  },
-  column: {
-    flex: 1,
-  },
-  output: {
-    backgroundColor: "#f4f4f4",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    padding: "10px",
-    fontFamily: "monospace",
-    whiteSpace: "pre-wrap" as const,
-    minHeight: "100px",
-    position: "relative" as const,
-  },
-  copyButton: {
-    position: "absolute" as const,
-    top: "8px",
-    right: "8px",
-    padding: "4px 8px",
-    fontSize: "12px",
-    color: "#666",
-    backgroundColor: "#fff",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    "&:hover": {
-      backgroundColor: "#f0f0f0",
-      borderColor: "#999",
-    },
-  },
-  timestamp: {
-    marginTop: "10px",
-    fontSize: "0.8em",
-    color: "#666",
-  },
-};
