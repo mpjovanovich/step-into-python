@@ -83,7 +83,7 @@ const App = () => {
       answers.length === 0 ? [true] : Array(answers.length).fill(null)
     );
 
-    setProgramOutput(getTemplate(step, false));
+    setProgramOutput(getTemplate(step, false).trim());
   }, [step]);
 
   const handleCheckAnswer = () => {
@@ -134,6 +134,12 @@ const App = () => {
         <div style={styles.column}>
           <h2>Complete Program</h2>
           <div style={styles.output}>
+            <button
+              onClick={() => navigator.clipboard.writeText(programOutput)}
+              style={styles.copyButton}
+            >
+              Copy
+            </button>
             <pre>{programOutput}</pre>
           </div>
         </div>
@@ -173,6 +179,24 @@ const styles = {
     fontFamily: "monospace",
     whiteSpace: "pre-wrap" as const,
     minHeight: "100px",
+    position: "relative" as const,
+  },
+  copyButton: {
+    position: "absolute" as const,
+    top: "8px",
+    right: "8px",
+    padding: "4px 8px",
+    fontSize: "12px",
+    color: "#666",
+    backgroundColor: "#fff",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    "&:hover": {
+      backgroundColor: "#f0f0f0",
+      borderColor: "#999",
+    },
   },
   timestamp: {
     marginTop: "10px",
