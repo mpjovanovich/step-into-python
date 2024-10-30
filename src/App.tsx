@@ -53,7 +53,7 @@ const App = () => {
   // The user is shown all lines that are <= the step.
   // Answers are provided for lines that are < the step, since the user has
   // already answered them.
-  const getTemplate = (step: number, includeCurrentStep: boolean) => {
+  const getTemplate = (step: number, includeTemplatedInput: boolean) => {
     let currentTemplate = "";
 
     // Make a currentTemplate string that only includes lines up to the step.
@@ -61,8 +61,13 @@ const App = () => {
       const [lineStep, code] = line.split("?");
       if (parseInt(lineStep) < step) {
         currentTemplate += code.replace("{{", "").replace("}}", "") + "\n";
-      } else if (parseInt(lineStep) === step && includeCurrentStep) {
-        currentTemplate += code + "\n";
+      } else if (parseInt(lineStep) === step) {
+        if (includeTemplatedInput) {
+          currentTemplate += code + "\n";
+        } else {
+          // Remove anything in {{...}}
+          currentTemplate += code.replace(/{{[^}]+}}/g, "") + "\n";
+        }
       }
     });
 
@@ -107,9 +112,6 @@ const App = () => {
     );
 
     setProgramOutput(getTemplate(step, false).trim());
-
-    // debug
-    console.log(step, maxStep);
   }, [step]);
 
   /* ************************
