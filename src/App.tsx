@@ -107,25 +107,72 @@ const App = () => {
     );
 
     setProgramOutput(getTemplate(step, false).trim());
+
+    // debug
+    console.log(step, maxStep);
   }, [step]);
 
   /* ************************
    * UI
    ************************ */
+  const renderActionButton = () => {
+    if (solvedAnswers.every((correct) => correct) && step === maxStep + 1) {
+      return <button onClick={handleCheckAnswer}>Submit</button>;
+    }
+
+    if (solvedAnswers.every((correct) => correct) && step <= maxStep) {
+      return (
+        <button
+          onClick={() => {
+            setStep(step + 1);
+            setSolvedAnswers(Array(userAnswers.length).fill(false));
+          }}
+        >
+          Next
+        </button>
+      );
+    }
+
+    if (solvedAnswers.some((correct) => !correct)) {
+      return <button onClick={handleCheckAnswer}>Check</button>;
+    }
+
+    return null;
+  };
+
+  const getDescription = () => {
+    if (step === maxStep + 1) {
+      return (
+        <>
+          <p>
+            Your program is complete. Try copying and pasting it into a Python
+            interpreter to see if it works!
+          </p>
+          <p>Make sure to click Submit!</p>
+        </>
+      );
+    }
+    return exercise.descriptions[step] && <p>{exercise.descriptions[step]}</p>;
+  };
+
+  const getInstructions = () => {
+    if (step === maxStep + 1) {
+      return <p>Click Submit</p>;
+    }
+    return exercise.instructions[step] ?? "Click Next";
+  };
+
+  // Main content
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>Python Operator Quiz</h1>
       <div className={styles.instructions}>
         <div className={styles.description}>
           <h3>Description</h3>
-          {exercise.descriptions[step] && <p>{exercise.descriptions[step]}</p>}
+          {getDescription()}
           <h3>Instructions</h3>
-          <p>{exercise.instructions[step] ?? "Click Next"}</p>
-          {/* {exercise.instructions[step] && (
-            <>
-              <p>{exercise.instructions[step]}</p>
-            </>
-          )} */}
+          <p>{getInstructions()}</p>
+          {renderActionButton()}
         </div>
       </div>
       <div className={styles.container}>
@@ -138,26 +185,6 @@ const App = () => {
               solvedAnswers={solvedAnswers}
               setUserAnswers={setUserAnswers}
             />
-            {/* Show if any answer is incorrect or incomplete. */}
-            {solvedAnswers.some((correct) => !correct) && (
-              <button onClick={handleCheckAnswer}>Check</button>
-            )}
-            {/* Show if all answers are correct and there are more questions. */}
-            {solvedAnswers.every((correct) => correct) && step <= maxStep && (
-              <button
-                onClick={() => {
-                  setStep(step + 1);
-                  setSolvedAnswers(Array(userAnswers.length).fill(false));
-                }}
-              >
-                Next
-              </button>
-            )}
-            {/* Show submit button if it's the last question. */}
-            {solvedAnswers.every((correct) => correct) &&
-              step === maxStep + 1 && (
-                <button onClick={handleCheckAnswer}>Submit</button>
-              )}
           </div>
         </div>
 
