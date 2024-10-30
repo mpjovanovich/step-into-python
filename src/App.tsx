@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FiCopy, FiCheck } from "react-icons/fi";
 import { QuizQuestion } from "./components/QuizQuestion";
 import { BLANK_REGEX } from "./constants";
 import styles from "./App.module.css";
@@ -136,12 +137,17 @@ const App = () => {
    ************************ */
   const renderActionButton = () => {
     if (solvedAnswers.every((correct) => correct) && step === maxStep + 1) {
-      return <button onClick={handleCheckAnswer}>Submit</button>;
+      return (
+        <button className={styles.actionButton} onClick={handleCheckAnswer}>
+          Submit
+        </button>
+      );
     }
 
     if (solvedAnswers.every((correct) => correct) && step <= maxStep) {
       return (
         <button
+          className={styles.actionButton}
           onClick={() => {
             setStep(step + 1);
             setSolvedAnswers(Array(userAnswers.length).fill(false));
@@ -153,7 +159,11 @@ const App = () => {
     }
 
     if (solvedAnswers.some((correct) => !correct)) {
-      return <button onClick={handleCheckAnswer}>Check</button>;
+      return (
+        <button className={styles.actionButton} onClick={handleCheckAnswer}>
+          Check
+        </button>
+      );
     }
 
     return null;
@@ -219,10 +229,10 @@ const App = () => {
             onClick={() => {
               navigator.clipboard.writeText(programOutput);
               setCopyText("Copied!");
-              setTimeout(() => setCopyText("Copy"), 2000);
+              setTimeout(() => setCopyText("Copy"), 800);
             }}
           >
-            {copyText}
+            {copyText === "Copied!" ? <FiCheck /> : <FiCopy />} {copyText}
           </button>
           <QuizQuestion
             questionTemplate={currentTemplate}
