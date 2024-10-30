@@ -8,7 +8,7 @@ const App = () => {
    * STATE
    ************************ */
   // This is the current step in the multistep program.
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   // This is the current template that the user is answering.
   const [currentTemplate, setCurrentTemplate] = useState("");
   // Since there may be several answers in a given template, we'll use an array
@@ -141,7 +141,25 @@ const App = () => {
   };
 
   const getDescription = () => {
-    if (step === maxStep + 1) {
+    if (step === 0) {
+      return (
+        <>
+          <p>
+            In this exercise you will complete a Python program step by step.
+          </p>
+          <p>
+            The Development Code window will show the code for the current step.
+            It will sometimes have a section for you to complete.
+          </p>
+          <p>
+            The Current Program window will show your progress up to the current
+            step. At each step you may use the "Copy" button from the Current
+            Program window and paste into VS Code or another Python interpreter
+            to see the current output.
+          </p>
+        </>
+      );
+    } else if (step === maxStep + 1) {
       return (
         <>
           <p>
@@ -159,15 +177,15 @@ const App = () => {
     if (step === maxStep + 1) {
       return <p>Click Submit</p>;
     }
-    return exercise.instructions[step] ?? "Click Next";
+    return exercise.instructions[step] ?? "Click Next to continue";
   };
 
   // Main content
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>Python Operator Quiz</h1>
-      <div className={styles.instructions}>
-        <div className={styles.description}>
+      <div className={styles.container}>
+        <div className={styles.containerContent}>
           <h3>Description</h3>
           {getDescription()}
           <h3>Instructions</h3>
@@ -178,7 +196,7 @@ const App = () => {
       <div className={styles.container}>
         <div className={styles.column}>
           <h3>Development Code</h3>
-          <div className={styles.template}>
+          <div className={`${styles.template} ${styles.containerContent}`}>
             <QuizQuestion
               questionTemplate={currentTemplate}
               userAnswers={userAnswers}
