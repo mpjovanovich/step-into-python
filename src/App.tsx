@@ -25,21 +25,26 @@ const App = () => {
   /* ************************
    * CONSTANTS
    ************************ */
-  // This will be encoded in a JSON serialized map.
-  // For this prototype we'll just hardcode it.
-  //   const questionTemplate = `1?print("BEGIN PROGRAM")
-  // 1?print("Hello, earth!")
-  // 2?print("Hello, moon!")
-  // 3?print("Hello, {{sun}}!")
-  // 1?print("END PROGRAM")`;
-  const questionTemplate = `1?print("BEGIN PROGRAM")
-1?print("Hello, {{sun}}!")
-1?print("END PROGRAM")`;
 
-  // Get the max step in the template.
-  const maxStep = Math.max(
-    ...questionTemplate.split("\n").map((line) => parseInt(line.split("?")[0]))
-  );
+  interface Exercise {
+    descriptions: { [key: number]: string };
+    instructions: { [key: number]: string };
+    template: string;
+  }
+
+  const exercise: Exercise = {
+    descriptions: {
+      1: "First we'll print some basic messages",
+      2: "Now let's greet our closest neighbor",
+      3: "Finally, let's say hello to our star",
+    },
+    instructions: { 3: "Fill in the blank with the name of the star." },
+    template: `1?print("BEGIN PROGRAM")
+  1?print("Hello, earth!")
+  2?print("Hello, moon!")
+  3?print("Hello, {{sun}}!")
+  1?print("END PROGRAM")`,
+  };
 
   /* ************************
    * FUNCTIONS
@@ -52,7 +57,7 @@ const App = () => {
     let currentTemplate = "";
 
     // Make a currentTemplate string that only includes lines up to the step.
-    questionTemplate.split("\n").map((line) => {
+    exercise.template.split("\n").map((line) => {
       const [lineStep, code] = line.split("?");
       if (parseInt(lineStep) < step) {
         currentTemplate += code.replace("{{", "").replace("}}", "") + "\n";
@@ -64,6 +69,22 @@ const App = () => {
     return currentTemplate;
   };
 
+  const handleCheckAnswer = () => {
+    // Check against user responses.
+    const answers = correctAnswers.map((answer, i) => {
+      return answer === userAnswers[i];
+    });
+    setSolvedAnswers(answers);
+  };
+
+  // Get the max step in the template.
+  const maxStep = Math.max(
+    ...exercise.template.split("\n").map((line) => parseInt(line.split("?")[0]))
+  );
+
+  /* ************************
+   * EFFECTS
+   ************************ */
   // Every time the step changes, we need to:
   // - Update the template
   // - Update the answers
@@ -88,23 +109,28 @@ const App = () => {
     setProgramOutput(getTemplate(step, false).trim());
   }, [step]);
 
-  const handleCheckAnswer = () => {
-    // Check against user responses.
-    const answers = correctAnswers.map((answer, i) => {
-      return answer === userAnswers[i];
-    });
-    setSolvedAnswers(answers);
-  };
-
   /* ************************
    * UI
    ************************ */
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>Python Operator Quiz</h1>
+      <div className={styles.instructions}>
+        <div className={styles.description}>
+          <h3>Description</h3>
+          {exercise.descriptions[step] && <p>{exercise.descriptions[step]}</p>}
+          <h3>Instructions</h3>
+          <p>{exercise.instructions[step] ?? "Click Next"}</p>
+          {/* {exercise.instructions[step] && (
+            <>
+              <p>{exercise.instructions[step]}</p>
+            </>
+          )} */}
+        </div>
+      </div>
       <div className={styles.container}>
         <div className={styles.column}>
-          <h2>Development Code</h2>
+          <h3>Development Code</h3>
           <div className={styles.template}>
             <QuizQuestion
               questionTemplate={currentTemplate}
@@ -136,7 +162,7 @@ const App = () => {
         </div>
 
         <div className={styles.column}>
-          <h2>Complete Program</h2>
+          <h3>Current Program</h3>
           <div className={styles.output}>
             <button
               className={styles.copyButton}

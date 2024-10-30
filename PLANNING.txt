@@ -1,16 +1,15 @@
 NEXT STEPS:
 
-- Feedback for successful answer
-- Wizard style navigation for problem sets
+- Description and instruction for each step
+- Quiz questions from database. App page should be ported to "Exercise" page
 - Logins
-- Quiz questions from database
-- Masks for data types
+- Front page to show completed exercises
 - Make it look nice
 
 
 LONG TERM
 
-It'd be great to have a simple way to update question banks outside of Canvas.
+- Wizard style navigation for problem sets consisting of multiple exercises
 
 - Questions aren't always going to be code questions. Need templates for:
     - Fill in the blank
@@ -18,4 +17,3 @@ It'd be great to have a simple way to update question banks outside of Canvas.
 - Use different template strings for these? E.g.:
     - {{text}} = text
     - {{select}} = multiple choice
-- Firestore integration
