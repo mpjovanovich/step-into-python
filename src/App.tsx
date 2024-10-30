@@ -27,23 +27,39 @@ const App = () => {
    ************************ */
 
   interface Exercise {
+    course: string;
+    title: string;
     descriptions: { [key: number]: string };
     instructions: { [key: number]: string };
     template: string;
   }
 
+  // const exercise: Exercise = {
+  //   course: "SDEV 120",
+  //   title: "Operators",
+  //   descriptions: {
+  //     1: "First we'll print some basic messages",
+  //     2: "Now let's greet our closest neighbor",
+  //     3: "Finally, let's say hello to our star",
+  //   },
+  //   instructions: { 3: "Fill in the blank with the name of the star." },
+  //   template: `1?print("BEGIN PROGRAM")
+  // 1?print("Hello, earth!")
+  // 2?print("Hello, moon!")
+  // 3?print("Hello, {{sun}}!")
+  // 1?print("END PROGRAM")`,
+  // };
+
   const exercise: Exercise = {
-    descriptions: {
-      1: "First we'll print some basic messages",
-      2: "Now let's greet our closest neighbor",
-      3: "Finally, let's say hello to our star",
-    },
-    instructions: { 3: "Fill in the blank with the name of the star." },
-    template: `1?print("BEGIN PROGRAM")
-  1?print("Hello, earth!")
-  2?print("Hello, moon!")
-  3?print("Hello, {{sun}}!")
-  1?print("END PROGRAM")`,
+    course: "SDEV 120",
+    title: "Selection: if Statements",
+    descriptions: {},
+    instructions: {},
+    template: `1?x = 1
+1?if {{x}} == {{1}}:
+1?  print("x is 1")
+2?else:
+2?  print({{"x is not 1"}})`,
   };
 
   /* ************************
@@ -60,7 +76,8 @@ const App = () => {
     exercise.template.split("\n").map((line) => {
       const [lineStep, code] = line.split("?");
       if (parseInt(lineStep) < step) {
-        currentTemplate += code.replace("{{", "").replace("}}", "") + "\n";
+        currentTemplate +=
+          code.replaceAll("{{", "").replaceAll("}}", "") + "\n";
       } else if (parseInt(lineStep) === step) {
         if (includeTemplatedInput) {
           currentTemplate += code + "\n";
@@ -150,14 +167,14 @@ const App = () => {
             In this exercise you will complete a Python program step by step.
           </p>
           <p>
-            The Development Code window will show the code for the current step.
-            It will sometimes have a section for you to complete.
+            The code window on the right will show the code for the current
+            step. It will sometimes have a section for you to complete.
           </p>
           <p>
-            The Current Program window will show your progress up to the current
-            step. At each step you may use the "Copy" button from the Current
-            Program window and paste into VS Code or another Python interpreter
-            to see the current output.
+            At any step you may use the "Copy" button from the code window and
+            paste the output into VS Code or another Python interpreter to see
+            the current output. This can help with debugging and understanding
+            the flow of execution.
           </p>
         </>
       );
@@ -185,44 +202,34 @@ const App = () => {
   // Main content
   return (
     <div className={styles.app}>
-      <h1 className={styles.title}>Python Operator Quiz</h1>
+      <h1 className={styles.title}>
+        {exercise.course} - {exercise.title}
+      </h1>
       <div className={styles.container}>
-        <div className={styles.containerContent}>
+        <div className={styles.instructions}>
           <h3>Description</h3>
           {getDescription()}
           <h3>Instructions</h3>
           <p>{getInstructions()}</p>
           {renderActionButton()}
         </div>
-      </div>
-      <div className={styles.container}>
-        <div className={styles.column}>
-          <h3>Development Code</h3>
-          <div className={`${styles.template} ${styles.containerContent}`}>
-            <QuizQuestion
-              questionTemplate={currentTemplate}
-              userAnswers={userAnswers}
-              solvedAnswers={solvedAnswers}
-              setUserAnswers={setUserAnswers}
-            />
-          </div>
-        </div>
-
-        <div className={styles.column}>
-          <h3>Current Program</h3>
-          <div className={styles.output}>
-            <button
-              className={styles.copyButton}
-              onClick={() => {
-                navigator.clipboard.writeText(programOutput);
-                setCopyText("Copied!");
-                setTimeout(() => setCopyText("Copy"), 2000);
-              }}
-            >
-              {copyText}
-            </button>
-            <pre>{programOutput}</pre>
-          </div>
+        <div className={styles.output}>
+          <button
+            className={styles.copyButton}
+            onClick={() => {
+              navigator.clipboard.writeText(programOutput);
+              setCopyText("Copied!");
+              setTimeout(() => setCopyText("Copy"), 2000);
+            }}
+          >
+            {copyText}
+          </button>
+          <QuizQuestion
+            questionTemplate={currentTemplate}
+            userAnswers={userAnswers}
+            solvedAnswers={solvedAnswers}
+            setUserAnswers={setUserAnswers}
+          />
         </div>
       </div>
     </div>

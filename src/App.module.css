@@ -1,33 +1,15 @@
+:root {
+  background-color: rgb(39, 40, 44);
+}
+
 .app {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-  max-width: 1200px;
   margin: 0 auto;
 }
 
 .title {
   text-align: center;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-.instructions {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.description {
-  background-color: white;
-  border-radius: 6px;
-  padding: 1rem;
-  border: 1px solid #e9ecef;
+  color: #fff;
+  margin-bottom: 2rem;
 }
 
 h3 {
@@ -36,46 +18,23 @@ h3 {
 }
 
 .container {
-  display: flex;
-  gap: 20px;
-  background-color: #f8f9fa;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.instructions {
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.containerContent {
-  flex: 1;
-  background-color: white;
-  border-radius: 6px;
-  padding: 1rem;
-  border: 1px solid #e9ecef;
-}
-
-.column {
-  flex: 1;
-}
-
-.column h3 {
-  margin-bottom: 0.75rem;
-}
-
-.template {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 10px;
-  line-height: 1.5;
-  min-height: 140px;
+  background-color: #f8f9fa;
 }
 
 .output {
-  background-color: #3b4045;
+  background-color: rgba(27, 27, 27, 1);
   color: #f4f4f4;
-  border: 1px solid #ddd;
-  border-radius: 4px;
   padding: 10px;
-  font-family: monospace;
-  font-size: 1rem;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Droid Sans", "Helvetica Neue", Arial,
+    sans-serif;
+  font-size: 1.1rem;
   white-space: pre-wrap;
   min-height: 140px;
   position: relative;
