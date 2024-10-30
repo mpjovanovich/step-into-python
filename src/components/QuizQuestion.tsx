@@ -1,8 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import { BLANK_REGEX } from "../constants";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { FiCheck, FiX } from "react-icons/fi";
 
 interface QuizQuestionProps {
   questionTemplate: string;
+  correctAnswers: string[];
   userAnswers: string[];
   solvedAnswers: (boolean | null)[];
   setUserAnswers: (answers: string[]) => void;
@@ -14,6 +18,7 @@ interface QuizQuestionProps {
  ************************************************************************/
 const QuizQuestion = ({
   questionTemplate,
+  correctAnswers,
   userAnswers,
   solvedAnswers,
   setUserAnswers,
@@ -28,8 +33,23 @@ const QuizQuestion = ({
     // Stubs in an input field for each {{}} in the template
     return parts.map((part, i) => (
       <React.Fragment key={i}>
-        {/* The readonly part of the template */}
-        {part}
+        <SyntaxHighlighter
+          language="python"
+          style={vscDarkPlus}
+          customStyle={{
+            display: "inline",
+            padding: "0 4px",
+            background: "transparent",
+          }}
+          codeTagProps={{
+            style: {
+              fontSize: "1.0rem",
+            },
+          }}
+        >
+          {/* The readonly part of the template */}
+          {part}
+        </SyntaxHighlighter>
         {/* The input field for the user's answer */}
         {/* Don't render for the last part in the template */}
         {i < parts.length - 1 && (
@@ -47,15 +67,15 @@ const QuizQuestion = ({
               }}
               // TODO: focus on this if user missed a question
               autoFocus={i === 0}
-              style={{ width: "120px" }}
+              style={{ width: `${correctAnswers[i]?.length * 10 + 20}px` }}
             />
-            <span style={{ marginLeft: "5px" }}>
-              {/* Apparently you can chain ternary operators? What will they think of next? */}
-              {solvedAnswers[i] === true
-                ? "✅"
-                : solvedAnswers[i] === false
-                ? "❌"
-                : ""}
+            <span
+              style={{
+                marginLeft: "5px",
+              }}
+            >
+              {solvedAnswers[i] === true && <FiCheck color="green" />}
+              {solvedAnswers[i] === false && <FiX color="red" />}
             </span>
           </>
         )}

@@ -3,6 +3,8 @@ import { FiCopy, FiCheck } from "react-icons/fi";
 import { QuizQuestion } from "./components/QuizQuestion";
 import { BLANK_REGEX } from "./constants";
 import styles from "./App.module.css";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const App = () => {
   /* ************************
@@ -71,7 +73,7 @@ const App = () => {
   // Answers are provided for lines that are < the step, since the user has
   // already answered them.
   const getTemplate = (step: number, includeTemplatedInput: boolean) => {
-    let currentTemplate = "";
+    let currentTemplate = "## BEGIN PROGRAM\n";
 
     // Make a currentTemplate string that only includes lines up to the step.
     exercise.template.split("\n").map((line) => {
@@ -236,6 +238,7 @@ const App = () => {
           </button>
           <QuizQuestion
             questionTemplate={currentTemplate}
+            correctAnswers={correctAnswers}
             userAnswers={userAnswers}
             solvedAnswers={solvedAnswers}
             setUserAnswers={setUserAnswers}

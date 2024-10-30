@@ -28,17 +28,11 @@ h3 {
 }
 
 .output {
-  background-color: rgba(27, 27, 27, 1);
-  color: #f4f4f4;
-  padding: 10px;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Oxygen, Ubuntu, Cantarell, "Droid Sans", "Helvetica Neue", Arial,
-    sans-serif;
-  font-size: 1.1rem;
-  white-space: pre-wrap;
-  min-height: 140px;
   position: relative;
-  line-height: 1.5;
+  background-color: rgba(27, 27, 27, 1);
+  padding: 10px;
+  font-size: 1.1rem;
+  min-height: 140px;
 }
 
 button {
