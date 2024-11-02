@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 
 // Internal
 import styles from "./Exercise.module.css";
-import { BLANK_REGEX } from "../../constants";
 import type { Exercise as ExerciseType } from "../../types/Exercise";
 import { ExerciseText } from "./components/ExerciseText";
 import { NavigationButtons } from "./components/NavigationButtons";
@@ -92,6 +91,9 @@ const Exercise = () => {
                   setUserInputNeedsChecked(true);
                 }}
                 onCheck={() => setUserInputNeedsChecked(true)}
+                onSubmit={() => {
+                  console.log("submit");
+                }}
               />
             )
           }

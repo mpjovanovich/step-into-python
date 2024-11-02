@@ -5,12 +5,19 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { FiCheck, FiCopy, FiX } from "react-icons/fi";
 import styles from "../Exercise.module.css";
 
+// Types and Interfaces
 interface ProgramOutputProps {
   step: number;
   title: string;
   questionTemplate: string;
   needsCheck: boolean;
   onCheckComplete: (result: boolean) => void;
+}
+
+interface Template {
+  code: string;
+  copyCode: string;
+  answers: string[];
 }
 
 /* **********************************************************************
@@ -24,34 +31,7 @@ const ProgramOutput = ({
   needsCheck,
   onCheckComplete,
 }: ProgramOutputProps) => {
-  const [copyText, setCopyText] = useState("Copy");
-  const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  const [userAnswerResults, setUserAnswerResults] = useState<
-    (boolean | null)[]
-  >([]);
-
-  useEffect(() => {
-    if (needsCheck) {
-      checkAnswers();
-    }
-  }, [needsCheck]);
-
-  interface Template {
-    code: string;
-    copyCode: string;
-    answers: string[];
-  }
-
-  const checkAnswers = () => {
-    const results = template.answers.map((answer, i) =>
-      userAnswers[i] ? answer === userAnswers[i] : null
-    );
-    setUserAnswerResults(results);
-
-    // If there are no questions, this will still work.
-    onCheckComplete(results.some((answer) => !answer));
-  };
-
+  // Helper functions
   const getTemplate = (step: number): Template => {
     let template = `## EXERCISE: ${title}\n`;
     let answers: string[] = [];
@@ -81,10 +61,35 @@ const ProgramOutput = ({
     };
   };
 
+  // State
+  const [copyText, setCopyText] = useState("Copy");
+  const [userAnswers, setUserAnswers] = useState<string[]>([]);
+  const [userAnswerResults, setUserAnswerResults] = useState<
+    (boolean | null)[]
+  >([]);
+
+  // Template initialization
+  const template = getTemplate(step);
+
+  const checkAnswers = () => {
+    const results = template.answers.map((answer, i) =>
+      userAnswers[i] ? answer === userAnswers[i] : null
+    );
+    setUserAnswerResults(results);
+
+    // If there are no questions, this will still work.
+    onCheckComplete(results.some((answer) => !answer));
+  };
+
+  // Effects
+  useEffect(() => {
+    if (needsCheck) {
+      checkAnswers();
+    }
+  }, [needsCheck]);
+
+  // Render helpers
   const renderTemplate = () => {
-    /* *************************************
-     * Render lines of code that are not the current step.
-     **************************************/
     // Split the template into parts at each blank placeholder.
     const parts = template.code.split(BLANK_REGEX);
 
@@ -116,14 +121,13 @@ const ProgramOutput = ({
               type="text"
               value={userAnswers[i] || ""}
               onChange={(e) => {
-                // this spreads the current answers into a new array so that we
+                // This spreads the current answers into a new array so that we
                 // can mutate it, updates the answer at the current index, and
                 // sets the new array as state for the user's answers.
                 const newAnswers = [...userAnswers];
                 newAnswers[i] = e.target.value;
                 setUserAnswers(newAnswers);
               }}
-              // todo: focus on this if user missed a question
               autoFocus={i === 0}
               style={{ width: `${template.answers[i]?.length * 10 + 20}px` }}
             />
@@ -141,8 +145,7 @@ const ProgramOutput = ({
     ));
   };
 
-  const template = getTemplate(step);
-
+  // Render
   return (
     <div className={styles.output}>
       <button

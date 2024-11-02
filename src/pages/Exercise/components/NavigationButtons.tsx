@@ -7,7 +7,7 @@ interface NavigationButtonsProps {
   onPrevious: () => void;
   onNext: () => void;
   onCheck: () => void;
-  // onSubmit: () => void;
+  onSubmit: () => void;
 }
 
 export const NavigationButtons = ({
@@ -17,6 +17,7 @@ export const NavigationButtons = ({
   onPrevious,
   onNext,
   onCheck,
+  onSubmit,
 }: NavigationButtonsProps) => {
   const buttons = [];
 
@@ -49,13 +50,7 @@ export const NavigationButtons = ({
 
   if (step === maxStep + 1 && !checkButtonVisible) {
     buttons.push(
-      <button
-        key="submit"
-        className={styles.actionButton}
-        onClick={() => {
-          console.log("submit");
-        }}
-      >
+      <button key="submit" className={styles.actionButton} onClick={onSubmit}>
         Submit
       </button>
     );
