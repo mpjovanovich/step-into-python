@@ -4,21 +4,16 @@ interface NavigationButtonsProps {
   step: number;
   maxStep: number;
   solvedAnswers: (boolean | null)[];
-  userAnswers: string[];
-  //   setStep: (step: number) => void;
-  //   setSolvedAnswers: (solvedAnswers: boolean[]) => void;
   onPrevious: () => void;
   onNext: () => void;
   onCheck: () => void;
   onSubmit: () => void;
-  //   handleCheckAnswer: () => void;
 }
 
 export const NavigationButtons = ({
   step,
   maxStep,
   solvedAnswers,
-  userAnswers,
   onPrevious,
   onNext,
   onCheck,

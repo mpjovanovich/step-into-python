@@ -207,7 +207,6 @@ const Exercise = () => {
                 step={step}
                 maxStep={maxStep}
                 solvedAnswers={solvedAnswers}
-                userAnswers={userAnswers}
                 onPrevious={() => setStep(step - 1)}
                 onNext={() => {
                   setStep(step + 1);
