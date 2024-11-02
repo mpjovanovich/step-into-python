@@ -1,12 +1,15 @@
+// React and external libraries
 import React, { useState, useEffect } from "react";
-import { FiCopy, FiCheck } from "react-icons/fi";
-import { QuizQuestion } from "../../components/QuizQuestion";
-import { BLANK_REGEX } from "../../constants";
-import styles from "./Exercise.module.css";
 import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { useExerciseState } from "./hooks/useExerciseState";
+import { FiCopy, FiCheck } from "react-icons/fi";
+// Internal
 import type { Exercise as ExerciseType } from "../../types/Exercise";
+import { QuizQuestion } from "./components/QuizQuestion";
+import { useExerciseState } from "./hooks/useExerciseState";
+import { BLANK_REGEX } from "../../constants";
+import styles from "./Exercise.module.css";
+import { NavigationButtons } from "./components/NavigationButtons";
 
 const Exercise = () => {
   // TEMP
@@ -136,63 +139,6 @@ const Exercise = () => {
   /* ************************
    * UI
    ************************ */
-  const renderActionButtons = () => {
-    const buttons = [];
-
-    if (!exercise) return null;
-
-    // Previous button (when needed)
-    if (step > 0) {
-      buttons.push(
-        <button
-          key="prev"
-          className={styles.actionButton}
-          onClick={() => setStep(step - 1)}
-        >
-          Previous
-        </button>
-      );
-    }
-
-    // Action button (Submit/Next/Check)
-    if (solvedAnswers.every((correct) => correct) && step === maxStep + 1) {
-      buttons.push(
-        <button
-          key="submit"
-          className={styles.actionButton}
-          onClick={handleCheckAnswer}
-        >
-          Submit
-        </button>
-      );
-    } else if (solvedAnswers.every((correct) => correct) && step <= maxStep) {
-      buttons.push(
-        <button
-          key="next"
-          className={styles.actionButton}
-          onClick={() => {
-            setStep(step + 1);
-            setSolvedAnswers(Array(userAnswers.length).fill(false));
-          }}
-        >
-          Next
-        </button>
-      );
-    } else if (solvedAnswers.some((correct) => !correct)) {
-      buttons.push(
-        <button
-          key="check"
-          className={styles.actionButton}
-          onClick={handleCheckAnswer}
-        >
-          Check
-        </button>
-      );
-    }
-
-    return <div className={styles.buttonContainer}>{buttons}</div>;
-  };
-
   const getDescription = (): JSX.Element => {
     if (step === 0) {
       return (
@@ -254,7 +200,26 @@ const Exercise = () => {
           {getDescription()}
           <h3>Instructions</h3>
           <p>{getInstructions()}</p>
-          {renderActionButtons()}
+          {
+            /* Don't show the buttons until we have an exercise loaded. */
+            exercise && (
+              <NavigationButtons
+                step={step}
+                maxStep={maxStep}
+                solvedAnswers={solvedAnswers}
+                userAnswers={userAnswers}
+                onPrevious={() => setStep(step - 1)}
+                onNext={() => {
+                  setStep(step + 1);
+                  setSolvedAnswers(Array(userAnswers.length).fill(false));
+                }}
+                onCheck={handleCheckAnswer}
+                onSubmit={() => {
+                  console.log("Submit");
+                }}
+              />
+            )
+          }
         </div>
         <div className={styles.output}>
           <button
