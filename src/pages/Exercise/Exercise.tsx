@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 import styles from "./Exercise.module.css";
 import { BLANK_REGEX } from "../../constants";
 import type { Exercise as ExerciseType } from "../../types/Exercise";
-import { useExerciseState } from "./hooks/useExerciseState";
 import { ExerciseText } from "./components/ExerciseText";
 import { NavigationButtons } from "./components/NavigationButtons";
 import { ProgramOutput } from "./components/ProgramOutput";
@@ -17,29 +16,11 @@ const Exercise = () => {
   // Get the exerciseId from the URL
   const { exerciseId } = useParams();
 
+  const [exercise, setExercise] = useState<ExerciseType | null>(null);
+  const [step, setStep] = useState(0);
   const [userInputNeedsChecked, setUserInputNeedsChecked] = useState(false);
   const [stepHasUnansweredQuestions, setStepHasUnansweredQuestions] =
     useState(false);
-
-  // Exercise state - extracted into its own hook
-  const [
-    {
-      exercise,
-      step,
-      // currentTemplate,
-      // userAnswers,
-      // correctAnswers,
-      // solvedAnswers,
-    },
-    {
-      setExercise,
-      setStep,
-      // setCurrentTemplate,
-      // setUserAnswers,
-      // setCorrectAnswers,
-      // setSolvedAnswers,
-    },
-  ] = useExerciseState();
 
   // Get the max step in the template.
   const maxStep = exercise
@@ -100,7 +81,6 @@ const Exercise = () => {
               <NavigationButtons
                 step={step}
                 maxStep={maxStep}
-                // checkButtonVisible={false}
                 checkButtonVisible={stepHasUnansweredQuestions}
                 onPrevious={() => {
                   setStep(step - 1);
