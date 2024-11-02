@@ -9,6 +9,9 @@ import { useExerciseState } from "./hooks/useExerciseState";
 import { Exercise } from "./types/Exercise";
 
 const App = () => {
+  // TEMP
+  const exerciseId = "fnIN98zNyOamSububVC1";
+
   // UI state
   const [programOutput, setProgramOutput] = useState("");
   const [copyText, setCopyText] = useState("Copy");
@@ -41,7 +44,7 @@ const App = () => {
   // Answers are provided for lines that are < the step, since the user has
   // already answered them.
   const getTemplate = (step: number, includeTemplatedInput: boolean) => {
-    let currentTemplate = `## EXERCISE: ${exercise?.title}\n`;
+    let currentTemplate = `## EXERCISE: ${exercise?.title ?? ""}\n`;
 
     // Make a currentTemplate string that only includes lines up to the step.
     exercise?.template.split("\n").forEach((line) => {
@@ -87,7 +90,7 @@ const App = () => {
     // Fetch the exercise on mount.
     const fetchExercise = async () => {
       try {
-        const exerciseRef = doc(db, "exercises", "fnIN98zNyOamSububVC1");
+        const exerciseRef = doc(db, "exercises", exerciseId);
         const exerciseSnap = await getDoc(exerciseRef);
         if (exerciseSnap.exists()) {
           setExercise(exerciseSnap.data() as Exercise);
@@ -133,19 +136,39 @@ const App = () => {
   /* ************************
    * UI
    ************************ */
-  const renderActionButton = () => {
-    // TODO: "Previous" button
-    if (solvedAnswers.every((correct) => correct) && step === maxStep + 1) {
-      return (
-        <button className={styles.actionButton} onClick={handleCheckAnswer}>
-          Submit
+  const renderActionButtons = () => {
+    const buttons = [];
+
+    if (!exercise) return null;
+
+    // Previous button (when needed)
+    if (step > 0) {
+      buttons.push(
+        <button
+          key="prev"
+          className={styles.actionButton}
+          onClick={() => setStep(step - 1)}
+        >
+          Previous
         </button>
       );
     }
 
-    if (solvedAnswers.every((correct) => correct) && step <= maxStep) {
-      return (
+    // Action button (Submit/Next/Check)
+    if (solvedAnswers.every((correct) => correct) && step === maxStep + 1) {
+      buttons.push(
         <button
+          key="submit"
+          className={styles.actionButton}
+          onClick={handleCheckAnswer}
+        >
+          Submit
+        </button>
+      );
+    } else if (solvedAnswers.every((correct) => correct) && step <= maxStep) {
+      buttons.push(
+        <button
+          key="next"
           className={styles.actionButton}
           onClick={() => {
             setStep(step + 1);
@@ -155,17 +178,19 @@ const App = () => {
           Next
         </button>
       );
-    }
-
-    if (solvedAnswers.some((correct) => !correct)) {
-      return (
-        <button className={styles.actionButton} onClick={handleCheckAnswer}>
+    } else if (solvedAnswers.some((correct) => !correct)) {
+      buttons.push(
+        <button
+          key="check"
+          className={styles.actionButton}
+          onClick={handleCheckAnswer}
+        >
           Check
         </button>
       );
     }
 
-    return null;
+    return <div className={styles.buttonContainer}>{buttons}</div>;
   };
 
   const getDescription = (): JSX.Element => {
@@ -213,19 +238,23 @@ const App = () => {
     return exercise?.instructions[step] ?? "Click Next to continue";
   };
 
+  const getTitle = (): string => {
+    return exercise
+      ? `${exercise.course} - ${exercise.title}`
+      : "Loading Program...";
+  };
+
   // Main content
   return (
     <div className={styles.app}>
-      <h1 className={styles.title}>
-        {exercise?.course} - {exercise?.title}
-      </h1>
+      <h1 className={styles.title}>{getTitle()}</h1>
       <div className={styles.container}>
         <div className={styles.instructions}>
           <h3>Description</h3>
           {getDescription()}
           <h3>Instructions</h3>
           <p>{getInstructions()}</p>
-          {renderActionButton()}
+          {renderActionButtons()}
         </div>
         <div className={styles.output}>
           <button

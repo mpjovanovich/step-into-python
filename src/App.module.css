@@ -1,40 +1,9 @@
+/* Global Styles */
 :root {
   background-color: rgb(39, 40, 44);
 }
 
-.app {
-  margin: 0 auto;
-}
-
-.title {
-  text-align: center;
-  color: #fff;
-  margin-bottom: 2rem;
-}
-
-h3 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.instructions {
-  padding: 1.5rem;
-  background-color: #f8f9fa;
-}
-
-.output {
-  position: relative;
-  background-color: rgba(27, 27, 27, 1);
-  padding: 10px;
-  font-size: 1.1rem;
-  min-height: 140px;
-}
-
+/* Elements */
 button {
   display: block;
   margin-top: auto;
@@ -50,6 +19,12 @@ button:active {
   transform: translateY(1px);
 }
 
+h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Classes */
 .actionButton {
   margin-top: 2rem;
   min-width: 100px;
@@ -59,6 +34,23 @@ button:active {
 
 .actionButton:hover {
   background-color: #663dcc;
+}
+
+.app {
+  margin: 0 auto;
+}
+
+.buttonContainer {
+  display: flex;
+}
+
+.buttonContainer button {
+  margin-right: 1rem;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .copyButton {
@@ -84,4 +76,23 @@ button:active {
   background-color: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.instructions {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+}
+
+.output {
+  position: relative;
+  background-color: rgba(27, 27, 27, 1);
+  padding: 10px;
+  font-size: 1.1rem;
+  min-height: 140px;
+}
+
+.title {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 2rem;
 }
