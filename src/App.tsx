@@ -3,67 +3,35 @@ import { FiCopy, FiCheck } from "react-icons/fi";
 import { QuizQuestion } from "./components/QuizQuestion";
 import { BLANK_REGEX } from "./constants";
 import styles from "./App.module.css";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { db } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { useExerciseState } from "./hooks/useExerciseState";
+import { Exercise } from "./types/Exercise";
 
 const App = () => {
-  /* ************************
-   * STATE
-   ************************ */
-  // This is the current step in the multistep program.
-  const [step, setStep] = useState(0);
-  // This is the current template that the user is answering.
-  const [currentTemplate, setCurrentTemplate] = useState("");
-  // Since there may be several answers in a given template, we'll use an array
-  // instead of one string to store state for the user's answers.
-  const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  // Store the correct answers for each template in an array.
-  const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
-  // Use an array of booleans to track correctness for each answer in the template.
-  const [solvedAnswers, setSolvedAnswers] = useState<(boolean | null)[]>([]);
-  // This is the program output that the user is building.
+  // UI state
   const [programOutput, setProgramOutput] = useState("");
   const [copyText, setCopyText] = useState("Copy");
 
-  /* ************************
-   * CONSTANTS
-   ************************ */
-
-  interface Exercise {
-    course: string;
-    title: string;
-    descriptions: { [key: number]: string };
-    instructions: { [key: number]: string };
-    template: string;
-  }
-
-  // const exercise: Exercise = {
-  //   course: "SDEV 120",
-  //   title: "Operators",
-  //   descriptions: {
-  //     1: "First we'll print some basic messages",
-  //     2: "Now let's greet our closest neighbor",
-  //     3: "Finally, let's say hello to our star",
-  //   },
-  //   instructions: { 3: "Fill in the blank with the name of the star." },
-  //   template: `1?print("BEGIN PROGRAM")
-  // 1?print("Hello, earth!")
-  // 2?print("Hello, moon!")
-  // 3?print("Hello, {{sun}}!")
-  // 1?print("END PROGRAM")`,
-  // };
-
-  const exercise: Exercise = {
-    course: "SDEV 120",
-    title: "Selection: if Statements",
-    descriptions: {},
-    instructions: {},
-    template: `1?x = 1
-1?if {{x}} == {{1}}:
-1?  print("x is 1")
-2?else:
-2?  print({{"x is not 1"}})`,
-  };
+  // Exercise state - extracted into its own hook
+  const [
+    {
+      exercise,
+      step,
+      currentTemplate,
+      userAnswers,
+      correctAnswers,
+      solvedAnswers,
+    },
+    {
+      setExercise,
+      setStep,
+      setCurrentTemplate,
+      setUserAnswers,
+      setCorrectAnswers,
+      setSolvedAnswers,
+    },
+  ] = useExerciseState();
 
   /* ************************
    * FUNCTIONS
@@ -73,10 +41,10 @@ const App = () => {
   // Answers are provided for lines that are < the step, since the user has
   // already answered them.
   const getTemplate = (step: number, includeTemplatedInput: boolean) => {
-    let currentTemplate = "## BEGIN PROGRAM\n";
+    let currentTemplate = `## EXERCISE: ${exercise?.title}\n`;
 
     // Make a currentTemplate string that only includes lines up to the step.
-    exercise.template.split("\n").map((line) => {
+    exercise?.template.split("\n").forEach((line) => {
       const [lineStep, code] = line.split("?");
       if (parseInt(lineStep) < step) {
         currentTemplate +=
@@ -91,6 +59,7 @@ const App = () => {
       }
     });
 
+    console.log(currentTemplate);
     return currentTemplate;
   };
 
@@ -103,13 +72,40 @@ const App = () => {
   };
 
   // Get the max step in the template.
-  const maxStep = Math.max(
-    ...exercise.template.split("\n").map((line) => parseInt(line.split("?")[0]))
-  );
+  const maxStep = exercise
+    ? Math.max(
+        ...exercise.template
+          .split("\n")
+          .map((line) => parseInt(line.split("?")[0]))
+      )
+    : 0;
 
   /* ************************
    * EFFECTS
    ************************ */
+  useEffect(() => {
+    // Fetch the exercise on mount.
+    const fetchExercise = async () => {
+      try {
+        const exerciseRef = doc(db, "exercises", "fnIN98zNyOamSububVC1");
+        const exerciseSnap = await getDoc(exerciseRef);
+        if (exerciseSnap.exists()) {
+          setExercise(exerciseSnap.data() as Exercise);
+        } else {
+          console.log("Exercise not found");
+          // setError('Exercise not found');
+        }
+      } catch (err) {
+        console.error(err);
+        // setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchExercise();
+  }, []);
+
   // Every time the step changes, we need to:
   // - Update the template
   // - Update the answers
@@ -132,12 +128,13 @@ const App = () => {
     );
 
     setProgramOutput(getTemplate(step, false).trim());
-  }, [step]);
+  }, [step, exercise]);
 
   /* ************************
    * UI
    ************************ */
   const renderActionButton = () => {
+    // TODO: "Previous" button
     if (solvedAnswers.every((correct) => correct) && step === maxStep + 1) {
       return (
         <button className={styles.actionButton} onClick={handleCheckAnswer}>
@@ -171,7 +168,7 @@ const App = () => {
     return null;
   };
 
-  const getDescription = () => {
+  const getDescription = (): JSX.Element => {
     if (step === 0) {
       return (
         <>
@@ -201,21 +198,26 @@ const App = () => {
         </>
       );
     }
-    return exercise.descriptions[step] && <p>{exercise.descriptions[step]}</p>;
+
+    return exercise?.descriptions[step] ? (
+      <p>{exercise.descriptions[step]}</p>
+    ) : (
+      <></>
+    );
   };
 
-  const getInstructions = () => {
+  const getInstructions = (): string => {
     if (step === maxStep + 1) {
-      return <p>Click Submit</p>;
+      return "Click Submit";
     }
-    return exercise.instructions[step] ?? "Click Next to continue";
+    return exercise?.instructions[step] ?? "Click Next to continue";
   };
 
   // Main content
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>
-        {exercise.course} - {exercise.title}
+        {exercise?.course} - {exercise?.title}
       </h1>
       <div className={styles.container}>
         <div className={styles.instructions}>
