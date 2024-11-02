@@ -5,11 +5,12 @@ import { doc, getDoc } from "firebase/firestore";
 import { FiCopy, FiCheck } from "react-icons/fi";
 // Internal
 import type { Exercise as ExerciseType } from "../../types/Exercise";
-import { QuizQuestion } from "./components/QuizQuestion";
+import { ProgramOutput } from "./components/ProgramOutput";
 import { useExerciseState } from "./hooks/useExerciseState";
 import { BLANK_REGEX } from "../../constants";
 import styles from "./Exercise.module.css";
 import { NavigationButtons } from "./components/NavigationButtons";
+import { ExerciseDescription } from "./components/ExerciseDescription";
 
 const Exercise = () => {
   // TEMP
@@ -17,7 +18,6 @@ const Exercise = () => {
 
   // UI state
   const [programOutput, setProgramOutput] = useState("");
-  const [copyText, setCopyText] = useState("Copy");
 
   // Exercise state - extracted into its own hook
   const [
@@ -139,44 +139,6 @@ const Exercise = () => {
   /* ************************
    * UI
    ************************ */
-  const getDescription = (): JSX.Element => {
-    if (step === 0) {
-      return (
-        <>
-          <p>
-            In this exercise you will complete a Python program step by step.
-          </p>
-          <p>
-            The code window on the right will show the code for the current
-            step. It will sometimes have a section for you to complete.
-          </p>
-          <p>
-            At any step you may use the "Copy" button from the code window and
-            paste the output into VS Code or another Python interpreter to see
-            the current output. This can help with debugging and understanding
-            the flow of execution.
-          </p>
-        </>
-      );
-    } else if (step === maxStep + 1) {
-      return (
-        <>
-          <p>
-            Your program is complete. Try copying and pasting it into a Python
-            interpreter to see if it works!
-          </p>
-          <p>Make sure to click Submit!</p>
-        </>
-      );
-    }
-
-    return exercise?.descriptions[step] ? (
-      <p>{exercise.descriptions[step]}</p>
-    ) : (
-      <></>
-    );
-  };
-
   const getInstructions = (): string => {
     if (step === maxStep + 1) {
       return "Click Submit";
@@ -197,7 +159,11 @@ const Exercise = () => {
       <div className={styles.container}>
         <div className={styles.instructions}>
           <h3>Description</h3>
-          {getDescription()}
+          <ExerciseDescription
+            step={step}
+            maxStep={maxStep}
+            descriptions={exercise?.descriptions ?? {}}
+          />
           <h3>Instructions</h3>
           <p>{getInstructions()}</p>
           {
@@ -220,25 +186,14 @@ const Exercise = () => {
             )
           }
         </div>
-        <div className={styles.output}>
-          <button
-            className={styles.copyButton}
-            onClick={() => {
-              navigator.clipboard.writeText(programOutput);
-              setCopyText("Copied!");
-              setTimeout(() => setCopyText("Copy"), 800);
-            }}
-          >
-            {copyText === "Copied!" ? <FiCheck /> : <FiCopy />} {copyText}
-          </button>
-          <QuizQuestion
-            questionTemplate={currentTemplate}
-            correctAnswers={correctAnswers}
-            userAnswers={userAnswers}
-            solvedAnswers={solvedAnswers}
-            setUserAnswers={setUserAnswers}
-          />
-        </div>
+        <ProgramOutput
+          programOutput={programOutput}
+          questionTemplate={currentTemplate}
+          correctAnswers={correctAnswers}
+          userAnswers={userAnswers}
+          solvedAnswers={solvedAnswers}
+          setUserAnswers={setUserAnswers}
+        />
       </div>
     </div>
   );

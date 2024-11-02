@@ -1,28 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { BLANK_REGEX } from "../../../constants";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { FiCheck, FiX } from "react-icons/fi";
+import { FiCheck, FiCopy, FiX } from "react-icons/fi";
+import styles from "../Exercise.module.css";
 
-interface QuizQuestionProps {
+interface ProgramOutputProps {
   questionTemplate: string;
   correctAnswers: string[];
   userAnswers: string[];
   solvedAnswers: (boolean | null)[];
   setUserAnswers: (answers: string[]) => void;
+  programOutput: string;
 }
 
 /* **********************************************************************
  * This has the fill-in-the-blank code functionality, as well as the
  * "Check" button to see if the answer is correct.
  ************************************************************************/
-const QuizQuestion = ({
+const ProgramOutput = ({
   questionTemplate,
   correctAnswers,
   userAnswers,
   solvedAnswers,
   setUserAnswers,
-}: QuizQuestionProps) => {
+  programOutput,
+}: ProgramOutputProps) => {
+  const [copyText, setCopyText] = useState("Copy");
+
   const renderTemplate = () => {
     /* *************************************
      * Render lines of code that are not the current step.
@@ -84,12 +89,25 @@ const QuizQuestion = ({
   };
 
   return (
-    <div>
-      <pre>
-        <code>{renderTemplate()}</code>
-      </pre>
+    <div className={styles.output}>
+      <button
+        className={styles.copyButton}
+        onClick={() => {
+          navigator.clipboard.writeText(programOutput);
+          setCopyText("Copied!");
+          setTimeout(() => setCopyText("Copy"), 800);
+        }}
+      >
+        {copyText === "Copied!" ? <FiCheck /> : <FiCopy />} {copyText}
+      </button>
+
+      <div>
+        <pre>
+          <code>{renderTemplate()}</code>
+        </pre>
+      </div>
     </div>
   );
 };
 
-export { QuizQuestion };
+export { ProgramOutput };
