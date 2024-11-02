@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { useParams } from "react-router-dom";
+
 // Internal
 import styles from "./Exercise.module.css";
 import { BLANK_REGEX } from "../../constants";
@@ -12,8 +14,8 @@ import { NavigationButtons } from "./components/NavigationButtons";
 import { ProgramOutput } from "./components/ProgramOutput";
 
 const Exercise = () => {
-  // TEMP
-  const exerciseId = "fnIN98zNyOamSububVC1";
+  // Get the exerciseId from the URL
+  const { exerciseId } = useParams();
 
   // UI state
   const [programOutput, setProgramOutput] = useState("");
@@ -57,7 +59,7 @@ const Exercise = () => {
       } else if (parseInt(lineStep) === step) {
         if (includeTemplatedInput) {
           currentTemplate += code + "\n";
-        } else {
+
           // Remove anything in {{...}}
           currentTemplate += code.replace(/{{[^}]+}}/g, "") + "\n";
         }
@@ -92,19 +94,16 @@ const Exercise = () => {
     // Fetch the exercise on mount.
     const fetchExercise = async () => {
       try {
-        const exerciseRef = doc(db, "exercises", exerciseId);
+        // TODO: Guard against undefined exerciseId
+        const exerciseRef = doc(db, "exercises", exerciseId!);
         const exerciseSnap = await getDoc(exerciseRef);
         if (exerciseSnap.exists()) {
           setExercise(exerciseSnap.data() as ExerciseType);
         } else {
-          console.log("Exercise not found");
-          // setError('Exercise not found');
+          // TODO: Handle error
         }
       } catch (err) {
         console.error(err);
-        // setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        // setLoading(false);
       }
     };
 
