@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BLANK_REGEX } from "../../../constants";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -6,12 +6,11 @@ import { FiCheck, FiCopy, FiX } from "react-icons/fi";
 import styles from "../Exercise.module.css";
 
 interface ProgramOutputProps {
+  step: number;
+  title: string;
   questionTemplate: string;
-  correctAnswers: string[];
-  userAnswers: string[];
-  solvedAnswers: (boolean | null)[];
-  setUserAnswers: (answers: string[]) => void;
-  programOutput: string;
+  needsCheck: boolean;
+  onCheckComplete: (result: boolean) => void;
 }
 
 /* **********************************************************************
@@ -19,21 +18,75 @@ interface ProgramOutputProps {
  * "Check" button to see if the answer is correct.
  ************************************************************************/
 const ProgramOutput = ({
+  step,
+  title,
   questionTemplate,
-  correctAnswers,
-  userAnswers,
-  solvedAnswers,
-  setUserAnswers,
-  programOutput,
+  needsCheck,
+  onCheckComplete,
 }: ProgramOutputProps) => {
   const [copyText, setCopyText] = useState("Copy");
+  const [userAnswers, setUserAnswers] = useState<string[]>([]);
+  const [userAnswerResults, setUserAnswerResults] = useState<
+    (boolean | null)[]
+  >([]);
+
+  useEffect(() => {
+    if (needsCheck) {
+      checkAnswers();
+    }
+  }, [needsCheck]);
+
+  interface Template {
+    code: string;
+    copyCode: string;
+    answers: string[];
+  }
+
+  const checkAnswers = () => {
+    const results = template.answers.map((answer, i) =>
+      userAnswers[i] ? answer === userAnswers[i] : null
+    );
+    setUserAnswerResults(results);
+
+    // If there are no questions, this will still work.
+    onCheckComplete(results.some((answer) => !answer));
+  };
+
+  const getTemplate = (step: number): Template => {
+    let template = `## EXERCISE: ${title}\n`;
+    let answers: string[] = [];
+
+    // Make a currentTemplate string that only includes lines up to the step.
+    questionTemplate.split("\n").forEach((line) => {
+      const [lineStep, code] = line.split("?");
+      if (parseInt(lineStep) < step) {
+        template += code.replaceAll("{{", "").replaceAll("}}", "") + "\n";
+      } else if (parseInt(lineStep) === step) {
+        template += code + "\n";
+
+        // Use the regex to find the answers in the code.
+        let matches = code.match(BLANK_REGEX);
+        if (matches) {
+          // Strip the {{ and }} from the answers
+          const mapped = matches.map((p) => p.slice(2, -2));
+          answers.push(...mapped);
+        }
+      }
+    });
+
+    return {
+      code: template,
+      copyCode: template.replace(/{{[^}]+}}/g, ""),
+      answers: answers,
+    };
+  };
 
   const renderTemplate = () => {
     /* *************************************
      * Render lines of code that are not the current step.
      **************************************/
     // Split the template into parts at each blank placeholder.
-    const parts = questionTemplate.split(BLANK_REGEX);
+    const parts = template.code.split(BLANK_REGEX);
 
     // Stubs in an input field for each {{}} in the template
     return parts.map((part, i) => (
@@ -63,24 +116,24 @@ const ProgramOutput = ({
               type="text"
               value={userAnswers[i] || ""}
               onChange={(e) => {
-                // This spreads the current answers into a new array so that we
+                // this spreads the current answers into a new array so that we
                 // can mutate it, updates the answer at the current index, and
                 // sets the new array as state for the user's answers.
                 const newAnswers = [...userAnswers];
                 newAnswers[i] = e.target.value;
                 setUserAnswers(newAnswers);
               }}
-              // TODO: focus on this if user missed a question
+              // todo: focus on this if user missed a question
               autoFocus={i === 0}
-              style={{ width: `${correctAnswers[i]?.length * 10 + 20}px` }}
+              style={{ width: `${template.answers[i]?.length * 10 + 20}px` }}
             />
             <span
               style={{
                 marginLeft: "5px",
               }}
             >
-              {solvedAnswers[i] === true && <FiCheck color="green" />}
-              {solvedAnswers[i] === false && <FiX color="red" />}
+              {userAnswerResults[i] === true && <FiCheck color="green" />}
+              {userAnswerResults[i] === false && <FiX color="red" />}
             </span>
           </>
         )}
@@ -88,12 +141,14 @@ const ProgramOutput = ({
     ));
   };
 
+  const template = getTemplate(step);
+
   return (
     <div className={styles.output}>
       <button
         className={styles.copyButton}
         onClick={() => {
-          navigator.clipboard.writeText(programOutput);
+          navigator.clipboard.writeText(template.copyCode);
           setCopyText("Copied!");
           setTimeout(() => setCopyText("Copy"), 800);
         }}

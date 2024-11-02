@@ -17,66 +17,29 @@ const Exercise = () => {
   // Get the exerciseId from the URL
   const { exerciseId } = useParams();
 
-  // UI state
-  const [programOutput, setProgramOutput] = useState("");
+  const [userInputNeedsChecked, setUserInputNeedsChecked] = useState(false);
+  const [stepHasUnansweredQuestions, setStepHasUnansweredQuestions] =
+    useState(false);
 
   // Exercise state - extracted into its own hook
   const [
     {
       exercise,
       step,
-      currentTemplate,
-      userAnswers,
-      correctAnswers,
-      solvedAnswers,
+      // currentTemplate,
+      // userAnswers,
+      // correctAnswers,
+      // solvedAnswers,
     },
     {
       setExercise,
       setStep,
-      setCurrentTemplate,
-      setUserAnswers,
-      setCorrectAnswers,
-      setSolvedAnswers,
+      // setCurrentTemplate,
+      // setUserAnswers,
+      // setCorrectAnswers,
+      // setSolvedAnswers,
     },
   ] = useExerciseState();
-
-  /* ************************
-   * FUNCTIONS
-   ************************ */
-  // Get the template based on the current step.
-  // The user is shown all lines that are <= the step.
-  // Answers are provided for lines that are < the step, since the user has
-  // already answered them.
-  const getTemplate = (step: number, includeTemplatedInput: boolean) => {
-    let currentTemplate = `## EXERCISE: ${exercise?.title ?? ""}\n`;
-
-    // Make a currentTemplate string that only includes lines up to the step.
-    exercise?.template.split("\n").forEach((line) => {
-      const [lineStep, code] = line.split("?");
-      if (parseInt(lineStep) < step) {
-        currentTemplate +=
-          code.replaceAll("{{", "").replaceAll("}}", "") + "\n";
-      } else if (parseInt(lineStep) === step) {
-        if (includeTemplatedInput) {
-          currentTemplate += code + "\n";
-
-          // Remove anything in {{...}}
-          currentTemplate += code.replace(/{{[^}]+}}/g, "") + "\n";
-        }
-      }
-    });
-
-    console.log(currentTemplate);
-    return currentTemplate;
-  };
-
-  const handleCheckAnswer = () => {
-    // Check against user responses.
-    const answers = correctAnswers.map((answer, i) => {
-      return answer === userAnswers[i];
-    });
-    setSolvedAnswers(answers);
-  };
 
   // Get the max step in the template.
   const maxStep = exercise
@@ -110,30 +73,6 @@ const Exercise = () => {
     fetchExercise();
   }, []);
 
-  // Every time the step changes, we need to:
-  // - Update the template
-  // - Update the answers
-  // - Reset the user's input
-  // - Update the solvedAnswers
-  useEffect(() => {
-    // Update everything based on the new template.
-    const template = getTemplate(step, true);
-    const answers =
-      template.match(BLANK_REGEX)?.map((p) => p.slice(2, -2)) || [];
-    setCurrentTemplate(template);
-    setCorrectAnswers(answers);
-
-    // Reset the user's input.
-    setUserAnswers(Array(answers.length).fill(""));
-    setSolvedAnswers(
-      // If there are no answers, we don't want to show the Check button,
-      // so we'll set solvedAnswers to [true].
-      answers.length === 0 ? [true] : Array(answers.length).fill(null)
-    );
-
-    setProgramOutput(getTemplate(step, false).trim());
-  }, [step, exercise]);
-
   /* ************************
    * UI
    ************************ */
@@ -161,27 +100,31 @@ const Exercise = () => {
               <NavigationButtons
                 step={step}
                 maxStep={maxStep}
-                solvedAnswers={solvedAnswers}
-                onPrevious={() => setStep(step - 1)}
+                // checkButtonVisible={false}
+                checkButtonVisible={stepHasUnansweredQuestions}
+                onPrevious={() => {
+                  setStep(step - 1);
+                  setUserInputNeedsChecked(true);
+                }}
                 onNext={() => {
                   setStep(step + 1);
-                  setSolvedAnswers(Array(userAnswers.length).fill(false));
+                  // This needs to be here so that the check button is visible.
+                  setUserInputNeedsChecked(true);
                 }}
-                onCheck={handleCheckAnswer}
-                onSubmit={() => {
-                  console.log("Submit");
-                }}
+                onCheck={() => setUserInputNeedsChecked(true)}
               />
             )
           }
         </div>
         <ProgramOutput
-          programOutput={programOutput}
-          questionTemplate={currentTemplate}
-          correctAnswers={correctAnswers}
-          userAnswers={userAnswers}
-          solvedAnswers={solvedAnswers}
-          setUserAnswers={setUserAnswers}
+          step={step}
+          title={exercise?.title ?? "Loading Exercise..."}
+          needsCheck={userInputNeedsChecked}
+          onCheckComplete={(result: boolean) => {
+            setStepHasUnansweredQuestions(result);
+            setUserInputNeedsChecked(false);
+          }}
+          questionTemplate={exercise?.template ?? ""}
         />
       </div>
     </div>
