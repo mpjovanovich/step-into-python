@@ -1,0 +1,32 @@
+/* Global Styles */
+:root {
+  background-color: rgb(39, 40, 44);
+}
+
+/* Common Element Styles */
+button {
+  display: block;
+  margin-top: auto;
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Common Utility Classes */
+.title {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 2rem;
+}
