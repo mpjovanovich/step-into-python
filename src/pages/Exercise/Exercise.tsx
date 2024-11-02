@@ -2,15 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { FiCopy, FiCheck } from "react-icons/fi";
 // Internal
-import type { Exercise as ExerciseType } from "../../types/Exercise";
-import { ProgramOutput } from "./components/ProgramOutput";
-import { useExerciseState } from "./hooks/useExerciseState";
-import { BLANK_REGEX } from "../../constants";
 import styles from "./Exercise.module.css";
+import { BLANK_REGEX } from "../../constants";
+import type { Exercise as ExerciseType } from "../../types/Exercise";
+import { useExerciseState } from "./hooks/useExerciseState";
+import { ExerciseText } from "./components/ExerciseText";
 import { NavigationButtons } from "./components/NavigationButtons";
-import { ExerciseDescription } from "./components/ExerciseDescription";
+import { ProgramOutput } from "./components/ProgramOutput";
 
 const Exercise = () => {
   // TEMP
@@ -139,13 +138,6 @@ const Exercise = () => {
   /* ************************
    * UI
    ************************ */
-  const getInstructions = (): string => {
-    if (step === maxStep + 1) {
-      return "Click Submit";
-    }
-    return exercise?.instructions[step] ?? "Click Next to continue";
-  };
-
   const getTitle = (): string => {
     return exercise
       ? `${exercise.course} - ${exercise.title}`
@@ -158,14 +150,12 @@ const Exercise = () => {
       <h1 className={"title"}>{getTitle()}</h1>
       <div className={styles.container}>
         <div className={styles.instructions}>
-          <h3>Description</h3>
-          <ExerciseDescription
+          <ExerciseText
             step={step}
             maxStep={maxStep}
-            descriptions={exercise?.descriptions ?? {}}
+            descriptions={exercise ? exercise.descriptions : {}}
+            instructions={exercise ? exercise.instructions : {}}
           />
-          <h3>Instructions</h3>
-          <p>{getInstructions()}</p>
           {
             /* Don't show the buttons until we have an exercise loaded. */
             exercise && (
