@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Exercise from "./pages/Exercise/Exercise";
+import type { Exercise as ExerciseType } from "./types/Exercise";
 import {
   getFirestore,
   collection,
@@ -11,11 +12,11 @@ import "./styles/global.css";
 import { useState, useEffect } from "react";
 
 export default function App() {
-  const [exercises, setExercises] = useState<any[]>([]);
+  const [exercises, setExercises] = useState<ExerciseType[]>([]);
 
   useEffect(() => {
-    // We can't use async directly in useEffect, so we need to define a function inside.
-    // It's a limitation of React.
+    // We can't use async directly in useEffect, so we need to define a function
+    // inside.  It's a limitation of React.
     const fetchExercises = async () => {
       const db = getFirestore();
       const q = query(
@@ -23,7 +24,13 @@ export default function App() {
         where("course", "==", "SDEV 120")
       );
       const querySnapshot = await getDocs(q);
-      setExercises(querySnapshot.docs.map((doc) => doc.data()));
+      setExercises(
+        // We have to add the id to the exercise object because it's not
+        // included in the Firestore document.
+        querySnapshot.docs.map(
+          (doc) => ({ ...doc.data(), id: doc.id } as ExerciseType)
+        )
+      );
     };
 
     fetchExercises();
@@ -31,7 +38,8 @@ export default function App() {
 
   console.log(exercises);
 
-  // TODO: This page will link to all of the exercises for a user by course / section
+  // TODO: This page will link to all of the exercises for a user by course /
+  // section. Right now it's just SDEV 120 (not tied to user).
   return (
     <BrowserRouter>
       <div className="app-container">
