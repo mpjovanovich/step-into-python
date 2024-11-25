@@ -17,3 +17,11 @@ LONG TERM
 - Use different template strings for these? E.g.:
     - {{text}} = text
     - {{select}} = multiple choice
+
+EXAMPLE EXERCISE:
+
+1?print("BEGIN PROGRAM")
+2?print("Hello, earth!")
+3?print("Hello, moon!")
+4?print("Hello, {{sun}}!")
+5?print("END PROGRAM")

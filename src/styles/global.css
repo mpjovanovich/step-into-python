@@ -4,6 +4,16 @@
 }
 
 /* Common Element Styles */
+a {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 button {
   display: block;
   margin-top: auto;
@@ -22,6 +32,15 @@ button:active {
 h3 {
   margin: 0;
   font-size: 1.1rem;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  margin-bottom: 0.8rem;
 }
 
 /* Common Utility Classes */
