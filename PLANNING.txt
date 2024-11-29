@@ -25,3 +25,38 @@ EXAMPLE EXERCISE:
 3?print("Hello, moon!")
 4?print("Hello, {{sun}}!")
 5?print("END PROGRAM")
+
+DATABASE STRUCTURE:
+
+// Course Collection
+// Path: courses/{courseId}
+{
+  id: string,            // Auto-generated or custom course identifier
+  name: string,          // Course name
+  description: string,   // Optional course description
+  
+  // Path: courses/{courseId}/questions/{questionId}
+  questions: {
+    id: string,          // Unique question identifier
+    content: string,     // Question text
+    ...
+  }
+}
+
+// Student Collection
+// Path: students/{studentId}
+{
+  id: string,            // Student unique identifier
+  email: string,         // Student's email (for login)
+  name: string,          // Student's name
+  enrolledCourses: string[], // Array of course IDs student is enrolled in
+  
+  // Path: students/{studentId}/courseProgress/{courseId}
+  courseProgress: {
+    courseId: string,    // Reference to the course
+    completedQuestions: { // Will not exist if the question is not completed
+      questionId: string,  // ID of completed question
+      completedAt: timestamp  // Timestamp of completion
+    }[]
+  }
+}

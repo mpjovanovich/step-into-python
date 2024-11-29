@@ -1,6 +1,5 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Exercise from "./pages/Exercise/Exercise";
-import type { Exercise as ExerciseType } from "./types/Exercise";
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 import {
   getFirestore,
   collection,
@@ -8,11 +7,27 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import Exercise from "./pages/Exercise/Exercise";
+import Login from "./pages/Login/Login";
+import type { Exercise as ExerciseType } from "./types/Exercise";
 import "./styles/global.css";
-import { useState, useEffect } from "react";
 
 export default function App() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
+
+  // useEffect(() => {
+  //   const auth = getAuth();
+  //   return onAuthStateChanged(auth, (user) => {
+  //     setUser(user);
+  //     setLoading(false);
+  //   });
+  // }, []);
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   useEffect(() => {
     // We can't use async directly in useEffect, so we need to define a function
@@ -36,34 +51,53 @@ export default function App() {
     fetchExercises();
   }, []);
 
-  console.log(exercises);
+  const getHomePage = (): JSX.Element => {
+    return (
+      <div className="home-page" style={{ padding: "0 2rem" }}>
+        <h1 className="title">Home Page</h1>
+        <ul>
+          {exercises.map((exercise) => (
+            <li key={exercise.id}>
+              <Link to={`/exercise/${exercise.id}`}>
+                Exercise: {exercise.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
 
-  // TODO: This page will link to all of the exercises for a user by course /
-  // section. Right now it's just SDEV 120 (not tied to user).
   return (
     <BrowserRouter>
       <div className="app-container">
         <Routes>
-          <Route
-            path="/"
-            element={
-              <div className="home-page" style={{ padding: "0 2rem" }}>
-                <h1 className="title">Home Page</h1>
-                <ul>
-                  {exercises.map((exercise) => (
-                    <li key={exercise.id}>
-                      <Link to={`/exercise/${exercise.id}`}>
-                        Exercise: {exercise.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            }
-          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={getHomePage()} />
           <Route path="/exercise/:exerciseId" element={<Exercise />} />
         </Routes>
       </div>
     </BrowserRouter>
   );
+
+  // return (
+  //   <BrowserRouter>
+  //     <div className="app-container">
+  //       <Routes>
+  //         {/* Public route */}
+  //         <Route path="/login" element={<Login />} />
+
+  //         {/* Protected routes */}
+  //         {user ? (
+  //           <>
+  //             <Route path="/" element={getHomePage()} />
+  //             <Route path="/exercise/:exerciseId" element={<Exercise />} />
+  //           </>
+  //         ) : (
+  //           <Route path="*" element={<Navigate to="/login" replace />} />
+  //         )}
+  //       </Routes>
+  //     </div>
+  //   </BrowserRouter>
+  // );
 }
