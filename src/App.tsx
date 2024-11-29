@@ -19,12 +19,16 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
 
+  // Listen for auth state changes.
   useEffect(() => {
+    // It's a React best practice to return the cleanup function; React will
+    // call it when the component unmounts.
     return onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
   }, []);
 
+  // Fetch the exercises from Firestore.
   useEffect(() => {
     // We can't use async directly in useEffect, so we need to define a function
     // inside.  It's a limitation of React.
