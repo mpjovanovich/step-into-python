@@ -5,7 +5,7 @@ import "firebaseui/dist/firebaseui.css";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
 
-export default function Login() {
+const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,4 +41,6 @@ export default function Login() {
       <div id="firebaseui-auth-container"></div>
     </div>
   );
-}
+};
+
+export default Login;

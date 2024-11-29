@@ -7,27 +7,23 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged, User, signOut } from "firebase/auth";
 import Exercise from "./pages/Exercise/Exercise";
 import Login from "./pages/Login/Login";
+import Header from "./components/Header";
 import type { Exercise as ExerciseType } from "./types/Exercise";
 import "./styles/global.css";
+import { auth } from "./firebase";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
 
-  // useEffect(() => {
-  //   const auth = getAuth();
-  //   return onAuthStateChanged(auth, (user) => {
-  //     setUser(user);
-  //     setLoading(false);
-  //   });
-  // }, []);
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  useEffect(() => {
+    return onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+  }, []);
 
   useEffect(() => {
     // We can't use async directly in useEffect, so we need to define a function
@@ -71,33 +67,22 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
+        <Header isAuthenticated={!!user} />
         <Routes>
+          {/* Public route */}
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={getHomePage()} />
-          <Route path="/exercise/:exerciseId" element={<Exercise />} />
+
+          {/* Protected routes */}
+          {user ? (
+            <>
+              <Route path="/" element={getHomePage()} />
+              <Route path="/exercise/:exerciseId" element={<Exercise />} />
+            </>
+          ) : (
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          )}
         </Routes>
       </div>
     </BrowserRouter>
   );
-
-  // return (
-  //   <BrowserRouter>
-  //     <div className="app-container">
-  //       <Routes>
-  //         {/* Public route */}
-  //         <Route path="/login" element={<Login />} />
-
-  //         {/* Protected routes */}
-  //         {user ? (
-  //           <>
-  //             <Route path="/" element={getHomePage()} />
-  //             <Route path="/exercise/:exerciseId" element={<Exercise />} />
-  //           </>
-  //         ) : (
-  //           <Route path="*" element={<Navigate to="/login" replace />} />
-  //         )}
-  //       </Routes>
-  //     </div>
-  //   </BrowserRouter>
-  // );
 }
