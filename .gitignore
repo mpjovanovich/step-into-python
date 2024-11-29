@@ -1,5 +1,8 @@
 # Dependencies
 node_modules
 
-# Config files
-config/serviceAccountKey.json
+# Config files and secrets
+.env
+*.key
+*.pem
+credentials.json

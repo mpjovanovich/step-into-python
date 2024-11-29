@@ -3,12 +3,12 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB27amjekMC2LQ9AfNlqRN5flrCfbiWaNg",
-  authDomain: "coding-quiz-engine.firebaseapp.com",
-  projectId: "coding-quiz-engine",
-  storageBucket: "coding-quiz-engine.firebasestorage.app",
-  messagingSenderId: "1075619314876",
-  appId: "1:1075619314876:web:666fa15a1d048404d064b9",
+  apiKey: "AIzaSyDOwKQDJYftjR8vmEzF4klMeP8VLZW9yB8",
+  authDomain: "stepintopython.firebaseapp.com",
+  projectId: "stepintopython",
+  storageBucket: "stepintopython.firebasestorage.app",
+  messagingSenderId: "805215190705",
+  appId: "1:805215190705:web:1590c0f86e90a1ad68ec90",
 };
 
 // Initialize Firebase
