@@ -7,24 +7,24 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { onAuthStateChanged, User, signOut } from "firebase/auth";
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import Exercise from "./pages/Exercise/Exercise";
 import Login from "./pages/Login/Login";
 import Header from "./components/Header";
+import type { User } from "./types/User";
 import type { Exercise as ExerciseType } from "./types/Exercise";
 import "./styles/global.css";
 import { auth } from "./firebase";
-
 export default function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
 
   // Listen for auth state changes.
   useEffect(() => {
     // It's a React best practice to return the cleanup function; React will
     // call it when the component unmounts.
-    return onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    return onAuthStateChanged(auth, (firebaseUser) => {
+      setAuthUser(firebaseUser);
     });
   }, []);
 
@@ -71,13 +71,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
-        <Header isAuthenticated={!!user} />
+        <Header isAuthenticated={!!authUser} />
         <Routes>
           {/* Public route */}
           <Route path="/login" element={<Login />} />
 
           {/* Protected routes */}
-          {user ? (
+          {authUser ? (
             <>
               <Route path="/" element={getHomePage()} />
               <Route path="/exercise/:exerciseId" element={<Exercise />} />
