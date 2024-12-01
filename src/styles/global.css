@@ -90,6 +90,17 @@ h1.title {
   color: #fff;
 }
 
+.inline-flex-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.inline-flex-wrapper > * {
+  display: inline-flex;
+  align-items: center;
+}
+
 ul.exercises-list {
   padding: 1rem;
   border-radius: 0.5rem;
@@ -101,18 +112,15 @@ ul.exercises-list {
 }
 
 ul.exercises-list li {
-  display: flex;
-  align-items: center;
+  padding: 0.75rem 1rem;
   border-radius: 0.25rem;
   transition: all 0.2s ease;
   margin: 0;
 }
 
 ul.exercises-list li a {
-  display: flex;
-  align-items: center;
+  padding: 0.5rem 1rem;
   width: 100%;
-  padding: 0.75rem 1rem;
   text-decoration: none;
 }
 
@@ -120,11 +128,6 @@ ul.exercises-list li:hover {
   background-color: rgb(45, 45, 45);
   transform: translateX(4px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-span.completed-exercise {
-  margin: 0.5rem;
-  display: inline-flex;
 }
 
 svg.icon-complete {

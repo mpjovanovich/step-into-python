@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
-import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+// import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 import {
   getFirestore,
   collection,
@@ -95,16 +96,20 @@ export default function App() {
           {exercises.map((exercise) => (
             <li key={exercise.id}>
               {/* TODO: styles, e.g. margin-right */}
-              <span className="completed-exercise">
-                {user?.completedExercises.includes(exercise.id) ? (
-                  <MdCheckBox className="icon-complete" />
-                ) : (
-                  <MdCheckBoxOutlineBlank className="icon-incomplete" />
-                )}
+              <span className="inline-flex-wrapper">
+                <span className="completed-exercise">
+                  {user?.completedExercises.includes(exercise.id) ? (
+                    // <MdCheckBox className="icon-complete" />
+                    <MdCheckCircle className="icon-complete" />
+                  ) : (
+                    // <MdCheckBoxOutlineBlank className="icon-incomplete" />
+                    <MdRadioButtonUnchecked className="icon-incomplete" />
+                  )}
+                </span>
+                <Link to={`/exercise/${exercise.id}`}>
+                  Exercise: {exercise.title}
+                </Link>
               </span>
-              <Link to={`/exercise/${exercise.id}`}>
-                Exercise: {exercise.title}
-              </Link>
             </li>
           ))}
         </ul>

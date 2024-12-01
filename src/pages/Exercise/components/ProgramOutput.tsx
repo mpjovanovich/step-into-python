@@ -3,7 +3,7 @@ import { BLANK_REGEX } from "../../../constants";
 import { ExerciseState } from "../../../types/Exercise";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { FiCheck, FiCopy, FiX } from "react-icons/fi";
+import { MdCheck, MdContentCopy, MdClose } from "react-icons/md";
 import styles from "../Exercise.module.css";
 
 // Types and Interfaces
@@ -129,7 +129,7 @@ const ProgramOutput = ({
         {/* The input field for the user's answer */}
         {/* Don't render for the last part in the template */}
         {i < parts.length - 1 && (
-          <>
+          <span className="inline-flex-wrapper">
             <input
               type="text"
               value={userAnswers[i] || ""}
@@ -149,10 +149,10 @@ const ProgramOutput = ({
                 marginLeft: "5px",
               }}
             >
-              {userAnswerResults[i] === true && <FiCheck color="green" />}
-              {userAnswerResults[i] === false && <FiX color="red" />}
+              {userAnswerResults[i] === true && <MdCheck color="green" />}
+              {userAnswerResults[i] === false && <MdClose color="red" />}
             </span>
-          </>
+          </span>
         )}
       </React.Fragment>
     ));
@@ -169,7 +169,7 @@ const ProgramOutput = ({
           setTimeout(() => setCopyText("Copy"), 800);
         }}
       >
-        {copyText === "Copied!" ? <FiCheck /> : <FiCopy />} {copyText}
+        {copyText === "Copied!" ? <MdCheck /> : <MdContentCopy />} {copyText}
       </button>
 
       <div>

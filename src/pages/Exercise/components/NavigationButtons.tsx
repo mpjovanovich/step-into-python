@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MdCheckBox } from "react-icons/md";
+import { MdCheckCircle } from "react-icons/md";
 import styles from "../Exercise.module.css";
 import type { ExerciseState } from "../../../types/Exercise";
 
@@ -66,10 +66,10 @@ export const NavigationButtons = ({
 
       {exerciseState === "COMPLETED" && (
         <>
-          <span className="completed-exercise">
-            <MdCheckBox className="icon-complete" />
+          <span className="inline-flex-wrapper">
+            <MdCheckCircle className="icon-complete" />
+            <span style={{ marginLeft: "8px" }}>Exercise Complete!</span>
           </span>
-          <span>Exercise Complete!</span>
           <button className={styles.actionButton}>
             <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
               Home
