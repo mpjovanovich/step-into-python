@@ -1,8 +1,5 @@
 NEXT STEPS:
 
-- Modify database schema to support users; see below
-- Show completed exercises
-- Save completed exercises to database for user
 - Fix firestore database security rules
 - Create exercises
 - Create Logins

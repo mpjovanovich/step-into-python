@@ -9,6 +9,7 @@ import {
   where,
   getDocs,
   onSnapshot,
+  orderBy,
 } from "firebase/firestore";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import Exercise from "./pages/Exercise/Exercise";
@@ -73,7 +74,8 @@ export default function App() {
       const db = getFirestore();
       const q = query(
         collection(db, "exercises"),
-        where("course", "==", "SDEV 120")
+        where("course", "==", "SDEV 120"),
+        orderBy("order")
       );
       const querySnapshot = await getDocs(q);
       setExercises(
