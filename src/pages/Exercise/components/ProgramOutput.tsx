@@ -149,8 +149,12 @@ const ProgramOutput = ({
                 marginLeft: "5px",
               }}
             >
-              {userAnswerResults[i] === true && <MdCheck color="green" />}
-              {userAnswerResults[i] === false && <MdClose color="red" />}
+              {userAnswerResults[i] === true && (
+                <MdCheck color="green" style={{ fontSize: "1.2rem" }} />
+              )}
+              {userAnswerResults[i] === false && (
+                <MdClose color="red" style={{ fontSize: "1.2rem" }} />
+              )}
             </span>
           </span>
         )}

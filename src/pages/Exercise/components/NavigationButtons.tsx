@@ -70,11 +70,9 @@ export const NavigationButtons = ({
             <MdCheckCircle className="icon-complete" />
             <span style={{ marginLeft: "8px" }}>Exercise Complete!</span>
           </span>
-          <button className={styles.actionButton}>
-            <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
-              Home
-            </Link>
-          </button>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <button className={styles.actionButton}>Home</button>
+          </Link>
         </>
       )}
     </div>
