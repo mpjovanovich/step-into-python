@@ -6,23 +6,27 @@ import { useParams } from "react-router-dom";
 
 // Internal
 import styles from "./Exercise.module.css";
-import type { Exercise as ExerciseType } from "../../types/Exercise";
+import type {
+  Exercise as ExerciseType,
+  ExerciseState,
+} from "../../types/Exercise";
 import { ExerciseText } from "./components/ExerciseText";
 import { NavigationButtons } from "./components/NavigationButtons";
 import { ProgramOutput } from "./components/ProgramOutput";
+import { useExerciseCompletion } from "../../hooks/useExerciseCompletion";
+import { User } from "../../types/User";
 
-const Exercise = () => {
+const Exercise = ({ user }: { user: User | null }) => {
   // Get the exerciseId from the URL
   const { exerciseId } = useParams();
-
   const [exercise, setExercise] = useState<ExerciseType | null>(null);
   const [step, setStep] = useState(0);
   const [userInputNeedsChecked, setUserInputNeedsChecked] = useState(false);
-  const [stepHasUnansweredQuestions, setStepHasUnansweredQuestions] =
-    useState(false);
+  const { completeExercise } = useExerciseCompletion();
+  const [exerciseState, setExerciseState] = useState<ExerciseState>("LOADING");
 
   // Get the max step in the template.
-  const maxStep = exercise
+  const finalStep = exercise
     ? Math.max(
         ...exercise.template
           .split("\n")
@@ -42,6 +46,7 @@ const Exercise = () => {
         const exerciseSnap = await getDoc(exerciseRef);
         if (exerciseSnap.exists()) {
           setExercise(exerciseSnap.data() as ExerciseType);
+          setExerciseState("STEP_COMPLETE");
         } else {
           // TODO: Handle error
         }
@@ -52,6 +57,22 @@ const Exercise = () => {
 
     fetchExercise();
   }, []);
+
+  /* ************************
+   * HANDLERS
+   ************************ */
+  const handleSubmit = async () => {
+    if (!user || !exerciseId) return;
+
+    setExerciseState("SUBMITTING");
+    try {
+      await completeExercise(user, exerciseId);
+      setExerciseState("COMPLETED");
+    } catch (err) {
+      setExerciseState("ERROR");
+      console.error(err);
+    }
+  };
 
   /* ************************
    * UI
@@ -67,8 +88,8 @@ const Exercise = () => {
       <div className={styles.container}>
         <div className={styles.instructions}>
           <ExerciseText
-            step={step}
-            maxStep={maxStep}
+            currentStep={step}
+            finalStep={finalStep}
             descriptions={exercise ? exercise.descriptions : {}}
             instructions={exercise ? exercise.instructions : {}}
           />
@@ -76,34 +97,27 @@ const Exercise = () => {
             /* Don't show the buttons until we have an exercise loaded. */
             exercise && (
               <NavigationButtons
-                step={step}
-                maxStep={maxStep}
-                checkButtonVisible={stepHasUnansweredQuestions}
+                currentStep={step}
+                finalStep={finalStep}
+                exerciseState={exerciseState}
                 onPrevious={() => {
                   setStep(step - 1);
-                  setUserInputNeedsChecked(true);
                 }}
                 onNext={() => {
                   setStep(step + 1);
-                  // This needs to be here so that the check button is visible.
-                  setUserInputNeedsChecked(true);
                 }}
                 onCheck={() => setUserInputNeedsChecked(true)}
-                onSubmit={() => {
-                  console.log("submit");
-                }}
+                onSubmit={handleSubmit}
               />
             )
           }
         </div>
         <ProgramOutput
-          step={step}
+          currentStep={step}
           title={exercise?.title ?? "Loading Exercise..."}
+          setExerciseState={setExerciseState}
           needsCheck={userInputNeedsChecked}
-          onCheckComplete={(result: boolean) => {
-            setStepHasUnansweredQuestions(result);
-            setUserInputNeedsChecked(false);
-          }}
+          setNeedsCheck={setUserInputNeedsChecked}
           questionTemplate={exercise?.template ?? ""}
         />
       </div>

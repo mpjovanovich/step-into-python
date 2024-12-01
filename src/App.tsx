@@ -7,6 +7,7 @@ import {
   query,
   where,
   getDocs,
+  onSnapshot,
 } from "firebase/firestore";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import Exercise from "./pages/Exercise/Exercise";
@@ -25,32 +26,42 @@ export default function App() {
 
   // Listen for auth state changes.
   useEffect(() => {
-    // It's a React best practice to return the cleanup function; React will
-    // call it when the component unmounts.
-    return onAuthStateChanged(auth, async (firebaseUser) => {
+    let unsubscribeUser: (() => void) | undefined;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
       setAuthUser(firebaseUser);
       setIsAuthLoading(false);
 
       if (firebaseUser) {
-        // Fetch the domain user when Firebase auth succeeds
+        // Set up real-time listener for user data
         const db = getFirestore();
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("email", "==", firebaseUser.email));
-        const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-          const userDoc = querySnapshot.docs[0];
-          setUser({ ...userDoc.data(), id: userDoc.id } as User);
-        } else {
-          // TODO: better error handling
-          console.error("No matching user found in the database");
-          setUser(null);
-        }
+        unsubscribeUser = onSnapshot(q, (querySnapshot) => {
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0];
+            setUser({ ...userDoc.data(), id: userDoc.id } as User);
+          } else {
+            console.error("No matching user found in the database");
+            setUser(null);
+          }
+        });
       } else {
-        // Clear the domain user when logged out
+        // Clean up user listener and clear user state when logged out
+        if (unsubscribeUser) {
+          unsubscribeUser();
+          unsubscribeUser = undefined;
+        }
         setUser(null);
       }
     });
+
+    // Clean up both listeners when component unmounts
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeUser) unsubscribeUser();
+    };
   }, []);
 
   // Fetch the exercises from Firestore.
@@ -118,7 +129,10 @@ export default function App() {
           {authUser ? (
             <>
               <Route path="/" element={getHomePage()} />
-              <Route path="/exercise/:exerciseId" element={<Exercise />} />
+              <Route
+                path="/exercise/:exerciseId"
+                element={<Exercise user={user} />}
+              />
             </>
           ) : (
             <Route path="*" element={<Navigate to="/login" replace />} />

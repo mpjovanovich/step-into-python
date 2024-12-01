@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { BLANK_REGEX } from "../../../constants";
+import { ExerciseState } from "../../../types/Exercise";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { FiCheck, FiCopy, FiX } from "react-icons/fi";
 import styles from "../Exercise.module.css";
 
 // Types and Interfaces
-interface ProgramOutputProps {
-  step: number;
-  title: string;
-  questionTemplate: string;
-  needsCheck: boolean;
-  onCheckComplete: (result: boolean) => void;
-}
-
 interface Template {
   code: string;
   copyCode: string;
   answers: string[];
+}
+
+interface ProgramOutputProps {
+  currentStep: number;
+  title: string;
+  questionTemplate: string;
+  needsCheck: boolean;
+  setNeedsCheck: (needsCheck: boolean) => void;
+  setExerciseState: (state: ExerciseState) => void;
 }
 
 /* **********************************************************************
@@ -25,11 +27,12 @@ interface Template {
  * "Check" button to see if the answer is correct.
  ************************************************************************/
 const ProgramOutput = ({
-  step,
+  currentStep,
   title,
   questionTemplate,
   needsCheck,
-  onCheckComplete,
+  setNeedsCheck,
+  setExerciseState,
 }: ProgramOutputProps) => {
   // Helper functions
   const getTemplate = (step: number): Template => {
@@ -69,8 +72,10 @@ const ProgramOutput = ({
   >([]);
 
   // Template initialization
-  const template = getTemplate(step);
+  const template = getTemplate(currentStep);
 
+  // Technically this doesn't belong here since this is a view, but I'm keeping
+  // it here for now.
   const checkAnswers = () => {
     const results = template.answers.map((answer, i) =>
       userAnswers[i] ? answer === userAnswers[i] : null
@@ -78,10 +83,18 @@ const ProgramOutput = ({
     setUserAnswerResults(results);
 
     // If there are no questions, this will still work.
-    onCheckComplete(results.some((answer) => !answer));
+    const hasUnansweredQuestions = results.some((answer) => !answer);
+    setExerciseState(
+      hasUnansweredQuestions ? "STEP_INCOMPLETE" : "STEP_COMPLETE"
+    );
+    setNeedsCheck(false);
   };
 
   // Effects
+  useEffect(() => {
+    checkAnswers();
+  }, [currentStep]);
+
   useEffect(() => {
     if (needsCheck) {
       checkAnswers();

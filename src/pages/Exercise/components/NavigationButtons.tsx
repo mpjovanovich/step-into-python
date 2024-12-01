@@ -1,60 +1,82 @@
+import { Link } from "react-router-dom";
+import { MdCheckBox } from "react-icons/md";
 import styles from "../Exercise.module.css";
+import type { ExerciseState } from "../../../types/Exercise";
 
 interface NavigationButtonsProps {
-  step: number;
-  maxStep: number;
-  checkButtonVisible: boolean;
+  currentStep: number;
+  finalStep: number;
+  exerciseState: ExerciseState;
   onPrevious: () => void;
   onNext: () => void;
   onCheck: () => void;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
 }
 
+// This is a dumb view component that renders the navigation buttons.
+// There should be no logic here.
 export const NavigationButtons = ({
-  step,
-  maxStep,
-  checkButtonVisible,
+  currentStep,
+  finalStep,
+  exerciseState,
   onPrevious,
   onNext,
   onCheck,
   onSubmit,
 }: NavigationButtonsProps) => {
-  const buttons = [];
+  console.log("exerciseState", exerciseState);
+  console.log("currentStep", currentStep);
+  console.log("finalStep", finalStep);
 
-  // Previous button (when needed)
-  if (step > 0) {
-    buttons.push(
-      <button key="prev" className={styles.actionButton} onClick={onPrevious}>
-        Previous
-      </button>
-    );
-  }
+  return (
+    <div className={styles.buttonContainer}>
+      {currentStep > 0 && exerciseState !== "COMPLETED" && (
+        <button
+          className={styles.actionButton}
+          onClick={onPrevious}
+          disabled={exerciseState === "SUBMITTING"}
+        >
+          Previous
+        </button>
+      )}
 
-  // Check button
-  if (checkButtonVisible) {
-    buttons.push(
-      <button key="check" className={styles.actionButton} onClick={onCheck}>
-        Check
-      </button>
-    );
-  }
+      {exerciseState === "STEP_INCOMPLETE" && (
+        <button className={styles.actionButton} onClick={onCheck}>
+          Check
+        </button>
+      )}
 
-  // Next button (when needed)
-  if (step < maxStep + 1 && !checkButtonVisible) {
-    buttons.push(
-      <button key="next" className={styles.actionButton} onClick={onNext}>
-        Next
-      </button>
-    );
-  }
+      {exerciseState === "STEP_COMPLETE" && currentStep < finalStep + 1 && (
+        <button className={styles.actionButton} onClick={onNext}>
+          Next
+        </button>
+      )}
 
-  if (step === maxStep + 1 && !checkButtonVisible) {
-    buttons.push(
-      <button key="submit" className={styles.actionButton} onClick={onSubmit}>
-        Submit
-      </button>
-    );
-  }
+      {exerciseState === "STEP_COMPLETE" && currentStep === finalStep + 1 && (
+        <button className={styles.actionButton} onClick={onSubmit}>
+          Submit
+        </button>
+      )}
 
-  return <div className={styles.buttonContainer}>{buttons}</div>;
+      {exerciseState === "SUBMITTING" && (
+        <button className={styles.actionButton} disabled>
+          Submitting...
+        </button>
+      )}
+
+      {exerciseState === "COMPLETED" && (
+        <>
+          <span className="completed-exercise">
+            <MdCheckBox className="icon-complete" />
+          </span>
+          <span>Exercise Complete!</span>
+          <button className={styles.actionButton}>
+            <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
+              Home
+            </Link>
+          </button>
+        </>
+      )}
+    </div>
+  );
 };

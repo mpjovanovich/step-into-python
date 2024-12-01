@@ -4,7 +4,6 @@
 }
 
 .actionButton {
-  margin-top: 2rem;
   min-width: 100px;
   background-color: #7f52ff;
   color: white;
@@ -13,12 +12,22 @@
 .actionButton:hover {
   background-color: #663dcc;
 }
+
 .buttonContainer {
   display: flex;
+  align-items: center;
+  border-top: 2px solid #e4e4e4;
+  padding-top: 1rem;
 }
 
 .buttonContainer button {
   margin-right: 1rem;
+}
+
+.buttonContainer span {
+  font-weight: bold;
+  margin-right: 1rem;
+  display: inline-flex;
 }
 
 .container {

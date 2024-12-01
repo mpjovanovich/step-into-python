@@ -1,18 +1,18 @@
 interface ExerciseTextProps {
-  step: number;
-  maxStep: number;
+  currentStep: number;
+  finalStep: number;
   descriptions: Record<number, string>;
   instructions: Record<number, string>;
 }
 
 export const ExerciseText = ({
-  step,
-  maxStep,
+  currentStep,
+  finalStep,
   descriptions,
   instructions,
 }: ExerciseTextProps) => {
   const getDescription = (): JSX.Element => {
-    if (step === 0) {
+    if (currentStep === 0) {
       return (
         <>
           <p>
@@ -30,7 +30,7 @@ export const ExerciseText = ({
           </p>
         </>
       );
-    } else if (step === maxStep + 1) {
+    } else if (currentStep === finalStep + 1) {
       return (
         <>
           <p>
@@ -42,14 +42,14 @@ export const ExerciseText = ({
       );
     }
 
-    return <p>{descriptions[step]}</p>;
+    return <p>{descriptions[currentStep]}</p>;
   };
 
   const getInstructions = (): string => {
-    if (step === maxStep + 1) {
+    if (currentStep === finalStep + 1) {
       return "Click Submit";
     }
-    return instructions[step] ?? "Click Next to continue";
+    return instructions[currentStep] ?? "Click Next to continue";
   };
 
   return (
