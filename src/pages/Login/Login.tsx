@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { EmailAuthProvider } from "firebase/auth";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
@@ -7,8 +7,23 @@ import { auth } from "../../firebase";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigate("/");
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
+  useEffect(() => {
+    if (isLoading) return; // Don't initialize UI while loading
+
     const ui =
       firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
 
@@ -34,7 +49,11 @@ const Login = () => {
         },
       },
     });
-  }, [navigate]);
+  }, [navigate, isLoading]);
+
+  if (isLoading) {
+    return null; // or return a loading spinner if you prefer
+  }
 
   return (
     <div style={{ padding: "2rem" }}>

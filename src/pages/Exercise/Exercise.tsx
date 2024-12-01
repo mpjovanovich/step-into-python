@@ -57,9 +57,7 @@ const Exercise = () => {
    * UI
    ************************ */
   const getTitle = (): string => {
-    return exercise
-      ? `${exercise.course} - ${exercise.title}`
-      : "Loading Program...";
+    return exercise ? `${exercise.title}` : "Loading Program...";
   };
 
   // Main content
