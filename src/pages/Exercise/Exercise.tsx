@@ -26,16 +26,7 @@ const Exercise = ({ user }: { user: User | null }) => {
   const [exerciseState, setExerciseState] = useState<ExerciseState>("LOADING");
 
   // Get the max step in the template.
-  const finalStep = exercise
-    ? Math.max(
-        ...(Array.isArray(exercise.template)
-          ? exercise.template.join("\n")
-          : exercise.template
-        )
-          .split("\n")
-          .map((line) => parseInt(line.split("?")[0]))
-      )
-    : 0;
+  const finalStep = exercise ? Object.keys(exercise.descriptions).length : 0;
 
   /* ************************
    * EFFECTS

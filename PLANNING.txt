@@ -1,12 +1,11 @@
 NEXT STEPS:
 
-- Fix firestore database security rules
-- Create exercises
 - Create Logins
   - Ivy Tech seems to be blocking password reset emails.
   - Going to have to assign a password to each user manually.
 - Backup database
   - https://firebase.google.com/docs/firestore/manage-data/export-import
+- Better feedback on correct/incorrect answers. Add a border with color to the input field.
 
 
 LONG TERM
