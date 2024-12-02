@@ -93,18 +93,15 @@ export default function App() {
   const getHomePage = (): JSX.Element => {
     return (
       <div style={{ padding: "0 2rem" }}>
-        <h1 className="title">My Exercises</h1>
+        <h1 className="title">Exercises: {user?.name}</h1>
         <ul className="exercises-list">
           {exercises.map((exercise) => (
             <li key={exercise.id}>
-              {/* TODO: styles, e.g. margin-right */}
               <span className="inline-flex-wrapper">
                 <span className="completed-exercise">
                   {user?.completedExercises.includes(exercise.id) ? (
-                    // <MdCheckBox className="icon-complete" />
                     <MdCheckCircle className="icon-complete" />
                   ) : (
-                    // <MdCheckBoxOutlineBlank className="icon-incomplete" />
                     <MdRadioButtonUnchecked className="icon-incomplete" />
                   )}
                 </span>
