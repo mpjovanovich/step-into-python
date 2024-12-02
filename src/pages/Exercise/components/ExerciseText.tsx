@@ -42,14 +42,30 @@ export const ExerciseText = ({
       );
     }
 
-    return <p>{descriptions[currentStep]}</p>;
+    return (
+      <>
+        {descriptions[currentStep].split("\n").map((line, i) => (
+          <p key={i}>{line}</p>
+        ))}
+      </>
+    );
   };
 
-  const getInstructions = (): string => {
+  const getInstructions = (): JSX.Element => {
     if (currentStep === finalStep + 1) {
-      return "Click Submit";
+      return <p>Click Submit</p>;
     }
-    return instructions[currentStep] ?? "Click Next to continue";
+    return (
+      <>
+        {instructions[currentStep] ? (
+          instructions[currentStep]
+            .split("\n")
+            .map((line, i) => <p key={i}>{line}</p>)
+        ) : (
+          <p>Click Next to continue</p>
+        )}
+      </>
+    );
   };
 
   return (
@@ -57,7 +73,7 @@ export const ExerciseText = ({
       <h3>Description</h3>
       {getDescription()}
       <h3>Instructions</h3>
-      <p>{getInstructions()}</p>
+      {getInstructions()}
     </>
   );
 };

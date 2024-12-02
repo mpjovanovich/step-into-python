@@ -24,10 +24,6 @@ export const NavigationButtons = ({
   onCheck,
   onSubmit,
 }: NavigationButtonsProps) => {
-  console.log("exerciseState", exerciseState);
-  console.log("currentStep", currentStep);
-  console.log("finalStep", finalStep);
-
   return (
     <div className={styles.buttonContainer}>
       {currentStep > 0 && exerciseState !== "COMPLETED" && (

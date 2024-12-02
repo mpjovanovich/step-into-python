@@ -28,7 +28,10 @@ const Exercise = ({ user }: { user: User | null }) => {
   // Get the max step in the template.
   const finalStep = exercise
     ? Math.max(
-        ...exercise.template
+        ...(Array.isArray(exercise.template)
+          ? exercise.template.join("\n")
+          : exercise.template
+        )
           .split("\n")
           .map((line) => parseInt(line.split("?")[0]))
       )
@@ -40,8 +43,19 @@ const Exercise = ({ user }: { user: User | null }) => {
   useEffect(() => {
     // Fetch the exercise on mount.
     const fetchExercise = async () => {
+      // Check if we're in preview mode
+      if (exerciseId === "preview") {
+        const params = new URLSearchParams(window.location.search);
+        const previewData = params.get("data");
+        if (previewData) {
+          setExercise(JSON.parse(previewData));
+          setExerciseState("STEP_COMPLETE");
+          return;
+        }
+      }
+
+      // Normal fetch from Firestore
       try {
-        // TODO: Guard against undefined exerciseId
         const exerciseRef = doc(db, "exercises", exerciseId!);
         const exerciseSnap = await getDoc(exerciseRef);
         if (exerciseSnap.exists()) {
@@ -56,7 +70,7 @@ const Exercise = ({ user }: { user: User | null }) => {
     };
 
     fetchExercise();
-  }, []);
+  }, [exerciseId]);
 
   /* ************************
    * HANDLERS

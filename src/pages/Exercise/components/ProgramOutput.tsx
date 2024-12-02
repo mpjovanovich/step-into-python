@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { BLANK_REGEX } from "../../../constants";
 import { ExerciseState } from "../../../types/Exercise";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -70,6 +70,7 @@ const ProgramOutput = ({
   const [userAnswerResults, setUserAnswerResults] = useState<
     (boolean | null)[]
   >([]);
+  const isResetting = useRef(false);
 
   // Template initialization
   const template = getTemplate(currentStep);
@@ -82,6 +83,10 @@ const ProgramOutput = ({
     );
     setUserAnswerResults(results);
 
+    // DEBUG
+    console.log("results", results);
+    console.log("userAnswers", userAnswers);
+
     // If there are no questions, this will still work.
     const hasUnansweredQuestions = results.some((answer) => !answer);
     setExerciseState(
@@ -92,8 +97,18 @@ const ProgramOutput = ({
 
   // Effects
   useEffect(() => {
-    checkAnswers();
+    isResetting.current = true;
+    setUserAnswers([]);
   }, [currentStep]);
+
+  useEffect(() => {
+    // Most of the time we don't want to check the answers. Only do it if this
+    // was in response to a step change.
+    if (isResetting.current) {
+      checkAnswers();
+      isResetting.current = false;
+    }
+  }, [userAnswers]);
 
   useEffect(() => {
     if (needsCheck) {
@@ -132,7 +147,7 @@ const ProgramOutput = ({
           <span className="inline-flex-wrapper">
             <input
               type="text"
-              value={userAnswers[i] || ""}
+              value={userAnswers[i] ?? ""}
               onChange={(e) => {
                 // This spreads the current answers into a new array so that we
                 // can mutate it, updates the answer at the current index, and
