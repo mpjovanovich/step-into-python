@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Exercises collection - authenticated users can read
+    match /exercises/{exerciseId} {
+      allow read: if request.auth != null;
+      allow write: if false;  // No direct writes to exercises
+    }
+    
+    // Users collection - users can read/update their own document
+    match /users/{userId} {
+      allow read: if request.auth != null && 
+        request.auth.token.email == resource.data.email;
+      
+      allow update: if request.auth != null && 
+        request.auth.token.email == resource.data.email &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['completedExercises']);
+    }
+  }
+}
