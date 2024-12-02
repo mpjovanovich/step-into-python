@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
-// import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 import {
   getFirestore,
