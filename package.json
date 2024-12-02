@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "create-user": "node scripts/createUser.js",
-    "upsert-exercise": "node scripts/upsertExercise.js"
+    "import-exercises": "node scripts/importExercises.js sdev120"
   },
   "eslintConfig": {
     "extends": [

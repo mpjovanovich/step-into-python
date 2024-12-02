@@ -5,6 +5,8 @@ NEXT STEPS:
 - Create Logins
   - Ivy Tech seems to be blocking password reset emails.
   - Going to have to assign a password to each user manually.
+- Backup database
+  - https://firebase.google.com/docs/firestore/manage-data/export-import
 
 
 LONG TERM
