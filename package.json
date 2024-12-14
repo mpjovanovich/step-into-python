@@ -33,7 +33,8 @@
     "eject": "react-scripts eject",
     "create-user": "node scripts/createUser.js",
     "import-exercises": "node scripts/importExercises.js sdev120",
-    "preview-exercise": "node scripts/previewExercise.js sdev120"
+    "preview-exercise": "node scripts/previewExercise.js sdev120",
+    "report-user-completed-exercise-count": "node scripts/reportUserCompletedExerciseCount.js"
   },
   "eslintConfig": {
     "extends": [

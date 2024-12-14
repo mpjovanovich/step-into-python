@@ -6,6 +6,7 @@ NEXT STEPS:
 - Backup database
   - https://firebase.google.com/docs/firestore/manage-data/export-import
 - Better feedback on correct/incorrect answers. Add a border with color to the input field.
+- Add section number to student database records.
 
 
 LONG TERM
