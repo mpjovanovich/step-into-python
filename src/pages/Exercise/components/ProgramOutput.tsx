@@ -41,10 +41,18 @@ const ProgramOutput = ({
 
     // Make a currentTemplate string that only includes lines up to the step.
     questionTemplate.split("\n").forEach((line) => {
-      const [lineStep, code] = line.split("?");
-      if (parseInt(lineStep) < step) {
+      const [stepRange, code] = line.split("?");
+
+      // Here the step will be in either the format "1?" or "1:2?"
+      // In the former case we assume the line is to be kept for the rest of the program.
+      // In the latter case we assume the line is to be kept up to the specified end step (inclusive).
+      const stepParts = stepRange.split(":");
+      const startStep = parseInt(stepParts[0]);
+      const endStep = stepParts.length > 1 ? parseInt(stepParts[1]) : 9999;
+
+      if (startStep < currentStep && endStep >= currentStep) {
         template += code.replaceAll("{{", "").replaceAll("}}", "") + "\n";
-      } else if (parseInt(lineStep) === step) {
+      } else if (startStep === currentStep) {
         template += code + "\n";
 
         // Use the regex to find the answers in the code.
