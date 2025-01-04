@@ -87,13 +87,12 @@ const ProgramOutput = ({
   // it here for now.
   const checkAnswers = () => {
     const results = template.answers.map((answer, i) =>
-      userAnswers[i] ? answer === userAnswers[i] : null
+      // The best way I can think of to handle whitespace is to just remove all of it.
+      // We need to allow for, e.g., 'x = 5' and 'x=5 ' to be considered correct.
+      // Maybe later we can add a more sophisticated check for correctness.
+      userAnswers[i] ? answer.replace(/\s+/g, "") === userAnswers[i].replace(/\s+/g, "") : null
     );
     setUserAnswerResults(results);
-
-    // DEBUG
-    console.log("results", results);
-    console.log("userAnswers", userAnswers);
 
     // If there are no questions, this will still work.
     const hasUnansweredQuestions = results.some((answer) => !answer);
