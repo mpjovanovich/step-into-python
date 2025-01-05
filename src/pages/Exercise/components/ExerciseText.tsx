@@ -35,7 +35,7 @@ export const ExerciseText = ({
         <>
           <p>
             Your program is complete. Try copying and pasting it into a Python
-            interpreter to see if it works!
+            interpreter to see if it works.
           </p>
           <p>Make sure to click Submit!</p>
         </>
