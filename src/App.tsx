@@ -18,6 +18,7 @@ import type { User } from "./types/User";
 import type { Exercise as ExerciseType } from "./types/Exercise";
 import "./styles/global.css";
 import { auth } from "./firebase";
+import { formatExerciseNumber } from "./utils/formatters";
 
 export default function App() {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
@@ -105,7 +106,9 @@ export default function App() {
                   )}
                 </span>
                 <Link to={`/exercise/${exercise.id}`}>
-                  Exercise: {exercise.title}
+                  {formatExerciseNumber(exercise.order)}
+                  {": "}
+                  {exercise.title}
                 </Link>
               </span>
             </li>
