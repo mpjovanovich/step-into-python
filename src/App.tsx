@@ -68,7 +68,8 @@ export default function App() {
 
   // Fetch the exercises from Firestore.
   useEffect(() => {
-    if (!authUser) return; // Don't fetch if not authenticated
+    // Don't fetch if not authenticated
+    if (!authUser) return;
 
     const fetchExercises = async () => {
       const db = getFirestore();
@@ -88,7 +89,7 @@ export default function App() {
     };
 
     fetchExercises();
-  }, [authUser]); // Add authUser as dependency
+  }, [authUser]);
 
   const getHomePage = (): JSX.Element => {
     return (
@@ -120,7 +121,7 @@ export default function App() {
 
   // Don't render routes until we know auth status
   if (isAuthLoading) {
-    return null; // or a loading spinner
+    return null;
   }
 
   return (
