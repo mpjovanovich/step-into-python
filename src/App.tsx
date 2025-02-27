@@ -68,8 +68,8 @@ export default function App() {
 
   // Fetch the exercises from Firestore.
   useEffect(() => {
-    // We can't use async directly in useEffect, so we need to define a function
-    // inside.  It's a limitation of React.
+    if (!authUser) return; // Don't fetch if not authenticated
+
     const fetchExercises = async () => {
       const db = getFirestore();
       const q = query(
@@ -88,7 +88,7 @@ export default function App() {
     };
 
     fetchExercises();
-  }, []);
+  }, [authUser]); // Add authUser as dependency
 
   const getHomePage = (): JSX.Element => {
     return (
