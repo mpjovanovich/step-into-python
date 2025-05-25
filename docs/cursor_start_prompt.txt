@@ -1,0 +1,15 @@
+I need to build a Python educational content generation pipeline. I have example JSON files in /examples that show the exact format needed.... + docs folder ...
+
+The pipeline has 4 stages:
+1. Generate a program summary for a topic
+2. Create Python code from the summary  
+3. Break into educational steps
+4. Encode as JSON matching the examples
+
+Key requirements:
+- {{placeholders}} become HTML inputs for students
+- Visibility markers (3?, 2:4?) control when lines appear
+- Each JSON teaches exactly one concept
+- Break steps at natural teaching moments
+
+Please start by examining the /examples folder and creating the project structure.
