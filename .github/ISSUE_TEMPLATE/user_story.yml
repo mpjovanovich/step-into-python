@@ -1,0 +1,19 @@
+name: User Story
+description: Define client focused requirements and business value.
+labels: ["story"]
+title: "Story: "
+assignees: []
+body:
+  - type: textarea
+    id: story
+    attributes:
+      label: Story
+      description: Describe the user story and acceptance criteria
+      value: |
+        As a [user role], I want [functionality or action] so that [business value].
+        
+        #### Acceptance Criteria
+        
+        - [ ] Criterion 1
+    validations:
+      required: true
