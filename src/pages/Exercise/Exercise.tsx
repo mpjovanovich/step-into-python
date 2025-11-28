@@ -5,7 +5,7 @@ This very badly needs testing and refactoring.
 // React and external libraries
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { db } from "../../firebase";
 
 // Internal
@@ -29,6 +29,11 @@ const Exercise = ({ user }: { user: User | null }) => {
   const { completeExercise } = useExerciseCompletion();
   const [exerciseState, setExerciseState] = useState<ExerciseState>("LOADING");
 
+  // Cheat mode to get the step from the URL
+  // Used for development only
+  const [searchParams] = useSearchParams();
+  const stepParam = searchParams.get("step");
+
   // Get the max step in the template.
   const finalStep = exercise ? Object.keys(exercise.descriptions).length : 0;
 
@@ -49,7 +54,20 @@ const Exercise = ({ user }: { user: User | null }) => {
     };
 
     fetchExercise();
-  }, [exerciseId]);
+
+    // Cheat mode to set the step from the URL
+    // Used for development only
+    if (exercise && stepParam !== null) {
+      const requestedStep = parseInt(stepParam, 10);
+      if (
+        !isNaN(requestedStep) &&
+        requestedStep >= 0 &&
+        requestedStep < finalStep
+      ) {
+        setStep(requestedStep);
+      }
+    }
+  }, [exerciseId, stepParam, finalStep]);
 
   // Development fetch from preview server
   const fetchPreviewExercise = async () => {
