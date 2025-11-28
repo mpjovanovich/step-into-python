@@ -1,20 +1,24 @@
+/*
+This very badly needs testing and refactoring.
+*/
+
 // React and external libraries
-import React, { useState, useEffect } from "react";
-import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { db } from "../../firebase";
 
 // Internal
-import styles from "./Exercise.module.css";
+import { useExerciseCompletion } from "../../hooks/useExerciseCompletion";
 import type {
-  Exercise as ExerciseType,
   ExerciseState,
+  Exercise as ExerciseType,
 } from "../../types/Exercise";
+import { User } from "../../types/User";
 import { ExerciseText } from "./components/ExerciseText";
 import { NavigationButtons } from "./components/NavigationButtons";
 import { ProgramOutput } from "./components/ProgramOutput";
-import { useExerciseCompletion } from "../../hooks/useExerciseCompletion";
-import { User } from "../../types/User";
+import styles from "./Exercise.module.css";
 
 const Exercise = ({ user }: { user: User | null }) => {
   // Get the exerciseId from the URL
@@ -34,34 +38,69 @@ const Exercise = ({ user }: { user: User | null }) => {
   useEffect(() => {
     // Fetch the exercise on mount.
     const fetchExercise = async () => {
-      // Check if we're in preview mode
       if (exerciseId === "preview") {
-        const params = new URLSearchParams(window.location.search);
-        const previewData = params.get("data");
-        if (previewData) {
-          setExercise(JSON.parse(previewData));
-          setExerciseState("STEP_COMPLETE");
-          return;
-        }
+        // Preview mode for development
+        // We'll never be here in prod
+        await fetchPreviewExercise();
+        return;
       }
 
-      // Normal fetch from Firestore
-      try {
-        const exerciseRef = doc(db, "exercises", exerciseId!);
-        const exerciseSnap = await getDoc(exerciseRef);
-        if (exerciseSnap.exists()) {
-          setExercise(exerciseSnap.data() as ExerciseType);
-          setExerciseState("STEP_COMPLETE");
-        } else {
-          // TODO: Handle error
-        }
-      } catch (err) {
-        console.error(err);
-      }
+      await fetchFirestoreExercise();
     };
 
     fetchExercise();
   }, [exerciseId]);
+
+  // Development fetch from preview server
+  const fetchPreviewExercise = async () => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const filePath = params.get("path");
+
+      // Die hard if no file path is provided
+      if (!filePath) {
+        throw new Error("No file path provided for preview");
+      }
+
+      // Fetch from the preview server API
+      const response = await fetch(
+        `http://localhost:3001/api/exercise?path=${encodeURIComponent(
+          filePath
+        )}`
+      );
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || `Failed to load exercise: ${response.statusText}`
+        );
+      }
+
+      const exerciseData = await response.json();
+      setExercise(exerciseData as ExerciseType);
+      setExerciseState("STEP_COMPLETE");
+    } catch (err) {
+      console.error("Error fetching preview exercise:", err);
+      setExerciseState("ERROR");
+    }
+  };
+
+  // Production fetch from Firestore
+  const fetchFirestoreExercise = async () => {
+    try {
+      const exerciseRef = doc(db, "exercises", exerciseId!);
+      const exerciseSnap = await getDoc(exerciseRef);
+      if (exerciseSnap.exists()) {
+        setExercise(exerciseSnap.data() as ExerciseType);
+        setExerciseState("STEP_COMPLETE");
+      } else {
+        console.error("Exercise not found in Firestore");
+        setExerciseState("ERROR");
+      }
+    } catch (err) {
+      console.error("Error fetching Firestore exercise:", err);
+      setExerciseState("ERROR");
+    }
+  };
 
   /* ************************
    * HANDLERS
