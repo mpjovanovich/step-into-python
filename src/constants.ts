@@ -1,1 +1,1 @@
-export const BLANK_REGEX = /{{.*?}}/g;
+export const BLANK_REGEX = /@@.*?@@/g;

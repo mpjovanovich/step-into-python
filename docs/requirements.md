@@ -1,7 +1,7 @@
 # Educational Python Content Pipeline
 
 ## Placeholder Rules
-- {{placeholders}} are rendered as HTML inputs in React
+- @@placeholders@@ are rendered as HTML inputs in React
 - Students must match exactly to progress
 - Strategic placement: variable names, values, operators
 - One concept per placeholder

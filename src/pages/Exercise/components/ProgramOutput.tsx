@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
-import { BLANK_REGEX } from "../../../constants";
-import { ExerciseState } from "../../../types/Exercise";
+import React, { useEffect, useRef, useState } from "react";
+import { MdCheck, MdClose, MdContentCopy } from "react-icons/md";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { MdCheck, MdContentCopy, MdClose } from "react-icons/md";
+import { BLANK_REGEX } from "../../../constants";
+import { ExerciseState } from "../../../types/Exercise";
 import styles from "../Exercise.module.css";
 
 // Types and Interfaces
@@ -51,14 +51,14 @@ const ProgramOutput = ({
       const endStep = stepParts.length > 1 ? parseInt(stepParts[1]) : 9999;
 
       if (startStep < currentStep && endStep >= currentStep) {
-        template += code.replaceAll("{{", "").replaceAll("}}", "") + "\n";
+        template += code.replaceAll("@@", "") + "\n";
       } else if (startStep === currentStep) {
         template += code + "\n";
 
         // Use the regex to find the answers in the code.
         let matches = code.match(BLANK_REGEX);
         if (matches) {
-          // Strip the {{ and }} from the answers
+          // Strip the @@ from the answers
           const mapped = matches.map((p) => p.slice(2, -2));
           answers.push(...mapped);
         }
@@ -67,7 +67,7 @@ const ProgramOutput = ({
 
     return {
       code: template,
-      copyCode: template.replace(/{{[^}]+}}/g, ""),
+      copyCode: template.replace(/@@[^@]+@@/g, ""),
       answers: answers,
     };
   };
@@ -90,7 +90,9 @@ const ProgramOutput = ({
       // The best way I can think of to handle whitespace is to just remove all of it.
       // We need to allow for, e.g., 'x = 5' and 'x=5 ' to be considered correct.
       // Maybe later we can add a more sophisticated check for correctness.
-      userAnswers[i] ? answer.replace(/\s+/g, "") === userAnswers[i].replace(/\s+/g, "") : null
+      userAnswers[i]
+        ? answer.replace(/\s+/g, "") === userAnswers[i].replace(/\s+/g, "")
+        : null
     );
     setUserAnswerResults(results);
 
@@ -128,7 +130,7 @@ const ProgramOutput = ({
     // Split the template into parts at each blank placeholder.
     const parts = template.code.split(BLANK_REGEX);
 
-    // Stubs in an input field for each {{}} in the template
+    // Stubs in an input field for each @@ in the template
     return parts.map((part, i) => (
       <React.Fragment key={i}>
         <SyntaxHighlighter

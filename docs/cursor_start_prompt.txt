@@ -7,7 +7,7 @@ The pipeline has 4 stages:
 4. Encode as JSON matching the examples
 
 Key requirements:
-- {{placeholders}} become HTML inputs for students
+- @@placeholders@@ become HTML inputs for students
 - Visibility markers (3?, 2:4?) control when lines appear
 - Each JSON teaches exactly one concept
 - Break steps at natural teaching moments
