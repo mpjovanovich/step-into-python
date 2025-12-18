@@ -3,7 +3,7 @@ import { MdCheck, MdClose, MdContentCopy } from "react-icons/md";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { BLANK_REGEX } from "../../../constants";
-import { ExerciseState } from "../../../types/Exercise";
+import type { ExerciseState } from "../../../types/Exercise";
 import styles from "../Exercise.module.css";
 
 // Types and Interfaces
@@ -35,7 +35,7 @@ const ProgramOutput = ({
   setExerciseState,
 }: ProgramOutputProps) => {
   // Helper functions
-  const getTemplate = (step: number): Template => {
+  const getTemplate = (): Template => {
     let template = `## EXERCISE: ${title}\n`;
     let answers: string[] = [];
 
@@ -81,7 +81,7 @@ const ProgramOutput = ({
   const isResetting = useRef(false);
 
   // Template initialization
-  const template = getTemplate(currentStep);
+  const template = getTemplate();
 
   // Technically this doesn't belong here since this is a view, but I'm keeping
   // it here for now.

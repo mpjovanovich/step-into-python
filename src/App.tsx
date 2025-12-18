@@ -1,23 +1,24 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
-import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
+import type { User as FirebaseUser } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import {
-  getFirestore,
   collection,
-  query,
-  where,
   getDocs,
+  getFirestore,
   onSnapshot,
   orderBy,
+  query,
+  where,
 } from "firebase/firestore";
-import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
+import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import Header from "./components/Header";
+import { auth } from "./firebase";
 import Exercise from "./pages/Exercise/Exercise";
 import Login from "./pages/Login/Login";
-import Header from "./components/Header";
-import type { User } from "./types/User";
-import type { Exercise as ExerciseType } from "./types/Exercise";
 import "./styles/global.css";
-import { auth } from "./firebase";
+import type { Exercise as ExerciseType } from "./types/Exercise";
+import type { User } from "./types/User";
 import { formatExerciseNumber } from "./utils/formatters";
 
 export default function App() {
@@ -91,7 +92,7 @@ export default function App() {
     fetchExercises();
   }, [authUser]);
 
-  const getHomePage = (): JSX.Element => {
+  const getHomePage = () => {
     return (
       <div style={{ padding: "0 2rem" }}>
         <h1 className="title">Exercises: {user?.name}</h1>

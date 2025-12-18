@@ -11,7 +11,7 @@ export const ExerciseText = ({
   descriptions,
   instructions,
 }: ExerciseTextProps) => {
-  const getDescription = (): JSX.Element => {
+  const getDescription = () => {
     if (currentStep === 0) {
       return (
         <>
@@ -51,7 +51,7 @@ export const ExerciseText = ({
     );
   };
 
-  const getInstructions = (): JSX.Element => {
+  const getInstructions = () => {
     if (currentStep === finalStep + 1) {
       return <p>Click Submit</p>;
     }

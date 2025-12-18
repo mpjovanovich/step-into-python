@@ -9,6 +9,7 @@ REFACTOR
   - services/exerciseService.ts
   - services/userService.ts
   - refactor App.tsx to use these modules
+  - refactor UI; general cleanup for better component modularity
 
 NEXT STEPS:
 

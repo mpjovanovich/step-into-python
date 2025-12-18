@@ -14,7 +14,7 @@ import type {
   ExerciseState,
   Exercise as ExerciseType,
 } from "../../types/Exercise";
-import { User } from "../../types/User";
+import type { User } from "../../types/User";
 import { ExerciseText } from "./components/ExerciseText";
 import { NavigationButtons } from "./components/NavigationButtons";
 import { ProgramOutput } from "./components/ProgramOutput";
