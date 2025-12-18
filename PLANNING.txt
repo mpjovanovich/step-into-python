@@ -1,32 +1,26 @@
+REFACTOR
+
+- TEST:
+  - domain/templateParser
+  - domain/answerChecker
+  - Refactor ProgramOutput.tsx to use these modules
+  - services/exerciseService.ts
+  - services/userService.ts
+  - refactor App.tsx to use these modules
+
 NEXT STEPS:
 
-- Create Logins
-  - Ivy Tech seems to be blocking password reset emails.
-  - Going to have to assign a password to each user manually.
+- Refactor for testing
+- Maybe port to Svelte; need to see how it'll play with FireBase
+- Admin console
+  - Ensure that database structure supports tracking sections by section number
+  - Need either user roles or permission sets. Which is better?
+  - .. TODO ..
 - Backup database
   - https://firebase.google.com/docs/firestore/manage-data/export-import
 - Better feedback on correct/incorrect answers. Add a border with color to the input field.
-- Add section number to student database records.
+- Visual feedback on current line?
 
-
-LONG TERM
-
-- Wizard style navigation for problem sets consisting of multiple exercises
-
-- Questions aren't always going to be code questions. Need templates for:
-    - Fill in the blank
-    - Multiple choice
-- Use different template strings for these? E.g.:
-    - @@text@@ = text
-    - @@select@@ = multiple choice
-
-EXAMPLE EXERCISE:
-
-1?print("BEGIN PROGRAM")
-2?print("Hello, earth!")
-3?print("Hello, moon!")
-4?print("Hello, @@sun@@!")
-5?print("END PROGRAM")
 
 DATABASE STRUCTURE:
 
