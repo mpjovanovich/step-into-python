@@ -17,8 +17,8 @@ import { auth } from "./firebase";
 import Exercise from "./pages/Exercise/Exercise";
 import Login from "./pages/Login/Login";
 import "./styles/global.css";
-import type { Exercise as ExerciseType } from "./types/Exercise";
-import type { User } from "./types/User";
+import { type Exercise as ExerciseType } from "./types/Exercise";
+import { type User } from "./types/User";
 import { formatExerciseNumber } from "./utils/formatters";
 
 export default function App() {

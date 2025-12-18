@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
 import { MdCheckCircle } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { type ExerciseState } from "../../../types/Exercise";
 import styles from "../Exercise.module.css";
-import type { ExerciseState } from "../../../types/Exercise";
 
 interface NavigationButtonsProps {
   currentStep: number;

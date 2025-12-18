@@ -1,5 +1,5 @@
 import { arrayUnion, doc, getFirestore, updateDoc } from "firebase/firestore";
-import type { User } from "../types/User";
+import { type User } from "../types/User";
 
 export function useExerciseCompletion() {
   const completeExercise = async (user: User, exerciseId: string) => {

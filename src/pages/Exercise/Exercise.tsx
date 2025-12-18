@@ -10,11 +10,11 @@ import { db } from "../../firebase";
 
 // Internal
 import { useExerciseCompletion } from "../../hooks/useExerciseCompletion";
-import type {
-  ExerciseState,
-  Exercise as ExerciseType,
+import {
+  type ExerciseState,
+  type Exercise as ExerciseType,
 } from "../../types/Exercise";
-import type { User } from "../../types/User";
+import { type User } from "../../types/User";
 import { ExerciseText } from "./components/ExerciseText";
 import { NavigationButtons } from "./components/NavigationButtons";
 import { ProgramOutput } from "./components/ProgramOutput";
