@@ -1,5 +1,7 @@
 REFACTOR
 
+- Switch to vite!
+
 - TEST:
   - domain/templateParser
   - domain/answerChecker
