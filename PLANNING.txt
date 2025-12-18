@@ -17,7 +17,7 @@ NEXT STEPS:
 - Maybe port to Svelte; need to see how it'll play with FireBase
 - Admin console
   - Ensure that database structure supports tracking sections by section number
-  - Need either user roles or permission sets. Which is better?
+  - Instructors should have view/edit permission only for their assigned section; not for all sections
   - .. TODO ..
 - Backup database
   - https://firebase.google.com/docs/firestore/manage-data/export-import
