@@ -1,0 +1,45 @@
+{
+  "course": "SDEV 120",
+  "title": "The Integer Data Type",
+  "order": 2.1,
+  "descriptions": {
+    "1": "Integers are whole numbers without decimal points.\nThey can represent quantities like age, year, or temperature.\nIntegers are written as numbers without quotes: 25, 2024, -5",
+    "2": "Integers are best used for counting discrete items - things you can count individually.\nFor example: the number of students in a class, books on a shelf, or items in inventory.\nIf you're counting whole units, use an integer.",
+    "3": "We can perform arithmetic operations with integers.\nLet's add two integers together to get a total.",
+    "4": "When we print the result, we'll see the sum of our two integer values.",
+    "5": "Subtraction works the same way with integers.\nLet's calculate how many items remain after removing some.",
+    "6": "Integers can be positive, negative, or zero.\nNegative integers are useful for representing things like penalties, debts, or temperatures below zero.\nTo create a negative integer, simply put a minus sign in front of the number.",
+    "7": "When we add a positive and negative integer, the result accounts for both values.\nIn this case, our final score is 90: 100 - 10 for the penalty.",
+    "8": "Let's review:\n1) Integers are whole numbers (no decimal points)\n2) They can be positive, negative, or zero\n3) Use integers for counting discrete items\n4) Integers support arithmetic operations like addition and subtraction"
+  },
+  "instructions": {
+    "3": "Fill in the addition operator (+) to add the two values together.",
+    "5": "Fill in the subtraction operator (-) to subtract 5 from books_on_shelf.",
+    "6": "Assign a negative integer value to the penalty variable. Use -10."
+  },
+  "template": [
+    "1?# Integer data type - whole numbers",
+    "1?",
+    "1?# Integers are whole numbers (no decimal points)",
+    "1?age = 25",
+    "1?year = 2024",
+    "1?temperature = -5",
+    "2?",
+    "2?# Good uses for integers: counting things",
+    "2?students_in_class = 30",
+    "2?books_on_shelf = 12",
+    "3?",
+    "3?# Basic arithmetic with integers",
+    "3?total_items = students_in_class @@+@@ books_on_shelf",
+    "4?print(total_items)",
+    "5?",
+    "5?items_remaining = books_on_shelf @@-@@ 5",
+    "5?print(items_remaining)",
+    "6?",
+    "6?# Integers can be positive, negative, or zero",
+    "6?score = 100",
+    "6?penalty = @@-10@@",
+    "6?final_score = score + penalty",
+    "7?print(final_score)"
+  ]
+}
