@@ -1,7 +1,7 @@
-name: Task
+name: Development Task
 description: Define actionable development work items.
 labels: ["task"]
-title: "Development Task: "
+title: "Task: "
 assignees: []
 body:
   - type: textarea
