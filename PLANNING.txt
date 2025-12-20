@@ -1,6 +1,21 @@
-REFACTOR
+TODO:
 
-- Switch to vite!
+- Migrate everything on here to GitHub Issues; we've outgrown a single txt file for planning.
+  - Look at developer tasks format GH Issues template from SDEV255
+  - Consider using actual GH issues template in the repo
+
+- Finish refactor (see notes below)
+
+- Admin console: currently using console scripts to create users and check how many exercises each student has run; need UI so other instructors can check on their course sections
+
+- Decouple exercises from application; exercises are JSON template stored in the database, but they're currently tracked with the application in source control. If I remove these I can open source the application.
+- create repo for SIP exercises
+  - git filter-repo to remove exercises from SIP
+- Make a feedback button or link to create GitHub Issue for feedback.
+- Create a README now that this will be open source. Should include template format.
+- Public demo for some exercises along with video on landing page.
+
+REFACTOR
 
 - TEST:
   - domain/templateParser
@@ -24,6 +39,7 @@ NEXT STEPS:
 - Better feedback on correct/incorrect answers. Add a border with color to the input field.
 - Visual feedback on current line?
 
+... remove this along with file in source control ...
 
 DATABASE STRUCTURE:
 
