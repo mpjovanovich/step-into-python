@@ -73,11 +73,9 @@ export function parseTemplate({
 export function getStepCount(questionTemplate: string): number {
   let maxStep = 0;
   for (const line of questionTemplate.split("\n")) {
-    const [stepRange] = line.split("?");
-    const [startStr] = stepRange.split(":");
-    const step = parseInt(startStr, 10);
-    if (!isNaN(step) && step > maxStep) {
-      maxStep = step;
+    const { startStep } = getStepRangeFromLine(line);
+    if (startStep > maxStep) {
+      maxStep = startStep;
     }
   }
   return maxStep;
