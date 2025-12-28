@@ -1,15 +1,13 @@
-/*
-This very badly needs testing and refactoring.
-*/
-
 // React and external libraries
-import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { db } from "../../firebase";
 
+// Services
+import { createExerciseService } from "../../services/exerciseService";
+import { createUserService } from "../../services/userService";
+
 // Internal
-import { useExerciseCompletion } from "../../hooks/useExerciseCompletion";
 import {
   type ExerciseState,
   type Exercise as ExerciseType,
@@ -26,8 +24,11 @@ const Exercise = ({ user }: { user: User | null }) => {
   const [exercise, setExercise] = useState<ExerciseType | null>(null);
   const [step, setStep] = useState(0);
   const [userInputNeedsChecked, setUserInputNeedsChecked] = useState(false);
-  const { completeExercise } = useExerciseCompletion();
   const [exerciseState, setExerciseState] = useState<ExerciseState>("LOADING");
+
+  // Initialize services
+  const exerciseService = createExerciseService(db);
+  const userService = createUserService(db);
 
   // Cheat mode to get the step from the URL
   // Used for development only
@@ -105,10 +106,9 @@ const Exercise = ({ user }: { user: User | null }) => {
   // Production fetch from Firestore
   const fetchFirestoreExercise = async () => {
     try {
-      const exerciseRef = doc(db, "exercises", exerciseId!);
-      const exerciseSnap = await getDoc(exerciseRef);
-      if (exerciseSnap.exists()) {
-        setExercise(exerciseSnap.data() as ExerciseType);
+      const exerciseData = await exerciseService.fetchById(exerciseId!);
+      if (exerciseData) {
+        setExercise(exerciseData);
         setExerciseState("STEP_COMPLETE");
       } else {
         console.error("Exercise not found in Firestore");
@@ -128,7 +128,7 @@ const Exercise = ({ user }: { user: User | null }) => {
 
     setExerciseState("SUBMITTING");
     try {
-      await completeExercise(user, exerciseId);
+      await userService.completeExercise(user.id, exerciseId);
       setExerciseState("COMPLETED");
     } catch (err) {
       setExerciseState("ERROR");
