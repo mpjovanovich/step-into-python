@@ -1,50 +1,51 @@
-// export type AnswerResult = boolean | null;
+import { Precondition } from "../utils/Preconditions";
 
-// export interface CheckResult {
-//   results: AnswerResult[];
-//   allCorrect: boolean;
-//   hasUnanswered: boolean;
+/**
+ * The result of checking a single answer.
+ * true = correct
+ * false = incorrect
+ * null = unanswered
+ */
+export type AnswerResult = boolean | null;
+
+/**
+ * Checks submitted answers against correct answers.
+ */
+export function checkAnswers(
+  userAnswers: string[],
+  correctAnswers: string[]
+): AnswerResult[] {
+  Precondition.notEmptyArray(correctAnswers);
+  Precondition.isTrue(userAnswers.length === correctAnswers.length);
+
+  return correctAnswers.map((correct, i) => {
+    const userAnswer = userAnswers[i];
+
+    // Unanswered
+    if (!userAnswer.trim()) {
+      return null;
+    }
+
+    // User answered, return boolean result.
+    const normalizedCorrect = normalizeForComparison(correct);
+    const normalizedUserAnswer = normalizeForComparison(userAnswer);
+    return normalizedCorrect === normalizedUserAnswer;
+  });
+}
+
+// TODO: Don't know which of the two below I'm going to use; get rid of one when we're sure.
+export function allCorrect(results: AnswerResult[]): boolean {
+  return results.every((r) => r === true);
+}
+
+// export function hasUnansweredOrIncorrect(results: AnswerResult[]): boolean {
+//   return results.some((r) => r === null || r === false);
 // }
 
-// /**
-//  * Normalizes a string for comparison by removing all whitespace.
-//  * This allows "x = 5" to match "x=5".
-//  */
-// function normalizeForComparison(str: string): string {
-//   return str.replace(/\s+/g, "");
-// }
-
-// /**
-//  * Checks user answers against correct answers.
-//  *
-//  * @returns Array of results: true = correct, false = incorrect, null = unanswered
-//  */
-// export function checkAnswers(
-//   userAnswers: string[],
-//   correctAnswers: string[]
-// ): AnswerResult[] {
-//   return correctAnswers.map((correct, i) => {
-//     const userAnswer = userAnswers[i];
-//     if (!userAnswer || userAnswer.trim() === "") {
-//       return null; // Unanswered
-//     }
-//     return (
-//       normalizeForComparison(correct) === normalizeForComparison(userAnswer)
-//     );
-//   });
-// }
-
-// /**
-//  * Higher-level check that returns structured results.
-//  */
-// export function evaluateStep(
-//   userAnswers: string[],
-//   correctAnswers: string[]
-// ): CheckResult {
-//   const results = checkAnswers(userAnswers, correctAnswers);
-//   return {
-//     results,
-//     allCorrect: results.length > 0 && results.every((r) => r === true),
-//     hasUnanswered: results.some((r) => r === null || r === false),
-//   };
-// }
+/**
+ * Removes all whitespace from a string.
+ * E.g.: This allows "x = 5" or "x= 5" to match "x=5".
+ */
+function normalizeForComparison(str: string): string {
+  return str.replace(/\s+/g, "");
+}
