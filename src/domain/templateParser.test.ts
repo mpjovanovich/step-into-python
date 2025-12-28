@@ -82,3 +82,25 @@ describe("shows code lines correctly for given step", () => {
     expect(result.code).toContain("three\n");
   });
 });
+
+describe("generates correct copy code", () => {
+  const makeOptions = (template: string[], step: number): ParseOptions => ({
+    title: "TEST TITLE",
+    questionTemplate: template,
+    currentStep: step,
+  });
+
+  const TEMPLATE = ["1?one @@+@@ two"];
+
+  it("does not include @@ markers in copy code", () => {
+    const templateOptions = makeOptions(TEMPLATE, 1);
+    const result = parseTemplate(templateOptions);
+    expect(result.copyCode).not.toContain("@@");
+  });
+
+  it("does not include answers in copy code", () => {
+    const templateOptions = makeOptions(TEMPLATE, 1);
+    const result = parseTemplate(templateOptions);
+    expect(result.copyCode).not.toContain("+");
+  });
+});
