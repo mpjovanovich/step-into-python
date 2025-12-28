@@ -2,6 +2,9 @@
 name: Exercise Component Refactoring
 overview: Refactor the Exercise page using a Custom Hook + Presentational Components pattern. This separates state/logic (like a backend service) from UI rendering (like a view layer), making the code testable and easy to reason about.
 todos:
+  - id: todo-1766896786614-cqowv3u62
+    content: Complete service layer code
+    status: pending
   - id: todo-1766894343607-s3nw4fudo
     content: Create useExercise hook to centralize all exercise state and actions
     status: pending
