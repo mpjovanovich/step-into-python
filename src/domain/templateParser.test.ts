@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import {
   getStepCount,
   parseTemplate,
+  type ParsedTemplate,
   type ParseOptions,
 } from "./templateParser";
 
@@ -91,16 +92,23 @@ describe("generates correct copy code", () => {
   });
 
   const TEMPLATE = ["1?one @@+@@ two"];
+  let result: ParsedTemplate;
+
+  beforeAll(() => {
+    const templateOptions = makeOptions(TEMPLATE, 1);
+    result = parseTemplate(templateOptions);
+  });
+
+  it("includes non-answer text in copy code", () => {
+    expect(result.copyCode).toContain("one ");
+    expect(result.copyCode).toContain(" two\n");
+  });
 
   it("does not include @@ markers in copy code", () => {
-    const templateOptions = makeOptions(TEMPLATE, 1);
-    const result = parseTemplate(templateOptions);
     expect(result.copyCode).not.toContain("@@");
   });
 
   it("does not include answers in copy code", () => {
-    const templateOptions = makeOptions(TEMPLATE, 1);
-    const result = parseTemplate(templateOptions);
     expect(result.copyCode).not.toContain("+");
   });
 });
