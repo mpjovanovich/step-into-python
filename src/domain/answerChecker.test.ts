@@ -2,27 +2,27 @@ import { describe, expect, it } from "vitest";
 import { allCorrect, checkAnswers } from "./answerChecker";
 
 describe("checks user answers", () => {
-  it("unanswered gives null result", () => {
+  it("gives null result for unanswered answer", () => {
     const results = checkAnswers([""], ["correct"]);
     expect(results).toEqual([null]);
   });
 
-  it("incorrect gives false result", () => {
+  it("gives false result for incorrect answer", () => {
     const results = checkAnswers(["incorrect"], ["correct"]);
     expect(results).toEqual([false]);
   });
 
-  it("correct gives true result", () => {
+  it("gives true result for correct answer", () => {
     const results = checkAnswers(["correct"], ["correct"]);
     expect(results).toEqual([true]);
   });
 
-  it("whitespace is ignored in user answer", () => {
+  it("ignores whitespace in user answer", () => {
     const results = checkAnswers(["\t correct "], ["correct"]);
     expect(results).toEqual([true]);
   });
 
-  it("returned results are positionally correct with multiple answers", () => {
+  it("returns positionally correct results when there are multiple answers", () => {
     const results = checkAnswers(
       ["", "incorrect", "correct3"],
       ["correct1", "correct2", "correct3"]
@@ -31,7 +31,7 @@ describe("checks user answers", () => {
   });
 });
 
-describe("all correct functionality", () => {
+describe('"all correct" functionality', () => {
   it("returns true if all answers are correct", () => {
     const results = [true, true];
     expect(allCorrect(results)).toEqual(true);

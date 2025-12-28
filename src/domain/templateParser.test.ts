@@ -38,7 +38,7 @@ it("generates title comment in code", () => {
   expect(result.code).toEqual(`## EXERCISE: ${templateOptions.title}\n`);
 });
 
-describe("generates correct code lines for given step", () => {
+describe("generates correct code lines", () => {
   const makeOptions = (template: string[], step: number): ParseOptions => ({
     title: "TEST TITLE",
     questionTemplate: template,
@@ -59,7 +59,7 @@ describe("generates correct code lines for given step", () => {
     expect(result.code).not.toContain("three\n");
   });
 
-  it("line with step range correctly use start step", () => {
+  it("correctly uses start step when line has step range", () => {
     const templateOptions = makeOptions(TEMPLATE, 2);
     const result = parseTemplate(templateOptions);
     expect(result.code).toContain("one\n");
@@ -67,7 +67,7 @@ describe("generates correct code lines for given step", () => {
     expect(result.code).not.toContain("three\n");
   });
 
-  it("line with step range correctly use end step", () => {
+  it("correctly uses end step when line has step range", () => {
     const templateOptions = makeOptions(TEMPLATE, 3);
     const result = parseTemplate(templateOptions);
     expect(result.code).toContain("one\n");
