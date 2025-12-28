@@ -45,7 +45,7 @@ it("generates title comment in code", () => {
   expect(result.code).toEqual(`## EXERCISE: ${templateOptions.title}\n`);
 });
 
-describe("shows code lines correctly for given step", () => {
+describe("generates correct code lines for given step", () => {
   const makeOptions = (template: string[], step: number): ParseOptions => ({
     title: "TEST TITLE",
     questionTemplate: template,
@@ -102,5 +102,52 @@ describe("generates correct copy code", () => {
     const templateOptions = makeOptions(TEMPLATE, 1);
     const result = parseTemplate(templateOptions);
     expect(result.copyCode).not.toContain("+");
+  });
+});
+
+describe("generates correct answers array for given step", () => {
+  const makeOptions = (template: string[], step: number): ParseOptions => ({
+    title: "TEST TITLE",
+    questionTemplate: template,
+    currentStep: step,
+  });
+
+  const TEMPLATE = [
+    "1?one", // no answer
+    "2?@@two@@", // answer at start of step
+    "3?test @@three@@", // answer not at start of step
+    "4?test @@four1@@ @@four2@@", // multiple answers in one line
+    "5?test @@five1@@", // multiple answers across multiple lines
+    "5?test @@five2@@", // multiple answers across multiple lines
+  ];
+
+  it("step has no answers", () => {
+    const templateOptions = makeOptions(TEMPLATE, 1);
+    const result = parseTemplate(templateOptions);
+    expect(result.answers).toEqual([]);
+  });
+
+  it("step has answer at start of step", () => {
+    const templateOptions = makeOptions(TEMPLATE, 2);
+    const result = parseTemplate(templateOptions);
+    expect(result.answers).toEqual(["two"]);
+  });
+
+  it("step has answer not at start of step", () => {
+    const templateOptions = makeOptions(TEMPLATE, 3);
+    const result = parseTemplate(templateOptions);
+    expect(result.answers).toEqual(["three"]);
+  });
+
+  it("step has multiple answers in one line", () => {
+    const templateOptions = makeOptions(TEMPLATE, 4);
+    const result = parseTemplate(templateOptions);
+    expect(result.answers).toEqual(["four1", "four2"]);
+  });
+
+  it("step has multiple answers across multiple lines", () => {
+    const templateOptions = makeOptions(TEMPLATE, 5);
+    const result = parseTemplate(templateOptions);
+    expect(result.answers).toEqual(["five1", "five2"]);
   });
 });
