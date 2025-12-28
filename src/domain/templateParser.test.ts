@@ -1,44 +1,84 @@
 import { describe, expect, it } from "vitest";
-import testTemplate from "./fixtures/test-template.json";
 import {
   getStepCount,
   parseTemplate,
   type ParseOptions,
 } from "./templateParser";
 
-const testTemplateString = testTemplate.template.join("\n");
-
-describe("step count tests", () => {
-  it.each([
+describe("generates correct step count", () => {
+  const TESTS = [
     {
       description: "single step, single line",
-      template: "1?print(99)",
+      template: ["1?"],
       expected: 1,
     },
     {
       description: "single step, multiple lines",
-      template: "1?print(99)\n1?print(99)",
+      template: ["1?", "1?"],
       expected: 1,
     },
     {
       description: "multiple steps",
-      template: "1?print(99)\n2?print(99)",
+      template: ["1?", "2?"],
       expected: 2,
     },
-  ])("$description", ({ template, expected }) => {
+    {
+      description: "multiple steps, explicit end step",
+      template: ["1:1?", "2:2?"],
+      expected: 2,
+    },
+  ];
+
+  it.each(TESTS)("$description", ({ template, expected }) => {
     const result = getStepCount(template);
     expect(result).toEqual(expected);
   });
 });
 
-describe("template parsing tests", () => {
-  it("should do something", () => {
-    const templateOptions: ParseOptions = {
-      title: "TEST TITLE",
-      questionTemplate: testTemplateString,
-      currentStep: 1,
-    };
+it("generates title comment in code", () => {
+  const templateOptions: ParseOptions = {
+    title: "TEST TITLE",
+    questionTemplate: [],
+    currentStep: 1,
+  };
+  const result = parseTemplate(templateOptions);
+  expect(result.code).toEqual(`## EXERCISE: ${templateOptions.title}\n`);
+});
+
+describe("shows code lines correctly for given step", () => {
+  const makeOptions = (template: string[], step: number): ParseOptions => ({
+    title: "TEST TITLE",
+    questionTemplate: template,
+    currentStep: step,
+  });
+
+  const TEMPLATE = [
+    "1?one",
+    "2:2?two",
+    "3?three", //
+  ];
+
+  it("shows code for current step, not subsequent steps", () => {
+    const templateOptions = makeOptions(TEMPLATE, 1);
     const result = parseTemplate(templateOptions);
-    expect(result).toBeDefined();
+    expect(result.code).toContain("one\n");
+    expect(result.code).not.toContain("two\n");
+    expect(result.code).not.toContain("three\n");
+  });
+
+  it("line with step range correctly use start step", () => {
+    const templateOptions = makeOptions(TEMPLATE, 2);
+    const result = parseTemplate(templateOptions);
+    expect(result.code).toContain("one\n");
+    expect(result.code).toContain("two\n");
+    expect(result.code).not.toContain("three\n");
+  });
+
+  it("line with step range correctly use end step", () => {
+    const templateOptions = makeOptions(TEMPLATE, 3);
+    const result = parseTemplate(templateOptions);
+    expect(result.code).toContain("one\n");
+    expect(result.code).not.toContain("two\n");
+    expect(result.code).toContain("three\n");
   });
 });

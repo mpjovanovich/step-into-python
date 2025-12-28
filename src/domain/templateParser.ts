@@ -22,7 +22,7 @@ export interface ParsedTemplate {
 
 export interface ParseOptions {
   title: string;
-  questionTemplate: string;
+  questionTemplate: string[];
   currentStep: number;
 }
 
@@ -37,7 +37,7 @@ export function parseTemplate({
   let code = `## EXERCISE: ${title}\n`;
   const answers: string[] = [];
 
-  for (const line of questionTemplate.split("\n")) {
+  for (const line of questionTemplate) {
     const { startStep, endStep } = getStepRangeFromLine(line);
     const lineCode = getCodeFromLine(line);
 
@@ -70,9 +70,9 @@ export function parseTemplate({
 /**
  * Extracts the number of steps in a template.
  */
-export function getStepCount(questionTemplate: string): number {
+export function getStepCount(questionTemplate: string[]): number {
   let maxStep = 0;
-  for (const line of questionTemplate.split("\n")) {
+  for (const line of questionTemplate) {
     const { startStep } = getStepRangeFromLine(line);
     if (startStep > maxStep) {
       maxStep = startStep;
