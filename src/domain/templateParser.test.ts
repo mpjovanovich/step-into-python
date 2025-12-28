@@ -7,32 +7,24 @@ import {
 } from "./templateParser";
 
 describe("generates correct step count", () => {
-  const TESTS = [
-    {
-      description: "single step, single line",
-      template: ["1?"],
-      expected: 1,
-    },
-    {
-      description: "single step, multiple lines",
-      template: ["1?", "1?"],
-      expected: 1,
-    },
-    {
-      description: "multiple steps",
-      template: ["1?", "2?"],
-      expected: 2,
-    },
-    {
-      description: "multiple steps, explicit end step",
-      template: ["1:1?", "2:2?"],
-      expected: 2,
-    },
-  ];
+  it("single step, single line", () => {
+    const result = getStepCount(["1?"]);
+    expect(result).toEqual(1);
+  });
 
-  it.each(TESTS)("$description", ({ template, expected }) => {
-    const result = getStepCount(template);
-    expect(result).toEqual(expected);
+  it("single step, multiple lines", () => {
+    const result = getStepCount(["1?", "1?"]);
+    expect(result).toEqual(1);
+  });
+
+  it("multiple steps", () => {
+    const result = getStepCount(["1?", "2?"]);
+    expect(result).toEqual(2);
+  });
+
+  it("multiple steps, explicit end step", () => {
+    const result = getStepCount(["1:1?", "2:2?"]);
+    expect(result).toEqual(2);
   });
 });
 
