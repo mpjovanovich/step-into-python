@@ -1,21 +1,15 @@
 import type { User as FirebaseUser } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  collection,
-  getDocs,
-  getFirestore,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { getFirestore } from "firebase/firestore";
+import { useEffect, useMemo, useState } from "react";
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import { auth } from "./firebase";
-import Exercise from "./pages/Exercise/Exercise";
+import ExercisePage from "./pages/Exercise/Exercise";
 import Login from "./pages/Login/Login";
+import { createExerciseService } from "./services/exerciseService";
+import { createUserService } from "./services/userService";
 import "./styles/global.css";
 import { type Exercise as ExerciseType } from "./types/Exercise";
 import { type User } from "./types/User";
@@ -27,6 +21,10 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
 
+  const db = useMemo(() => getFirestore(), []);
+  const userService = useMemo(() => createUserService(db), [db]);
+  const exerciseService = useMemo(() => createExerciseService(db), [db]);
+
   // Listen for auth state changes.
   useEffect(() => {
     let unsubscribeUser: (() => void) | undefined;
@@ -35,21 +33,18 @@ export default function App() {
       setAuthUser(firebaseUser);
       setIsAuthLoading(false);
 
-      if (firebaseUser) {
-        // Set up real-time listener for user data
-        const db = getFirestore();
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("email", "==", firebaseUser.email));
-
-        unsubscribeUser = onSnapshot(q, (querySnapshot) => {
-          if (!querySnapshot.empty) {
-            const userDoc = querySnapshot.docs[0];
-            setUser({ ...userDoc.data(), id: userDoc.id } as User);
-          } else {
-            console.error("No matching user found in the database");
-            setUser(null);
+      if (firebaseUser && firebaseUser.email) {
+        // Set up real-time listener for user data using userService
+        unsubscribeUser = userService.subscribeToUser(
+          firebaseUser.email,
+          (userData: User | null) => {
+            if (!userData) {
+              // TODO: not sure if this is handled appropriately?
+              console.error("No matching user found in the database");
+            }
+            setUser(userData);
           }
-        });
+        );
       } else {
         // Clean up user listener and clear user state when logged out
         if (unsubscribeUser) {
@@ -63,9 +58,11 @@ export default function App() {
     // Clean up both listeners when component unmounts
     return () => {
       unsubscribeAuth();
-      if (unsubscribeUser) unsubscribeUser();
+      if (unsubscribeUser) {
+        unsubscribeUser();
+      }
     };
-  }, []);
+  }, [userService]);
 
   // Fetch the exercises from Firestore.
   useEffect(() => {
@@ -73,24 +70,12 @@ export default function App() {
     if (!authUser) return;
 
     const fetchExercises = async () => {
-      const db = getFirestore();
-      const q = query(
-        collection(db, "exercises"),
-        where("course", "==", "SDEV 120"),
-        orderBy("order")
-      );
-      const querySnapshot = await getDocs(q);
-      setExercises(
-        // We have to add the id to the exercise object because it's not
-        // included in the Firestore document.
-        querySnapshot.docs.map(
-          (doc) => ({ ...doc.data(), id: doc.id } as ExerciseType)
-        )
-      );
+      const exercises = await exerciseService.fetchByCourse("SDEV 120");
+      setExercises(exercises);
     };
 
     fetchExercises();
-  }, [authUser]);
+  }, [authUser, exerciseService]);
 
   const getHomePage = () => {
     return (
@@ -139,7 +124,7 @@ export default function App() {
               <Route path="/" element={getHomePage()} />
               <Route
                 path="/exercise/:exerciseId"
-                element={<Exercise user={user} />}
+                element={<ExercisePage user={user} />}
               />
             </>
           ) : (
