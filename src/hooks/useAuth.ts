@@ -1,15 +1,13 @@
 import { type User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth, db } from "../firebase";
-import { createUserService } from "../services/userService";
+import { auth } from "../firebase";
+import { userService } from "../services/userService";
 import { type User } from "../types/User";
 
 export function useAuth() {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-
-  const userService = createUserService(db);
 
   // Listen for auth state changes.
   useEffect(() => {

@@ -1,11 +1,10 @@
 // React and external libraries
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { db } from "../../firebase";
 
 // Services
-import { createExerciseService } from "../../services/exerciseService";
-import { createUserService } from "../../services/userService";
+import { exerciseService } from "../../services/exerciseService";
+import { userService } from "../../services/userService";
 
 // Internal
 import {
@@ -25,10 +24,6 @@ const ExercisePage = ({ user }: { user: User | null }) => {
   const [step, setStep] = useState(0);
   const [userInputNeedsChecked, setUserInputNeedsChecked] = useState(false);
   const [exerciseState, setExerciseState] = useState<ExerciseState>("LOADING");
-
-  // Initialize services
-  const exerciseService = createExerciseService(db);
-  const userService = createUserService(db);
 
   // Cheat mode to get the step from the URL
   // Used for development only

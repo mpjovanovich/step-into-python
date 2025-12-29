@@ -8,6 +8,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { db } from "../firebase";
 import type { Exercise } from "../types/Exercise";
 
 export interface ExerciseService {
@@ -15,7 +16,7 @@ export interface ExerciseService {
   fetchByCourse(course: string): Promise<Exercise[]>;
 }
 
-export function createExerciseService(db: Firestore): ExerciseService {
+function createExerciseService(db: Firestore): ExerciseService {
   const exerciseService = {
     async fetchById(exerciseId: string): Promise<Exercise | null> {
       const exerciseRef = doc(db, "exercises", exerciseId);
@@ -41,3 +42,5 @@ export function createExerciseService(db: Firestore): ExerciseService {
 
   return exerciseService;
 }
+
+export const exerciseService = createExerciseService(db);

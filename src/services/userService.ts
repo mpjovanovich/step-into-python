@@ -8,6 +8,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import { db } from "../firebase";
 import type { User } from "../types/User";
 
 export interface UserService {
@@ -19,7 +20,7 @@ export interface UserService {
   ): () => void;
 }
 
-export function createUserService(db: Firestore): UserService {
+function createUserService(db: Firestore): UserService {
   const userService = {
     async completeExercise(userId: string, exerciseId: string): Promise<void> {
       await updateDoc(doc(db, "users", userId), {
@@ -45,3 +46,5 @@ export function createUserService(db: Firestore): UserService {
 
   return userService;
 }
+
+export const userService = createUserService(db);

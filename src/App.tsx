@@ -2,19 +2,17 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import Header from "./components/Header";
-import { db } from "./firebase";
 import { useAuth } from "./hooks/useAuth";
 import ExercisePage from "./pages/Exercise/ExercisePage";
 import ExercisesPage from "./pages/Exercises/ExercisesPage";
 import LoginPage from "./pages/Login/LoginPage";
-import { createExerciseService } from "./services/exerciseService";
+import { exerciseService } from "./services/exerciseService";
 import "./styles/global.css";
 import { type Exercise as ExerciseType } from "./types/Exercise";
 
 export default function App() {
   const { authUser, isAuthLoading, user } = useAuth();
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
-  const exerciseService = createExerciseService(db);
 
   // Fetch the exercises from Firestore.
   useEffect(() => {
