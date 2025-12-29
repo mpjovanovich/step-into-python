@@ -1,9 +1,9 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import {
+  getCodeForStep,
   getStepCount,
-  parseTemplate,
-  type ParsedTemplate,
-  type ParseOptions,
+  type CodeForStep,
+  type CodeParseOptions,
 } from "./templateParser";
 
 describe("generates correct step count", () => {
@@ -29,17 +29,17 @@ describe("generates correct step count", () => {
 });
 
 it("generates title comment in code", () => {
-  const templateOptions: ParseOptions = {
+  const templateOptions: CodeParseOptions = {
     title: "TEST TITLE",
     questionTemplate: [],
     currentStep: 1,
   };
-  const result = parseTemplate(templateOptions);
+  const result = getCodeForStep(templateOptions);
   expect(result.code).toEqual(`## EXERCISE: ${templateOptions.title}\n`);
 });
 
 describe("generates correct code lines", () => {
-  const makeOptions = (template: string[], step: number): ParseOptions => ({
+  const makeOptions = (template: string[], step: number): CodeParseOptions => ({
     title: "TEST TITLE",
     questionTemplate: template,
     currentStep: step,
@@ -53,7 +53,7 @@ describe("generates correct code lines", () => {
 
   it("shows code for current step, not subsequent steps", () => {
     const templateOptions = makeOptions(TEMPLATE, 1);
-    const result = parseTemplate(templateOptions);
+    const result = getCodeForStep(templateOptions);
     expect(result.code).toContain("one\n");
     expect(result.code).not.toContain("two\n");
     expect(result.code).not.toContain("three\n");
@@ -61,7 +61,7 @@ describe("generates correct code lines", () => {
 
   it("correctly uses start step when line has step range", () => {
     const templateOptions = makeOptions(TEMPLATE, 2);
-    const result = parseTemplate(templateOptions);
+    const result = getCodeForStep(templateOptions);
     expect(result.code).toContain("one\n");
     expect(result.code).toContain("two\n");
     expect(result.code).not.toContain("three\n");
@@ -69,7 +69,7 @@ describe("generates correct code lines", () => {
 
   it("correctly uses end step when line has step range", () => {
     const templateOptions = makeOptions(TEMPLATE, 3);
-    const result = parseTemplate(templateOptions);
+    const result = getCodeForStep(templateOptions);
     expect(result.code).toContain("one\n");
     expect(result.code).not.toContain("two\n");
     expect(result.code).toContain("three\n");
@@ -77,18 +77,18 @@ describe("generates correct code lines", () => {
 });
 
 describe("generates correct copy code", () => {
-  const makeOptions = (template: string[], step: number): ParseOptions => ({
+  const makeOptions = (template: string[], step: number): CodeParseOptions => ({
     title: "TEST TITLE",
     questionTemplate: template,
     currentStep: step,
   });
 
   const TEMPLATE = ["1?one @@+@@ two"];
-  let result: ParsedTemplate;
+  let result: CodeForStep;
 
   beforeAll(() => {
     const templateOptions = makeOptions(TEMPLATE, 1);
-    result = parseTemplate(templateOptions);
+    result = getCodeForStep(templateOptions);
   });
 
   it("includes non-answer text in copy code", () => {
@@ -106,7 +106,7 @@ describe("generates correct copy code", () => {
 });
 
 describe("generates correct answers array for given step", () => {
-  const makeOptions = (template: string[], step: number): ParseOptions => ({
+  const makeOptions = (template: string[], step: number): CodeParseOptions => ({
     title: "TEST TITLE",
     questionTemplate: template,
     currentStep: step,
@@ -123,31 +123,31 @@ describe("generates correct answers array for given step", () => {
 
   it("step has no answers", () => {
     const templateOptions = makeOptions(TEMPLATE, 1);
-    const result = parseTemplate(templateOptions);
+    const result = getCodeForStep(templateOptions);
     expect(result.answers).toEqual([]);
   });
 
   it("step has answer at start of step", () => {
     const templateOptions = makeOptions(TEMPLATE, 2);
-    const result = parseTemplate(templateOptions);
+    const result = getCodeForStep(templateOptions);
     expect(result.answers).toEqual(["two"]);
   });
 
   it("step has answer not at start of step", () => {
     const templateOptions = makeOptions(TEMPLATE, 3);
-    const result = parseTemplate(templateOptions);
+    const result = getCodeForStep(templateOptions);
     expect(result.answers).toEqual(["three"]);
   });
 
   it("step has multiple answers in one line", () => {
     const templateOptions = makeOptions(TEMPLATE, 4);
-    const result = parseTemplate(templateOptions);
+    const result = getCodeForStep(templateOptions);
     expect(result.answers).toEqual(["four1", "four2"]);
   });
 
   it("step has multiple answers across multiple lines", () => {
     const templateOptions = makeOptions(TEMPLATE, 5);
-    const result = parseTemplate(templateOptions);
+    const result = getCodeForStep(templateOptions);
     expect(result.answers).toEqual(["five1", "five2"]);
   });
 });

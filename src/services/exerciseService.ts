@@ -7,6 +7,8 @@ import {
   orderBy,
   query,
   where,
+  type DocumentData,
+  type DocumentSnapshot,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import type { Exercise } from "../types/Exercise";
@@ -14,6 +16,13 @@ import type { Exercise } from "../types/Exercise";
 export interface ExerciseService {
   fetchById(exerciseId: string): Promise<Exercise | null>;
   fetchByCourse(course: string): Promise<Exercise[]>;
+}
+
+function createExercise(doc: DocumentSnapshot<DocumentData>): Exercise {
+  // Firestore doesn't include the id as part of the document, so we have to manually add it.
+  // We also parse the template into an array of strings by splitting on newlines.
+  const template = doc.data()?.template?.split("\n") ?? [];
+  return { ...doc.data(), template, id: doc.id } as Exercise;
 }
 
 function createExerciseService(db: Firestore): ExerciseService {
@@ -24,7 +33,7 @@ function createExerciseService(db: Firestore): ExerciseService {
       if (!snap.exists()) {
         return null;
       }
-      return { ...snap.data(), id: snap.id } as Exercise;
+      return createExercise(snap);
     },
 
     async fetchByCourse(course: string): Promise<Exercise[]> {
@@ -36,7 +45,7 @@ function createExerciseService(db: Firestore): ExerciseService {
       const snapshot = await getDocs(q);
       const exercises: Exercise[] = [];
       snapshot.docs.forEach((doc) => {
-        exercises.push({ ...doc.data(), id: doc.id } as Exercise);
+        exercises.push(createExercise(doc));
       });
       return exercises;
     },

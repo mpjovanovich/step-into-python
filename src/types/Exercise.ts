@@ -5,7 +5,7 @@ export interface Exercise {
   title: string;
   descriptions: Record<number, string>;
   instructions: Record<number, string>;
-  template: string;
+  template: string[];
 }
 
 export type ExerciseState =

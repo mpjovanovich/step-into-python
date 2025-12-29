@@ -14,13 +14,13 @@ export const BLANK_REGEX = /@@.*?@@/g;
  *  Correct answers for the current step, extracted from @@answer@@ markers
  *  May be empty if the current step doesn't have any answers.
  */
-export interface ParsedTemplate {
+export interface CodeForStep {
   code: string;
   copyCode: string;
   answers: string[];
 }
 
-export interface ParseOptions {
+export interface CodeParseOptions {
   title: string;
   questionTemplate: string[];
   currentStep: number;
@@ -29,11 +29,11 @@ export interface ParseOptions {
 /**
  * Parses the exercise template and returns the code for the current step.
  */
-export function parseTemplate({
+export function getCodeForStep({
   title,
   questionTemplate,
   currentStep,
-}: ParseOptions): ParsedTemplate {
+}: CodeParseOptions): CodeForStep {
   let code = `## EXERCISE: ${title}\n`;
   const answers: string[] = [];
 
