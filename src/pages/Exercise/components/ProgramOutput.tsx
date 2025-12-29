@@ -1,5 +1,5 @@
-import React from "react";
-import { MdCheck } from "react-icons/md";
+import React, { useState } from "react";
+import { MdCheck, MdContentCopy } from "react-icons/md";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { BLANK_REGEX } from "../../../constants";
@@ -14,11 +14,6 @@ interface ProgramOutputProps {
   checkAnswerResults: (boolean | null)[];
 }
 
-/* **********************************************************************
- * This has the fill-in-the-blank code functionality, as well as the
- * "Check" button to see if the answer is correct.
- ************************************************************************/
-// Render helpers
 const renderTemplate = (
   code: string,
   answers: string[],
@@ -90,8 +85,20 @@ const ProgramOutput = ({
   setUserAnswers,
   checkAnswerResults,
 }: ProgramOutputProps) => {
+  const [copyText, setCopyText] = useState("Copy");
+
   return (
     <div className={styles.output}>
+      <button
+        className={styles.copyButton}
+        onClick={() => {
+          navigator.clipboard.writeText(copyCode);
+          setCopyText("Copied!");
+          setTimeout(() => setCopyText("Copy"), 800);
+        }}
+      >
+        {copyText === "Copied!" ? <MdCheck /> : <MdContentCopy />} {copyText}
+      </button>
       <div>
         <pre>
           <code>
@@ -107,119 +114,6 @@ const ProgramOutput = ({
       </div>
     </div>
   );
-
-  // // Helper functions
-  // const getTemplate = (): Template => {
-  //   let template = `## EXERCISE: ${title}\n`;
-  //   let answers: string[] = [];
-
-  //   // Make a currentTemplate string that only includes lines up to the step.
-  //   questionTemplate.split("\n").forEach((line) => {
-  //     const [stepRange, code] = line.split("?");
-
-  //     // Here the step will be in either the format "1?" or "1:2?"
-  //     // In the former case we assume the line is to be kept for the rest of the program.
-  //     // In the latter case we assume the line is to be kept up to the specified end step (inclusive).
-  //     const stepParts = stepRange.split(":");
-  //     const startStep = parseInt(stepParts[0]);
-  //     const endStep = stepParts.length > 1 ? parseInt(stepParts[1]) : 9999;
-
-  //     if (startStep < currentStep && endStep >= currentStep) {
-  //       template += code.replaceAll("@@", "") + "\n";
-  //     } else if (startStep === currentStep) {
-  //       template += code + "\n";
-
-  //       // Use the regex to find the answers in the code.
-  //       let matches = code.match(BLANK_REGEX);
-  //       if (matches) {
-  //         // Strip the @@ from the answers
-  //         const mapped = matches.map((p) => p.slice(2, -2));
-  //         answers.push(...mapped);
-  //       }
-  //     }
-  //   });
-
-  //   return {
-  //     code: template,
-  //     copyCode: template.replace(/@@[^@]+@@/g, ""),
-  //     answers: answers,
-  //   };
-  // };
-
-  // // State
-  // const [copyText, setCopyText] = useState("Copy");
-  // const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  // const [userAnswerResults, setUserAnswerResults] = useState<
-  //   (boolean | null)[]
-  // >([]);
-  // const isResetting = useRef(false);
-
-  // // Template initialization
-  // const template = getTemplate();
-
-  // // Technically this doesn't belong here since this is a view, but I'm keeping
-  // // it here for now.
-  // const checkAnswers = () => {
-  //   const results = template.answers.map((answer, i) =>
-  //     // The best way I can think of to handle whitespace is to just remove all of it.
-  //     // We need to allow for, e.g., 'x = 5' and 'x=5 ' to be considered correct.
-  //     // Maybe later we can add a more sophisticated check for correctness.
-  //     userAnswers[i]
-  //       ? answer.replace(/\s+/g, "") === userAnswers[i].replace(/\s+/g, "")
-  //       : null
-  //   );
-  //   setUserAnswerResults(results);
-
-  //   // If there are no questions, this will still work.
-  //   const hasUnansweredQuestions = results.some((answer) => !answer);
-  //   setExerciseState(
-  //     hasUnansweredQuestions ? "STEP_INCOMPLETE" : "STEP_COMPLETE"
-  //   );
-  //   setNeedsCheck(false);
-  // };
-
-  // // Effects
-  // useEffect(() => {
-  //   isResetting.current = true;
-  //   setUserAnswers([]);
-  // }, [currentStep]);
-
-  // useEffect(() => {
-  //   // Most of the time we don't want to check the answers. Only do it if this
-  //   // was in response to a step change.
-  //   if (isResetting.current) {
-  //     checkAnswers();
-  //     isResetting.current = false;
-  //   }
-  // }, [userAnswers]);
-
-  // useEffect(() => {
-  //   if (needsCheck) {
-  //     checkAnswers();
-  //   }
-  // }, [needsCheck]);
-
-  // Render
-  // return (
-  //   <div className={styles.output}>
-  //     <button
-  //       className={styles.copyButton}
-  //       onClick={() => {
-  //         navigator.clipboard.writeText(template.copyCode);
-  //         setCopyText("Copied!");
-  //         setTimeout(() => setCopyText("Copy"), 800);
-  //       }}
-  //     >
-  //       {copyText === "Copied!" ? <MdCheck /> : <MdContentCopy />} {copyText}
-  //     </button>
-
-  //     <div>
-  //       <pre>
-  //         <code>{renderTemplate()}</code>
-  //       </pre>
-  //     </div>
-  //   </div>
-  // );
 };
 
 export { ProgramOutput };
