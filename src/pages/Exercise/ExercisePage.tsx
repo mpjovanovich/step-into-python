@@ -1,28 +1,61 @@
 // React and external libraries
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 // Internal
-import { getCodeForStep } from "../../domain/templateParser";
+import {
+  getCodeForStep,
+  getStepCount,
+  type CodeForStep,
+} from "../../domain/templateParser";
 import { exerciseService } from "../../services/exerciseService";
 import { type Exercise as ExerciseType } from "../../types/Exercise";
 import { type User } from "../../types/User";
 import styles from "./ExercisePage.module.css";
+import { ExerciseText } from "./components/ExerciseText";
+import { useExerciseText } from "./hooks/useExerciseText";
 
 interface ExercisePageProps {
   user: User;
 }
 
 const ExercisePage = ({ user }: ExercisePageProps) => {
-  // Get the exerciseId from the URL
   const { exerciseId } = useParams();
   const [exercise, setExercise] = useState<ExerciseType | null>(null);
   const [step, setStep] = useState(0);
-  const [descriptions, setDescriptions] = useState<string>();
-  const [instructions, setInstructions] = useState<string>();
-  const [code, setCode] = useState<string>();
-  const [copyCode, setCopyCode] = useState<string>();
-  const [answers, setAnswers] = useState<string[]>([]);
+  const finalStep = useMemo(() => {
+    if (!exercise) return 0;
+    return getStepCount(exercise.template);
+  }, [exercise]);
+
+  /* ********************************************************
+   * STATE DERIVED FROM CURRENT STEP
+   ******************************************************** */
+  let codeForStep: CodeForStep | null = null;
+  if (exercise) {
+    codeForStep = getCodeForStep({
+      title: exercise?.title ?? "",
+      questionTemplate: exercise?.template ?? [],
+      currentStep: step,
+    });
+  }
+  const code = codeForStep?.code ?? "";
+  const copyCode = codeForStep?.copyCode ?? "";
+  const answers = codeForStep?.answers ?? [];
+  const descriptions = exercise?.descriptions[step];
+  const instructions = exercise?.instructions[step];
+
+  const getTitle = (): string => {
+    return exercise ? `${exercise.title}` : "Loading Program...";
+  };
+
+  // Format exercise text content based on current step
+  const { formattedDescription, formattedInstructions } = useExerciseText({
+    currentStep: step,
+    finalStep,
+    description: descriptions,
+    instructions: instructions,
+  });
 
   // const [codeForStep, setCodeForStep] = useState<CodeForStep | null>(null);
   // const [userInputNeedsChecked, setUserInputNeedsChecked] = useState(false);
@@ -68,29 +101,6 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
   //   }
   // }, [exercise, stepParam]);
 
-  useEffect(() => {
-    console.log("step", step);
-    if (!exercise) return;
-
-    const codeForStep = getCodeForStep({
-      title: exercise.title,
-      questionTemplate: exercise.template,
-      currentStep: step,
-    });
-    setCode(() => codeForStep.code);
-    setCopyCode(() => codeForStep.copyCode);
-    setAnswers(() => codeForStep.answers);
-    setDescriptions(() => exercise.descriptions[step]);
-    setInstructions(() => exercise.instructions[step]);
-
-    // DEBUG
-    console.log("code", code);
-    console.log("copyCode", copyCode);
-    console.log("answers", answers);
-    console.log("descriptions", descriptions);
-    console.log("instructions", instructions);
-  }, [step]);
-
   /* ************************
    * HELPERS
    ************************ */
@@ -100,7 +110,6 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
       const exerciseData = await exerciseService.fetchById(exerciseId!);
       if (exerciseData) {
         setExercise(exerciseData);
-        // setCurrentStep(() => 1); // We actually want to start at step 0 until the next button is clicked.
         // setExerciseState("STEP_COMPLETE");
         console.log("exerciseData", exerciseData);
       } else {
@@ -164,9 +173,6 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
   /* ************************
    * UI
    ************************ */
-  const getTitle = (): string => {
-    return exercise ? `${exercise.title}` : "Loading Program...";
-  };
 
   // Main content
   return (
@@ -174,13 +180,10 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
       <h1 className={"title"}>{getTitle()}</h1>
       <div className={styles.container}>
         <div className={styles.instructions}>
-          {/* Should be rewritten to only pass the currently needed props, not the entire exercise object. */}
-          {/* <ExerciseText
-            currentStep={step}
-            finalStep={finalStep}
-            descriptions={exercise ? exercise.descriptions : {}}
-            instructions={exercise ? exercise.instructions : {}}
-          /> */}
+          <ExerciseText
+            description={formattedDescription}
+            instructions={formattedInstructions}
+          />
           {
             // /* Don't show the buttons until we have an exercise loaded. */
             // exercise && (
@@ -208,6 +211,11 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
           setNeedsCheck={setUserInputNeedsChecked}
           questionTemplate={exercise?.template ?? ""}
         /> */}
+      </div>
+      {/* Temp buttons to change the step */}
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button onClick={() => setStep(step - 1)}>Previous</button>
+        <button onClick={() => setStep(step + 1)}>Next</button>
       </div>
     </div>
   );
