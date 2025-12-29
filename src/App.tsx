@@ -6,8 +6,9 @@ import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import { auth } from "./firebase";
-import ExercisePage from "./pages/Exercise/Exercise";
-import Login from "./pages/Login/Login";
+
+import ExercisePage from "./pages/Exercise/ExercisePage";
+import LoginPage from "./pages/Login/LoginPage";
 import { createExerciseService } from "./services/exerciseService";
 import { createUserService } from "./services/userService";
 import "./styles/global.css";
@@ -116,7 +117,7 @@ export default function App() {
         <Header isAuthenticated={!!authUser} />
         <Routes>
           {/* Public route */}
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginPage />} />
 
           {/* Protected routes */}
           {authUser ? (

@@ -4,7 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { BLANK_REGEX } from "../../../constants";
 import { type ExerciseState } from "../../../types/Exercise";
-import styles from "../Exercise.module.css";
+import styles from "../ExercisePage.module.css";
 
 // Types and Interfaces
 interface Template {

@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
 import { EmailAuthProvider } from "firebase/auth";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
 
-const Login = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -62,4 +62,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
