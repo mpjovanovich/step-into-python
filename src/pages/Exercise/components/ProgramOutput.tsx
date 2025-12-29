@@ -12,11 +12,6 @@ interface ProgramOutputProps {
   userAnswers: string[];
   setUserAnswers: (userAnswers: string[]) => void;
   checkAnswerResults: (boolean | null)[];
-  // currentStep: number;
-  // questionTemplate: string;
-  // needsCheck: boolean;
-  // setNeedsCheck: (needsCheck: boolean) => void;
-  // setExerciseState: (state: ExerciseState) => void;
 }
 
 /* **********************************************************************

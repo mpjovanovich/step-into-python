@@ -37,10 +37,6 @@ export function allCorrect(results: (boolean | null)[]): boolean {
   return results.every((r) => r === true);
 }
 
-// export function hasUnansweredOrIncorrect(results: AnswerResult[]): boolean {
-//   return results.some((r) => r === null || r === false);
-// }
-
 /**
  * Removes all whitespace from a string.
  * E.g.: This allows "x = 5" or "x= 5" to match "x=5".

@@ -23,14 +23,17 @@ export function useNavigationButtons({
   onPrevious,
   onNext,
   onSubmit,
-}: UseNavigationButtonsParams): ButtonState[] {
+}: UseNavigationButtonsParams): {
+  buttons: ButtonState[];
+  exerciseComplete: boolean;
+} {
   const buttons: ButtonState[] = [];
 
   // Previous button
   buttons.push({
     text: "Previous",
     onClick: onPrevious,
-    enabled: step > 0,
+    enabled: step > 0 && step <= finalStep + 1,
     visible: true,
   });
 
@@ -50,5 +53,8 @@ export function useNavigationButtons({
     visible: step === finalStep + 1,
   });
 
-  return buttons;
+  // After submitting we increment the step to show the complete message.
+  const exerciseComplete = step === finalStep + 2;
+
+  return { buttons, exerciseComplete };
 }

@@ -1,3 +1,5 @@
+import { MdCheckCircle } from "react-icons/md";
+
 interface UseExerciseTextParams {
   currentStep: number;
   finalStep: number;
@@ -45,6 +47,25 @@ function formatDescription(
     );
   }
 
+  if (currentStep > finalStep + 1) {
+    return (
+      <>
+        <span className="inline-flex-wrapper">
+          <MdCheckCircle className="icon-complete" />
+          <span
+            style={{
+              marginTop: "10px",
+              marginLeft: "8px",
+              marginBottom: "10px",
+            }}
+          >
+            Exercise Complete!
+          </span>
+        </span>
+      </>
+    );
+  }
+
   return (
     <>
       {description.split("\n").map((line, i) => (
@@ -61,6 +82,10 @@ function formatInstructions(
 ): React.ReactNode {
   if (currentStep === finalStep + 1) {
     return <p>Click Submit</p>;
+  }
+
+  if (currentStep > finalStep + 1) {
+    return <p>Click Home to return to the home page.</p>;
   }
 
   if (instructions) {

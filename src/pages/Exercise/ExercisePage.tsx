@@ -10,6 +10,7 @@ import {
   type CodeForStep,
 } from "../../domain/templateParser";
 import { exerciseService } from "../../services/exerciseService";
+import { userService } from "../../services/userService";
 import { type Exercise as ExerciseType } from "../../types/Exercise";
 import { type User } from "../../types/User";
 import styles from "./ExercisePage.module.css";
@@ -65,13 +66,23 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
     instructions: instructions,
   });
 
-  const buttons = useNavigationButtons({
+  const { buttons, exerciseComplete } = useNavigationButtons({
     step,
     finalStep,
     checkAnswerResults,
     onPrevious: () => setStep(step - 1),
     onNext: () => setStep(step + 1),
-    onSubmit: () => {},
+    onSubmit: () => {
+      const completeExercise = async () => {
+        try {
+          await userService.completeExercise(user.id, exerciseId!);
+          setStep(() => step + 1);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      completeExercise();
+    },
   });
 
   // const [codeForStep, setCodeForStep] = useState<CodeForStep | null>(null);
@@ -216,7 +227,12 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
           />
           {
             /* Don't show the buttons until we have an exercise loaded. */
-            exercise && <NavigationButtons buttons={buttons} />
+            exercise && (
+              <NavigationButtons
+                buttons={buttons}
+                exerciseComplete={exerciseComplete}
+              />
+            )
           }
         </div>
         <ProgramOutput
