@@ -13,6 +13,7 @@ import { type Exercise as ExerciseType } from "../../types/Exercise";
 import { type User } from "../../types/User";
 import styles from "./ExercisePage.module.css";
 import { ExerciseText } from "./components/ExerciseText";
+import { ProgramOutput } from "./components/ProgramOutput";
 import { useExerciseText } from "./hooks/useExerciseText";
 
 interface ExercisePageProps {
@@ -203,17 +204,20 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
             // )
           }
         </div>
-        {/* <ProgramOutput
-          currentStep={step}
-          title={exercise?.title ?? "Loading Exercise..."}
-          setExerciseState={setExerciseState}
-          needsCheck={userInputNeedsChecked}
-          setNeedsCheck={setUserInputNeedsChecked}
-          questionTemplate={exercise?.template ?? ""}
-        /> */}
+        <ProgramOutput
+          code={code}
+          copyCode={copyCode}
+          answers={answers}
+          // currentStep={step}
+          // title={exercise?.title ?? "Loading Exercise..."}
+          // setExerciseState={setExerciseState}
+          // needsCheck={userInputNeedsChecked}
+          // setNeedsCheck={setUserInputNeedsChecked}
+          // questionTemplate={exercise?.template ?? ""}
+        />
       </div>
       {/* Temp buttons to change the step */}
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
         <button onClick={() => setStep(step - 1)}>Previous</button>
         <button onClick={() => setStep(step + 1)}>Next</button>
       </div>
