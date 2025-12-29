@@ -14,8 +14,10 @@ import { type Exercise as ExerciseType } from "../../types/Exercise";
 import { type User } from "../../types/User";
 import styles from "./ExercisePage.module.css";
 import { ExerciseText } from "./components/ExerciseText";
+import { NavigationButtons } from "./components/NavigationButtons";
 import { ProgramOutput } from "./components/ProgramOutput";
 import { useExerciseText } from "./hooks/useExerciseText";
+import { useNavigationButtons } from "./hooks/useNavigationButtons";
 
 interface ExercisePageProps {
   user: User;
@@ -61,6 +63,15 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
     finalStep,
     description: descriptions,
     instructions: instructions,
+  });
+
+  const buttons = useNavigationButtons({
+    step,
+    finalStep,
+    checkAnswerResults,
+    onPrevious: () => setStep(step - 1),
+    onNext: () => setStep(step + 1),
+    onSubmit: () => {},
   });
 
   // const [codeForStep, setCodeForStep] = useState<CodeForStep | null>(null);
@@ -204,22 +215,8 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
             instructions={formattedInstructions}
           />
           {
-            // /* Don't show the buttons until we have an exercise loaded. */
-            // exercise && (
-            //   <NavigationButtons
-            //     currentStep={step}
-            //     finalStep={finalStep}
-            //     exerciseState={exerciseState}
-            //     onPrevious={() => {
-            //       setStep(step - 1);
-            //     }}
-            //     onNext={() => {
-            //       setStep(step + 1);
-            //     }}
-            //     onCheck={() => setUserInputNeedsChecked(true)}
-            //     onSubmit={handleSubmit}
-            //   />
-            // )
+            /* Don't show the buttons until we have an exercise loaded. */
+            exercise && <NavigationButtons buttons={buttons} />
           }
         </div>
         <ProgramOutput
@@ -236,11 +233,6 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
           // setNeedsCheck={setUserInputNeedsChecked}
           // questionTemplate={exercise?.template ?? ""}
         />
-      </div>
-      {/* Temp buttons to change the step */}
-      <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
-        <button onClick={() => setStep(step - 1)}>Previous</button>
-        <button onClick={() => setStep(step + 1)}>Next</button>
       </div>
     </div>
   );
