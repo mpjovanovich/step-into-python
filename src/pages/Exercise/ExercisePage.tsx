@@ -36,21 +36,24 @@ const ExercisePage = ({ user }: { user: User | null }) => {
   /* ************************
    * EFFECTS
    ************************ */
+  // Fetch the exercise on mount.
   useEffect(() => {
-    // Fetch the exercise on mount.
     const fetchExercise = async () => {
       if (exerciseId === "preview") {
-        // Preview mode for development
-        // We'll never be here in prod
+        // Preview mode for development. We'll never be here in prod.
+        // This goes with the preview script/server.
         await fetchPreviewExercise();
         return;
       }
 
+      // Normal prod exercise fetch
       await fetchFirestoreExercise();
     };
 
     fetchExercise();
+  }, [exerciseId]);
 
+  useEffect(() => {
     // Cheat mode to set the step from the URL
     // Used for development only
     if (exercise && stepParam !== null) {
@@ -63,7 +66,7 @@ const ExercisePage = ({ user }: { user: User | null }) => {
         setStep(requestedStep);
       }
     }
-  }, [exerciseId, stepParam, finalStep]);
+  }, [finalStep, stepParam]);
 
   // Development fetch from preview server
   const fetchPreviewExercise = async () => {
