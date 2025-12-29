@@ -1,5 +1,5 @@
 import React from "react";
-import { MdCheck, MdClose } from "react-icons/md";
+import { MdCheck } from "react-icons/md";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { BLANK_REGEX } from "../../../constants";
@@ -77,14 +77,9 @@ const renderTemplate = (
               marginLeft: "5px",
             }}
           >
-            {checkAnswerResults[i] !== null &&
-              checkAnswerResults[i] === true && (
-                <MdCheck color="green" style={{ fontSize: "1.2rem" }} />
-              )}
-            {checkAnswerResults[i] !== null &&
-              checkAnswerResults[i] === false && (
-                <MdClose color="red" style={{ fontSize: "1.2rem" }} />
-              )}
+            {checkAnswerResults[i] === true && (
+              <MdCheck color="green" style={{ fontSize: "1.2rem" }} />
+            )}
           </span>
         </span>
       )}
