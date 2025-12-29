@@ -1,20 +1,18 @@
 import type { User as FirebaseUser } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { useEffect, useMemo, useState } from "react";
-import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
-import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 
 import ExercisePage from "./pages/Exercise/ExercisePage";
+import ExercisesPage from "./pages/Exercises/ExercisesPage";
 import LoginPage from "./pages/Login/LoginPage";
 import { createExerciseService } from "./services/exerciseService";
 import { createUserService } from "./services/userService";
 import "./styles/global.css";
 import { type Exercise as ExerciseType } from "./types/Exercise";
 import { type User } from "./types/User";
-import { formatExerciseNumber } from "./utils/formatters";
 
 export default function App() {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
@@ -22,9 +20,8 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
 
-  const db = useMemo(() => getFirestore(), []);
-  const userService = useMemo(() => createUserService(db), [db]);
-  const exerciseService = useMemo(() => createExerciseService(db), [db]);
+  const userService = createUserService(db);
+  const exerciseService = createExerciseService(db);
 
   // Listen for auth state changes.
   useEffect(() => {
@@ -67,8 +64,10 @@ export default function App() {
 
   // Fetch the exercises from Firestore.
   useEffect(() => {
-    // Don't fetch if not authenticated
-    if (!authUser) return;
+    // Don't fetch if not finished authenticating.
+    if (!authUser) {
+      return;
+    }
 
     const fetchExercises = async () => {
       const exercises = await exerciseService.fetchByCourse("SDEV 120");
@@ -77,34 +76,6 @@ export default function App() {
 
     fetchExercises();
   }, [authUser, exerciseService]);
-
-  const getHomePage = () => {
-    return (
-      <div style={{ padding: "0 2rem" }}>
-        <h1 className="title">Exercises: {user?.name}</h1>
-        <ul className="exercises-list">
-          {exercises.map((exercise) => (
-            <li key={exercise.id}>
-              <span className="inline-flex-wrapper">
-                <span className="completed-exercise">
-                  {user?.completedExercises.includes(exercise.id) ? (
-                    <MdCheckCircle className="icon-complete" />
-                  ) : (
-                    <MdRadioButtonUnchecked className="icon-incomplete" />
-                  )}
-                </span>
-                <Link to={`/exercise/${exercise.id}`}>
-                  {formatExerciseNumber(exercise.order)}
-                  {": "}
-                  {exercise.title}
-                </Link>
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
 
   // Don't render routes until we know auth status
   if (isAuthLoading) {
@@ -122,7 +93,10 @@ export default function App() {
           {/* Protected routes */}
           {authUser ? (
             <>
-              <Route path="/" element={getHomePage()} />
+              <Route
+                path="/"
+                element={<ExercisesPage user={user} exercises={exercises} />}
+              />
               <Route
                 path="/exercise/:exerciseId"
                 element={<ExercisePage user={user} />}

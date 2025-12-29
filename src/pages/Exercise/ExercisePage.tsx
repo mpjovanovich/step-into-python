@@ -1,33 +1,3 @@
-// import { useParams } from "react-router-dom";
-// import { type User } from "../../types/User";
-// import { useExercise } from "./hooks/useExercise";
-
-// const ExercisePage = ({ user }: { user: User | null }) => {
-//   /* ****************************************************************
-//    * CONTROLLER
-//    **************************************************************** */
-//   const { exerciseId } = useParams();
-//   const exercise = useExercise({ exerciseId, user });
-
-//   /* ****************************************************************
-//    * VIEW: TODO: possibly extract dumb view into a component
-//    **************************************************************** */
-//   if (exercise.exerciseLoadState === "LOADING") {
-//     return <div>LOADING</div>;
-//   }
-
-//   if (exercise.exerciseLoadState === "ERROR") {
-//     return <div>ERROR</div>;
-//   }
-
-//   return <div>Exercise Loaded!</div>;
-// };
-
-// export default ExercisePage;
-
-/* **********************************************************************
- * OLD CODE
- ************************************************************************/
 // React and external libraries
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
