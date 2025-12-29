@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 // Internal
+import { checkAnswers } from "../../domain/answerChecker";
 import {
   getCodeForStep,
   getStepCount,
@@ -28,6 +29,10 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
     if (!exercise) return 0;
     return getStepCount(exercise.template);
   }, [exercise]);
+  const [userAnswers, setUserAnswers] = useState<string[]>([]);
+  const [checkAnswerResults, setCheckAnswerResults] = useState<
+    (boolean | null)[]
+  >([]);
 
   /* ********************************************************
    * STATE DERIVED FROM CURRENT STEP
@@ -123,6 +128,19 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
     }
   };
 
+  // Set the appropriate number of input fields for the user's responses based
+  // on the number of answers in the exercise.
+  useEffect(() => {
+    setUserAnswers(Array(answers.length).fill(""));
+    setCheckAnswerResults(Array(answers.length).fill(null));
+  }, [step]);
+
+  useEffect(() => {
+    if (userAnswers.length > 0 && answers.length > 0) {
+      setCheckAnswerResults(checkAnswers(userAnswers, answers));
+    }
+  }, [userAnswers]);
+
   // // Development fetch from preview server
   // const fetchPreviewExercise = async () => {
   //   try {
@@ -208,6 +226,9 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
           code={code}
           copyCode={copyCode}
           answers={answers}
+          userAnswers={userAnswers}
+          setUserAnswers={setUserAnswers}
+          checkAnswerResults={checkAnswerResults}
           // currentStep={step}
           // title={exercise?.title ?? "Loading Exercise..."}
           // setExerciseState={setExerciseState}

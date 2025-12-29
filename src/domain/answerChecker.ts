@@ -6,7 +6,6 @@ import { Precondition } from "../utils/Preconditions";
  * false = incorrect
  * null = unanswered
  */
-export type AnswerResult = boolean | null;
 
 /**
  * Checks submitted answers against correct answers.
@@ -14,7 +13,7 @@ export type AnswerResult = boolean | null;
 export function checkAnswers(
   userAnswers: string[],
   correctAnswers: string[]
-): AnswerResult[] {
+): (boolean | null)[] {
   Precondition.notEmptyArray(correctAnswers);
   Precondition.isTrue(userAnswers.length === correctAnswers.length);
 
@@ -34,7 +33,7 @@ export function checkAnswers(
 }
 
 // TODO: Don't know which of the two below I'm going to use; get rid of one when we're sure.
-export function allCorrect(results: AnswerResult[]): boolean {
+export function allCorrect(results: (boolean | null)[]): boolean {
   return results.every((r) => r === true);
 }
 

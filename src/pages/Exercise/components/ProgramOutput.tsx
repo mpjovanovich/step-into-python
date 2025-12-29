@@ -1,10 +1,5 @@
-// import React, { useEffect, useRef, useState } from "react";
-// import { MdCheck, MdClose, MdContentCopy } from "react-icons/md";
-// import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-// import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-// import { BLANK_REGEX } from "../../../constants";
-// import { type ExerciseState } from "../../../types/Exercise";
 import React from "react";
+import { MdCheck, MdClose } from "react-icons/md";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { BLANK_REGEX } from "../../../constants";
@@ -14,8 +9,10 @@ interface ProgramOutputProps {
   code: string;
   copyCode: string;
   answers: string[];
+  userAnswers: string[];
+  setUserAnswers: (userAnswers: string[]) => void;
+  checkAnswerResults: (boolean | null)[];
   // currentStep: number;
-  // title: string;
   // questionTemplate: string;
   // needsCheck: boolean;
   // setNeedsCheck: (needsCheck: boolean) => void;
@@ -27,7 +24,13 @@ interface ProgramOutputProps {
  * "Check" button to see if the answer is correct.
  ************************************************************************/
 // Render helpers
-const renderTemplate = (code: string, answers: string[]) => {
+const renderTemplate = (
+  code: string,
+  answers: string[],
+  userAnswers: string[],
+  setUserAnswers: (userAnswers: string[]) => void,
+  checkAnswerResults: (boolean | null)[]
+) => {
   // Split the template into parts at each blank placeholder.
   const parts = code.split(BLANK_REGEX);
 
@@ -57,14 +60,14 @@ const renderTemplate = (code: string, answers: string[]) => {
         <span className="inline-flex-wrapper">
           <input
             type="text"
-            // value={userAnswers[i] ?? ""}
+            value={userAnswers[i] ?? ""}
             onChange={(e) => {
               // This spreads the current answers into a new array so that we
               // can mutate it, updates the answer at the current index, and
               // sets the new array as state for the user's answers.
-              // const newAnswers = [...userAnswers];
-              // newAnswers[i] = e.target.value;
-              // setUserAnswers(newAnswers);
+              const newAnswers = [...userAnswers];
+              newAnswers[i] = e.target.value;
+              setUserAnswers(newAnswers);
             }}
             autoFocus={i === 0}
             style={{ width: `${answers[i]?.length * 10 + 20}px` }}
@@ -74,12 +77,14 @@ const renderTemplate = (code: string, answers: string[]) => {
               marginLeft: "5px",
             }}
           >
-            {/* {userAnswerResults[i] === true && (
-              <MdCheck color="green" style={{ fontSize: "1.2rem" }} />
-            )}
-            {userAnswerResults[i] === false && (
-              <MdClose color="red" style={{ fontSize: "1.2rem" }} />
-            )} */}
+            {checkAnswerResults[i] !== null &&
+              checkAnswerResults[i] === true && (
+                <MdCheck color="green" style={{ fontSize: "1.2rem" }} />
+              )}
+            {checkAnswerResults[i] !== null &&
+              checkAnswerResults[i] === false && (
+                <MdClose color="red" style={{ fontSize: "1.2rem" }} />
+              )}
           </span>
         </span>
       )}
@@ -87,12 +92,27 @@ const renderTemplate = (code: string, answers: string[]) => {
   ));
 };
 
-const ProgramOutput = ({ code, copyCode, answers }: ProgramOutputProps) => {
+const ProgramOutput = ({
+  code,
+  copyCode,
+  answers,
+  userAnswers,
+  setUserAnswers,
+  checkAnswerResults,
+}: ProgramOutputProps) => {
   return (
     <div className={styles.output}>
       <div>
         <pre>
-          <code>{renderTemplate(code, answers)}</code>
+          <code>
+            {renderTemplate(
+              code,
+              answers,
+              userAnswers,
+              setUserAnswers,
+              checkAnswerResults
+            )}
+          </code>
         </pre>
       </div>
     </div>
