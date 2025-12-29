@@ -1,12 +1,12 @@
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { type Exercise } from "../../types/Exercise";
+import { type Exercise as ExerciseType } from "../../types/Exercise";
 import { type User } from "../../types/User";
 import { formatExerciseNumber } from "../../utils/formatters";
 
 interface ExercisesPageProps {
-  user: User | null;
-  exercises: Exercise[];
+  user: User;
+  exercises: ExerciseType[];
 }
 
 export default function ExercisesPage({ user, exercises }: ExercisesPageProps) {

@@ -52,7 +52,7 @@ const LoginPage = () => {
   }, [navigate, isLoading]);
 
   if (isLoading) {
-    return null; // or return a loading spinner if you prefer
+    return null;
   }
 
   return (

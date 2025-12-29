@@ -34,9 +34,11 @@ function createExerciseService(db: Firestore): ExerciseService {
         orderBy("order")
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(
-        (doc) => ({ ...doc.data(), id: doc.id } as Exercise)
-      );
+      const exercises: Exercise[] = [];
+      snapshot.docs.forEach((doc) => {
+        exercises.push({ ...doc.data(), id: doc.id } as Exercise);
+      });
+      return exercises;
     },
   };
 

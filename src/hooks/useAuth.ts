@@ -6,7 +6,7 @@ import { type User } from "../types/User";
 
 export function useAuth() {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [authLoadComplete, setAuthLoadComplete] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
   // Listen for auth state changes.
@@ -15,7 +15,7 @@ export function useAuth() {
 
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
       setAuthUser(firebaseUser);
-      setIsAuthLoading(false);
+      setAuthLoadComplete(true);
 
       if (firebaseUser && firebaseUser.email) {
         // Set up real-time listener for user data using userService
@@ -47,5 +47,5 @@ export function useAuth() {
     };
   }, [userService]);
 
-  return { authUser, isAuthLoading, user };
+  return { authUser, authLoadComplete, user };
 }

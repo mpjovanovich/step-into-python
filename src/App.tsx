@@ -1,61 +1,48 @@
-import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import Header from "./components/Header";
-import { useAuth } from "./hooks/useAuth";
+import { useAppData } from "./hooks/useAppData";
 import ExercisePage from "./pages/Exercise/ExercisePage";
 import ExercisesPage from "./pages/Exercises/ExercisesPage";
 import LoginPage from "./pages/Login/LoginPage";
-import { exerciseService } from "./services/exerciseService";
 import "./styles/global.css";
-import { type Exercise as ExerciseType } from "./types/Exercise";
 
 export default function App() {
-  const { authUser, isAuthLoading, user } = useAuth();
-  const [exercises, setExercises] = useState<ExerciseType[]>([]);
+  const { isReady, authUser, user, exercises } = useAppData();
 
-  // Fetch the exercises from Firestore.
-  useEffect(() => {
-    // Don't fetch if not finished authenticating.
-    if (!authUser) {
-      return;
-    }
-
-    const fetchExercises = async () => {
-      const exercises = await exerciseService.fetchByCourse("SDEV 120");
-      setExercises(exercises);
-    };
-
-    fetchExercises();
-  }, [authUser, exerciseService]);
-
-  // Don't render routes until we know auth status
-  if (isAuthLoading) {
+  if (!isReady) {
     return null;
   }
+
+  const isAuthenticated = !!authUser;
 
   return (
     <BrowserRouter>
       <div className="app-container">
-        <Header isAuthenticated={!!authUser} />
+        <Header isAuthenticated={isAuthenticated} />
         <Routes>
-          {/* Public route */}
-          <Route path="/login" element={<LoginPage />} />
-
-          {/* Protected routes */}
-          {authUser ? (
+          {isAuthenticated ? (
             <>
+              {/* PROTECTED ROUTES */}
+              {/* Exercises page is root route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="/login" element={<Navigate to="/" replace />} />
               <Route
                 path="/"
-                element={<ExercisesPage user={user} exercises={exercises} />}
+                element={<ExercisesPage user={user!} exercises={exercises!} />}
               />
+              {/* Exercise page */}
               <Route
                 path="/exercise/:exerciseId"
-                element={<ExercisePage user={user} />}
+                element={<ExercisePage user={user!} />}
               />
             </>
           ) : (
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <>
+              {/* PUBLIC ROUTES */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </>
           )}
         </Routes>
       </div>
