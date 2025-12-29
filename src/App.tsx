@@ -1,66 +1,20 @@
-import type { User as FirebaseUser } from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Header from "./components/Header";
-import { auth, db } from "./firebase";
 
+import Header from "./components/Header";
+import { db } from "./firebase";
+import { useAuth } from "./hooks/useAuth";
 import ExercisePage from "./pages/Exercise/ExercisePage";
 import ExercisesPage from "./pages/Exercises/ExercisesPage";
 import LoginPage from "./pages/Login/LoginPage";
 import { createExerciseService } from "./services/exerciseService";
-import { createUserService } from "./services/userService";
 import "./styles/global.css";
 import { type Exercise as ExerciseType } from "./types/Exercise";
-import { type User } from "./types/User";
 
 export default function App() {
-  const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
+  const { authUser, isAuthLoading, user } = useAuth();
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
-
-  const userService = createUserService(db);
   const exerciseService = createExerciseService(db);
-
-  // Listen for auth state changes.
-  useEffect(() => {
-    let unsubscribeUser: (() => void) | undefined;
-
-    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
-      setAuthUser(firebaseUser);
-      setIsAuthLoading(false);
-
-      if (firebaseUser && firebaseUser.email) {
-        // Set up real-time listener for user data using userService
-        unsubscribeUser = userService.subscribeToUser(
-          firebaseUser.email,
-          (userData: User | null) => {
-            if (!userData) {
-              // TODO: not sure if this is handled appropriately?
-              console.error("No matching user found in the database");
-            }
-            setUser(userData);
-          }
-        );
-      } else {
-        // Clean up user listener and clear user state when logged out
-        if (unsubscribeUser) {
-          unsubscribeUser();
-          unsubscribeUser = undefined;
-        }
-        setUser(null);
-      }
-    });
-
-    // Clean up both listeners when component unmounts
-    return () => {
-      unsubscribeAuth();
-      if (unsubscribeUser) {
-        unsubscribeUser();
-      }
-    };
-  }, [userService]);
 
   // Fetch the exercises from Firestore.
   useEffect(() => {

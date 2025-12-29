@@ -1,0 +1,53 @@
+import { type User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { auth, db } from "../firebase";
+import { createUserService } from "../services/userService";
+import { type User } from "../types/User";
+
+export function useAuth() {
+  const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+
+  const userService = createUserService(db);
+
+  // Listen for auth state changes.
+  useEffect(() => {
+    let unsubscribeUser: (() => void) | undefined;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
+      setAuthUser(firebaseUser);
+      setIsAuthLoading(false);
+
+      if (firebaseUser && firebaseUser.email) {
+        // Set up real-time listener for user data using userService
+        unsubscribeUser = userService.subscribeToUser(
+          firebaseUser.email,
+          (userData: User | null) => {
+            if (!userData) {
+              console.error("No matching user found in the database");
+            }
+            setUser(userData);
+          }
+        );
+      } else {
+        // Clean up user listener and clear user state when logged out
+        if (unsubscribeUser) {
+          unsubscribeUser();
+          unsubscribeUser = undefined;
+        }
+        setUser(null);
+      }
+    });
+
+    // Clean up both listeners when component unmounts
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeUser) {
+        unsubscribeUser();
+      }
+    };
+  }, [userService]);
+
+  return { authUser, isAuthLoading, user };
+}
