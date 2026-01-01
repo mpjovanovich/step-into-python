@@ -16,9 +16,10 @@ export function useAppData(): AppData {
   const { authUser, authLoadComplete, user } = useAuth();
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
 
-  // Fetch exercises when authenticated and user is ready
+  // Fetch exercises once when user document is first available
   useEffect(() => {
-    if (!authUser) {
+    if (!user) {
+      setExercises(null);
       return;
     }
 
@@ -28,7 +29,7 @@ export function useAppData(): AppData {
     };
 
     fetchExercises();
-  }, [authUser]);
+  }, [user?.id]);
 
   // Determine if app is ready to render
   const isReady =

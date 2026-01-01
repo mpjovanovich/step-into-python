@@ -14,6 +14,12 @@ export function useAuth() {
     let unsubscribeUser: (() => void) | undefined;
 
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
+      // Clean up previous user subscription if present
+      if (unsubscribeUser) {
+        unsubscribeUser();
+        unsubscribeUser = undefined;
+      }
+
       setAuthUser(firebaseUser);
       setAuthLoadComplete(true);
 
@@ -29,11 +35,7 @@ export function useAuth() {
           }
         );
       } else {
-        // Clean up user listener and clear user state when logged out
-        if (unsubscribeUser) {
-          unsubscribeUser();
-          unsubscribeUser = undefined;
-        }
+        // Clear user state when logged out
         setUser(null);
       }
     });
@@ -45,7 +47,7 @@ export function useAuth() {
         unsubscribeUser();
       }
     };
-  }, [userService]);
+  }, []);
 
   return { authUser, authLoadComplete, user };
 }

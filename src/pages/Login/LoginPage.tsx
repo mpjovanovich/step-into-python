@@ -1,29 +1,11 @@
 import { EmailAuthProvider } from "firebase/auth";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { auth } from "../../firebase";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        navigate("/");
-      } else {
-        setIsLoading(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [navigate]);
-
-  useEffect(() => {
-    if (isLoading) return; // Don't initialize UI while loading
-
     const ui =
       firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
 
@@ -42,18 +24,8 @@ const LoginPage = () => {
       signInFlow: "redirect",
       tosUrl: undefined,
       privacyPolicyUrl: undefined,
-      callbacks: {
-        signInSuccessWithAuthResult: () => {
-          navigate("/");
-          return false; // Prevents redirect by FirebaseUI
-        },
-      },
     });
-  }, [navigate, isLoading]);
-
-  if (isLoading) {
-    return null;
-  }
+  }, []);
 
   return (
     <div style={{ padding: "2rem" }}>
