@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
+    "deploy": "firebase deploy",
     "dev": "vite",
     "lint": "eslint .",
     "preview": "vite preview",
