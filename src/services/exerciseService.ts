@@ -6,7 +6,6 @@ import {
   getDocs,
   orderBy,
   query,
-  where,
   type DocumentData,
   type DocumentSnapshot,
 } from "firebase/firestore";
@@ -15,7 +14,7 @@ import type { Exercise } from "../types/Exercise";
 
 export interface ExerciseService {
   fetchById(exerciseId: string): Promise<Exercise | null>;
-  fetchByCourse(course: string): Promise<Exercise[]>;
+  fetchAll(): Promise<Exercise[]>;
 }
 
 function createExercise(doc: DocumentSnapshot<DocumentData>): Exercise {
@@ -36,12 +35,8 @@ function createExerciseService(db: Firestore): ExerciseService {
       return createExercise(snap);
     },
 
-    async fetchByCourse(course: string): Promise<Exercise[]> {
-      const q = query(
-        collection(db, "exercises"),
-        where("course", "==", course),
-        orderBy("order")
-      );
+    async fetchAll(): Promise<Exercise[]> {
+      const q = query(collection(db, "exercises"), orderBy("order"));
       const snapshot = await getDocs(q);
       const exercises: Exercise[] = [];
       snapshot.docs.forEach((doc) => {

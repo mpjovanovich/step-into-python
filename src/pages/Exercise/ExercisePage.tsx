@@ -104,7 +104,6 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
       }
 
       // Normal prod exercise fetch
-      console.log("fetching exercise");
       await fetchFirestoreExercise();
     };
 

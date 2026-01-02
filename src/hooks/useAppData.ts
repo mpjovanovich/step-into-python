@@ -24,7 +24,7 @@ export function useAppData(): AppData {
     }
 
     const fetchExercises = async () => {
-      const exercises = await exerciseService.fetchByCourse("SDEV 120");
+      const exercises = await exerciseService.fetchAll();
       setExercises(exercises);
     };
 
