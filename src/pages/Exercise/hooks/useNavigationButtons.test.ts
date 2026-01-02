@@ -12,12 +12,9 @@ describe("navigation buttons", () => {
       onSubmit: () => {},
     });
     expect(buttons.length).toBe(3);
-    const previousButton = buttons.find((button) => button.text === "Previous");
-    expect(previousButton).toBeDefined();
-    const nextButton = buttons.find((button) => button.text === "Next");
-    expect(nextButton).toBeDefined();
-    const submitButton = buttons.find((button) => button.text === "Submit");
-    expect(submitButton).toBeDefined();
+    expect(buttons[0].text).toBe("Previous");
+    expect(buttons[1].text).toBe("Next");
+    expect(buttons[2].text).toBe("Submit");
   });
 
   it("wires up click handlers for buttons", () => {
