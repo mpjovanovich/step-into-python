@@ -41,7 +41,7 @@ export function getStepType(currentStep: number, finalStep: number): StepType {
   if (currentStep === finalStep + 1) {
     return StepType.SUBMIT;
   }
-  if (currentStep > finalStep + 1) {
+  if (currentStep === finalStep + 2) {
     return StepType.COMPLETE;
   }
   throw new Error(`Invalid step number: ${currentStep}`);
