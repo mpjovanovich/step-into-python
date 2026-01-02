@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { StepType } from "../../../types/StepType";
 import { useNavigationButtons, type ButtonState } from "./useNavigationButtons";
 
 // Helper function to get the three buttons by text
@@ -17,8 +18,7 @@ function getButtonsByText(buttons: ButtonState[]): {
 describe("navigation buttons", () => {
   it("creates all buttons in the correct order with correct text", () => {
     const { buttons } = useNavigationButtons({
-      step: 1,
-      finalStep: 1,
+      stepType: StepType.EXERCISE,
       checkAnswerResults: [],
       onPrevious: () => {},
       onNext: () => {},
@@ -36,8 +36,7 @@ describe("navigation buttons", () => {
     const onSubmit = vi.fn();
 
     const { buttons } = useNavigationButtons({
-      step: 1,
-      finalStep: 1,
+      stepType: StepType.EXERCISE,
       checkAnswerResults: [],
       onPrevious,
       onNext,
@@ -74,17 +73,10 @@ describe("navigation buttons", () => {
   // Note that "finalStep" is the final step number from the template, so in
   // this case it would be 3.
 
-  // We will assume that the template in these tests has only one step.
-  const START_STEP = 0;
-  const FINAL_STEP = 1;
-  const SUBMIT_STEP = FINAL_STEP + 1;
-  const COMPLETE_STEP = SUBMIT_STEP + 1;
-
   describe("visible and enabled states:", () => {
     it("on start step: previous = visible disabled, next = visible enabled, submit = invisible", () => {
       const { buttons } = useNavigationButtons({
-        step: START_STEP,
-        finalStep: FINAL_STEP,
+        stepType: StepType.START,
         checkAnswerResults: [true],
         onPrevious: () => {},
         onNext: () => {},
@@ -101,8 +93,7 @@ describe("navigation buttons", () => {
 
     it("on template step, no answers required for step: previous = visible enabled, next = visible enabled, submit = invisible", () => {
       const { buttons } = useNavigationButtons({
-        step: FINAL_STEP,
-        finalStep: FINAL_STEP,
+        stepType: StepType.EXERCISE,
         checkAnswerResults: [],
         onPrevious: () => {},
         onNext: () => {},
@@ -119,8 +110,7 @@ describe("navigation buttons", () => {
 
     it("on template step, all correct answers: previous = visible enabled, next = visible enabled, submit = invisible", () => {
       const { buttons } = useNavigationButtons({
-        step: FINAL_STEP,
-        finalStep: FINAL_STEP,
+        stepType: StepType.EXERCISE,
         checkAnswerResults: [true],
         onPrevious: () => {},
         onNext: () => {},
@@ -137,8 +127,7 @@ describe("navigation buttons", () => {
 
     it("on template step, contains incorrect answers: previous = visible enabled, next = visible disabled, submit = invisible", () => {
       const { buttons } = useNavigationButtons({
-        step: FINAL_STEP,
-        finalStep: FINAL_STEP,
+        stepType: StepType.EXERCISE,
         checkAnswerResults: [false],
         onPrevious: () => {},
         onNext: () => {},
@@ -155,9 +144,8 @@ describe("navigation buttons", () => {
 
     it("on submit step: previous = visible enabled, next = invisible, submit = visible enabled", () => {
       const { buttons } = useNavigationButtons({
-        step: SUBMIT_STEP,
-        finalStep: FINAL_STEP,
-        checkAnswerResults: [false],
+        stepType: StepType.SUBMIT,
+        checkAnswerResults: [],
         onPrevious: () => {},
         onNext: () => {},
         onSubmit: () => {},
@@ -173,9 +161,8 @@ describe("navigation buttons", () => {
 
     it("on complete step: previous = visible disabled, next = invisible, submit = invisible", () => {
       const { buttons } = useNavigationButtons({
-        step: COMPLETE_STEP,
-        finalStep: FINAL_STEP,
-        checkAnswerResults: [false],
+        stepType: StepType.COMPLETE,
+        checkAnswerResults: [],
         onPrevious: () => {},
         onNext: () => {},
         onSubmit: () => {},
@@ -192,8 +179,7 @@ describe("navigation buttons", () => {
   describe("exercise complete state:", () => {
     it("on start step: exercise complete = false", () => {
       const { exerciseComplete } = useNavigationButtons({
-        step: START_STEP,
-        finalStep: FINAL_STEP,
+        stepType: StepType.START,
         checkAnswerResults: [],
         onPrevious: () => {},
         onNext: () => {},
@@ -204,8 +190,7 @@ describe("navigation buttons", () => {
 
     it("on template step: exercise complete = false", () => {
       const { exerciseComplete } = useNavigationButtons({
-        step: FINAL_STEP,
-        finalStep: FINAL_STEP,
+        stepType: StepType.EXERCISE,
         checkAnswerResults: [],
         onPrevious: () => {},
         onNext: () => {},
@@ -216,8 +201,7 @@ describe("navigation buttons", () => {
 
     it("on submit step: exercise complete = false", () => {
       const { exerciseComplete } = useNavigationButtons({
-        step: SUBMIT_STEP,
-        finalStep: FINAL_STEP,
+        stepType: StepType.SUBMIT,
         checkAnswerResults: [],
         onPrevious: () => {},
         onNext: () => {},
@@ -228,8 +212,7 @@ describe("navigation buttons", () => {
 
     it("on complete step: exercise complete = true", () => {
       const { exerciseComplete } = useNavigationButtons({
-        step: COMPLETE_STEP,
-        finalStep: FINAL_STEP,
+        stepType: StepType.COMPLETE,
         checkAnswerResults: [],
         onPrevious: () => {},
         onNext: () => {},

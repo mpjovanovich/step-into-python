@@ -7,11 +7,3 @@ export interface Exercise {
   instructions: Record<number, string>;
   template: string[];
 }
-
-export type ExerciseState =
-  | "LOADING"
-  | "STEP_COMPLETE"
-  | "STEP_INCOMPLETE"
-  | "SUBMITTING"
-  | "COMPLETED"
-  | "ERROR";

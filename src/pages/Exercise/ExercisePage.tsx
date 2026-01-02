@@ -12,6 +12,7 @@ import {
 import { exerciseService } from "../../services/exerciseService";
 import { userService } from "../../services/userService";
 import { type Exercise as ExerciseType } from "../../types/Exercise";
+import { getStepType } from "../../types/StepType";
 import { type User } from "../../types/User";
 import styles from "./ExercisePage.module.css";
 import { ExerciseText } from "./components/ExerciseText";
@@ -53,6 +54,7 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
   const answers = codeForStep?.answers ?? [];
   const descriptions = exercise?.descriptions[step];
   const instructions = exercise?.instructions[step];
+  const stepType = getStepType(step, finalStep);
 
   const getTitle = (): string => {
     return exercise ? `${exercise.title}` : "Loading Program...";
@@ -60,15 +62,13 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
 
   // Format exercise text content based on current step
   const { formattedDescription, formattedInstructions } = useExerciseText({
-    currentStep: step,
-    finalStep,
+    stepType,
     description: descriptions,
     instructions: instructions,
   });
 
   const { buttons, exerciseComplete } = useNavigationButtons({
-    step,
-    finalStep,
+    stepType,
     checkAnswerResults,
     onPrevious: () => setStep(step - 1),
     onNext: () => setStep(step + 1),

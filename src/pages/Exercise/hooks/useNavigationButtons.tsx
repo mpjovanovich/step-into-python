@@ -1,8 +1,8 @@
 import { allCorrect } from "../../../domain/answerChecker";
+import { StepType } from "../../../types/StepType";
 
 export interface UseNavigationButtonsParams {
-  step: number;
-  finalStep: number;
+  stepType: StepType;
   checkAnswerResults: (boolean | null)[];
   onPrevious: () => void;
   onNext: () => void;
@@ -17,8 +17,7 @@ export type ButtonState = {
 };
 
 export function useNavigationButtons({
-  step,
-  finalStep,
+  stepType,
   checkAnswerResults,
   onPrevious,
   onNext,
@@ -29,32 +28,34 @@ export function useNavigationButtons({
 } {
   const buttons: ButtonState[] = [];
 
-  // Previous button
+  // Visible and enabled during exercise and on submit step.
   buttons.push({
     text: "Previous",
     onClick: onPrevious,
-    enabled: step > 0 && step <= finalStep + 1,
+    enabled: stepType === StepType.EXERCISE || stepType === StepType.SUBMIT,
     visible: true,
   });
 
-  // Next button
+  // Visible during start and exercise steps.
+  // Enabled if all answers are correct (or if there are no answers required for the step).
   buttons.push({
     text: "Next",
     onClick: onNext,
     enabled: allCorrect(checkAnswerResults),
-    visible: step < finalStep + 1,
+    visible: stepType === StepType.START || stepType === StepType.EXERCISE,
   });
 
-  // Submit button
+  // Visible and enabled only on submit step.
   buttons.push({
     text: "Submit",
     onClick: onSubmit,
     enabled: true,
-    visible: step === finalStep + 1,
+    visible: stepType === StepType.SUBMIT,
   });
 
-  // After submitting we increment the step to show the complete message.
-  const exerciseComplete = step === finalStep + 2;
+  // Used to display a link to the home page. We can't do this as a button
+  // because of the navigation requirements.
+  const exerciseComplete = stepType === StepType.COMPLETE;
 
   return { buttons, exerciseComplete };
 }
