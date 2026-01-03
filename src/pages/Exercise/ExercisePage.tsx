@@ -15,9 +15,9 @@ import { userService } from "../../services/userService";
 import { type Exercise as ExerciseType } from "../../types/Exercise";
 import { getStepType } from "../../types/StepType";
 import styles from "./ExercisePage.module.css";
-import { ExerciseText } from "./components/ExerciseText";
-import { NavigationButtons } from "./components/NavigationButtons";
-import { ProgramOutput } from "./components/ProgramOutput";
+import ExerciseText from "./components/ExerciseText";
+import NavigationButtons from "./components/NavigationButtons";
+import ProgramOutput from "./components/ProgramOutput";
 import { useExerciseText } from "./hooks/useExerciseText";
 import { useNavigationButtons } from "./hooks/useNavigationButtons";
 

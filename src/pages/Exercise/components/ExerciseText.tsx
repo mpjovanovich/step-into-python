@@ -3,10 +3,7 @@ interface ExerciseTextProps {
   instructions: React.ReactNode;
 }
 
-export const ExerciseText = ({
-  description,
-  instructions,
-}: ExerciseTextProps) => {
+const ExerciseText = ({ description, instructions }: ExerciseTextProps) => {
   return (
     <>
       <h3>Description</h3>
@@ -16,3 +13,5 @@ export const ExerciseText = ({
     </>
   );
 };
+
+export default ExerciseText;

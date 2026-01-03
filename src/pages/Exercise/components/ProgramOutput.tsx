@@ -116,4 +116,4 @@ const ProgramOutput = ({
   );
 };
 
-export { ProgramOutput };
+export default ProgramOutput;

@@ -5,11 +5,13 @@ interface PublicRouteProps {
   children: React.ReactNode;
 }
 
-export function PublicRoute({ children }: PublicRouteProps) {
+const PublicRoute = ({ children }: PublicRouteProps) => {
   const { authUser } = useAuthContext();
 
   if (authUser) {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;
-}
+};
+
+export default PublicRoute;

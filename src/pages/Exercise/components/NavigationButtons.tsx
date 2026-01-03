@@ -9,7 +9,7 @@ interface NavigationButtonsProps {
 
 // This is a dumb view component that renders the navigation buttons.
 // There should be no logic here.
-export const NavigationButtons = ({
+const NavigationButtons = ({
   buttons,
   exerciseComplete,
 }: NavigationButtonsProps) => {
@@ -37,3 +37,5 @@ export const NavigationButtons = ({
     </div>
   );
 };
+
+export default NavigationButtons;

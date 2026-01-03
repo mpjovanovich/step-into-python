@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import { PublicRoute } from "./components/PublicRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
 import ExercisePage from "./pages/Exercise/ExercisePage";
 import ExercisesPage from "./pages/Exercises/ExercisesPage";

@@ -4,18 +4,18 @@ import { useAuthContext } from "../../contexts/AuthContext";
 import { formatExerciseNumber } from "../../utils/formatters";
 import { useExercises } from "./hooks/useExercises";
 
-export default function ExercisesPage() {
+const ExercisesPage = () => {
   const { user } = useAuthContext();
   // Should never happen because of ProtectedRoute logic
   if (!user) {
     throw new Error("Cannot load page: no user");
   }
 
-  const { exercises, error: exercisesError } = useExercises(user.id);
+  const { exercises, error } = useExercises(user.id);
 
   // TODO: better error handling
-  if (exercisesError) {
-    return <div>Error: {exercisesError.message}</div>;
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
   // TODO: better loading state
@@ -49,4 +49,6 @@ export default function ExercisesPage() {
       </ul>
     </div>
   );
-}
+};
+
+export default ExercisesPage;
