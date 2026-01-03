@@ -1,36 +1,38 @@
-import { readFileSync } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
+import {
+  assertFails,
+  initializeTestEnvironment,
+} from "@firebase/rules-unit-testing";
+import { doc, getDoc } from "firebase/firestore";
+import fs from "fs";
+import { beforeAll, describe, it } from "vitest";
 
 /*
  * This script requires the firebase emulator to be running.
  * Run `npm run firebase:emulate:firestore` to start the emulator.
+ * See: https://firebase.google.com/docs/rules/unit-tests
  */
 const projectId = "test-project";
 
-// Get the directory of the current file
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+describe("firestore database", () => {
+  let testEnv;
 
-// Load local Firestore rules
-const rules = readFileSync(join(__dirname, "firestore.rules"), "utf8");
+  beforeAll(async () => {
+    testEnv = await initializeTestEnvironment({
+      projectId: projectId,
+      firestore: {
+        host: "127.0.0.1",
+        port: 8080,
+        rules: fs.readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
 
-// TODO: We need to port this to the new library after we get rid of firebaseui:
-// https://firebase.google.com/docs/rules/unit-tests
+  it("DEBUG: should deny all reads and writes", async () => {
+    const authContext = testEnv.unauthenticatedContext();
+    const db = authContext.firestore();
 
-// describe("firestore database", () => {
-//   beforeAll(async () => {
-//     // Load the local rules file before running tests
-//     await loadFirestoreRules({ projectId, rules });
-//   });
-
-//   it("should deny all reads and writes", async () => {
-//     const db = initializeTestApp({ projectId }).firestore();
-
-//     // Test that read fails
-//     await assertFails(db.collection("test").get());
-
-//     // Test that write fails
-//     await assertFails(db.collection("test").doc("testDoc").set({ test: true }));
-//   });
-// });
+    // Test that read fails
+    const docRef = doc(db, "exercises", "1");
+    await assertFails(getDoc(docRef));
+  });
+});

@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [react()],
   test: {
     exclude: ["**/node_modules/**", "**/dist/**"],
-    include: ["**/src/**/*.test.ts"],
+    include: ["firestore.rules.test.js"],
   },
 });
