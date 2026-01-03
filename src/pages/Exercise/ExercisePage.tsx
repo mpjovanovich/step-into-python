@@ -191,7 +191,6 @@ const ExercisePage = () => {
    * UI
    ************************ */
 
-  // TODO: better loading state
   if (!exercise) {
     return <Loading />;
   }

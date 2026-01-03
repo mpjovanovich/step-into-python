@@ -17,7 +17,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   // There is a delay between the authUser being set and the user being set, so
   // we need to prevent the page from rendering until the user is set.
 
-  // TODO: better loading state
   if (!user) {
     return <Loading />;
   }

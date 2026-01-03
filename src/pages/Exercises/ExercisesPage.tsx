@@ -19,7 +19,6 @@ const ExercisesPage = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  // TODO: better loading state
   if (!exercises) {
     return <Loading />;
   }
