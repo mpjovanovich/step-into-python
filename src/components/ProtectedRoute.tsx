@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
+import Loading from "./Loading";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -18,7 +19,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   // TODO: better loading state
   if (!user) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return <>{children}</>;

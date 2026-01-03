@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
 // Internal
+import Loading from "../../components/Loading";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { checkAnswers } from "../../domain/answerChecker";
 import {
@@ -192,7 +193,7 @@ const ExercisePage = () => {
 
   // TODO: better loading state
   if (!exercise) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   // Main content

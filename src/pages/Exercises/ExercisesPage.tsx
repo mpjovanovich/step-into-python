@@ -1,5 +1,6 @@
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 import { Link } from "react-router-dom";
+import Loading from "../../components/Loading";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { formatExerciseNumber } from "../../utils/formatters";
 import { useExercises } from "./hooks/useExercises";
@@ -20,8 +21,7 @@ const ExercisesPage = () => {
 
   // TODO: better loading state
   if (!exercises) {
-    return <div></div>;
-    // return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (

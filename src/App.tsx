@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
+import Loading from "./components/Loading";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
@@ -18,7 +19,7 @@ const AppContent = () => {
   }
 
   if (authLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
