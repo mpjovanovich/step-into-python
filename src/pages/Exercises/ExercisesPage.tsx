@@ -1,15 +1,17 @@
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useExercises } from "../../hooks/useExercises";
-import { type User } from "../../types/User";
+import { useAuthContext } from "../../contexts/AuthContext";
 import { formatExerciseNumber } from "../../utils/formatters";
+import { useExercises } from "./hooks/useExercises";
 
-interface ExercisesPageProps {
-  user: User;
-}
+export default function ExercisesPage() {
+  const { user } = useAuthContext();
+  // Should never happen because of ProtectedRoute logic
+  if (!user) {
+    throw new Error("Cannot load page: no user");
+  }
 
-export default function ExercisesPage({ user }: ExercisesPageProps) {
-  const { exercises, error: exercisesError } = useExercises(user?.id ?? null);
+  const { exercises, error: exercisesError } = useExercises(user.id);
 
   // TODO: better error handling
   if (exercisesError) {
@@ -24,13 +26,13 @@ export default function ExercisesPage({ user }: ExercisesPageProps) {
 
   return (
     <div style={{ padding: "0 2rem" }}>
-      <h1 className="title">Exercises: {user?.name}</h1>
+      <h1 className="title">Exercises: {user.name}</h1>
       <ul className="exercises-list">
         {exercises!.map((exercise) => (
           <li key={exercise.id}>
             <span className="inline-flex-wrapper">
               <span className="completed-exercise">
-                {user?.completedExercises.includes(exercise.id) ? (
+                {user.completedExercises.includes(exercise.id) ? (
                   <MdCheckCircle className="icon-complete" />
                 ) : (
                   <MdRadioButtonUnchecked className="icon-incomplete" />

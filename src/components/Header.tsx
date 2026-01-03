@@ -1,12 +1,12 @@
 import { signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext";
 import { auth } from "../firebase";
 
-interface HeaderProps {
-  isAuthenticated: boolean;
-}
+const Header = () => {
+  const { authUser } = useAuthContext();
+  const isAuthenticated = !!authUser;
 
-const Header = ({ isAuthenticated }: HeaderProps) => {
   return (
     <header className="header">
       {

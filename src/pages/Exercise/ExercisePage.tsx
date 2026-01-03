@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
 // Internal
+import { useAuthContext } from "../../contexts/AuthContext";
 import { checkAnswers } from "../../domain/answerChecker";
 import {
   getCodeForStep,
@@ -13,7 +14,6 @@ import { exerciseService } from "../../services/exerciseService";
 import { userService } from "../../services/userService";
 import { type Exercise as ExerciseType } from "../../types/Exercise";
 import { getStepType } from "../../types/StepType";
-import { type User } from "../../types/User";
 import styles from "./ExercisePage.module.css";
 import { ExerciseText } from "./components/ExerciseText";
 import { NavigationButtons } from "./components/NavigationButtons";
@@ -21,11 +21,13 @@ import { ProgramOutput } from "./components/ProgramOutput";
 import { useExerciseText } from "./hooks/useExerciseText";
 import { useNavigationButtons } from "./hooks/useNavigationButtons";
 
-interface ExercisePageProps {
-  user: User;
-}
+const ExercisePage = () => {
+  const { user } = useAuthContext();
+  // Should never happen because of ProtectedRoute logic
+  if (!user) {
+    throw new Error("Cannot load page: no user");
+  }
 
-const ExercisePage = ({ user }: ExercisePageProps) => {
   const { exerciseId } = useParams();
   const [exercise, setExercise] = useState<ExerciseType | null>(null);
   const [step, setStep] = useState(0);
@@ -37,53 +39,6 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
   const [checkAnswerResults, setCheckAnswerResults] = useState<
     (boolean | null)[]
   >([]);
-
-  /* ********************************************************
-   * STATE DERIVED FROM CURRENT STEP
-   ******************************************************** */
-  let codeForStep: CodeForStep | null = null;
-  if (exercise) {
-    codeForStep = getCodeForStep({
-      title: exercise?.title ?? "",
-      questionTemplate: exercise?.template ?? [],
-      currentStep: step,
-    });
-  }
-  const code = codeForStep?.code ?? "";
-  const copyCode = codeForStep?.copyCode ?? "";
-  const answers = codeForStep?.answers ?? [];
-  const descriptions = exercise?.descriptions[step];
-  const instructions = exercise?.instructions[step];
-  const stepType = getStepType(step, finalStep);
-
-  const getTitle = (): string => {
-    return exercise ? `${exercise.title}` : "Loading Program...";
-  };
-
-  // Format exercise text content based on current step
-  const { formattedDescription, formattedInstructions } = useExerciseText({
-    stepType,
-    description: descriptions,
-    instructions: instructions,
-  });
-
-  const { buttons, exerciseComplete } = useNavigationButtons({
-    stepType,
-    checkAnswerResults,
-    onPrevious: () => setStep(step - 1),
-    onNext: () => setStep(step + 1),
-    onSubmit: () => {
-      const completeExercise = async () => {
-        try {
-          await userService.completeExercise(user.id, exerciseId!);
-          setStep(() => step + 1);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      completeExercise();
-    },
-  });
 
   // Cheat mode to get the step from the URL
   // Used for development only
@@ -184,9 +139,61 @@ const ExercisePage = ({ user }: ExercisePageProps) => {
     }
   };
 
+  /* ********************************************************
+   * STATE DERIVED FROM CURRENT STEP
+   ******************************************************** */
+  let codeForStep: CodeForStep | null = null;
+  if (exercise) {
+    codeForStep = getCodeForStep({
+      title: exercise?.title ?? "",
+      questionTemplate: exercise?.template ?? [],
+      currentStep: step,
+    });
+  }
+  const code = codeForStep?.code ?? "";
+  const copyCode = codeForStep?.copyCode ?? "";
+  const answers = codeForStep?.answers ?? [];
+  const descriptions = exercise?.descriptions[step];
+  const instructions = exercise?.instructions[step];
+  const stepType = getStepType(step, finalStep);
+
+  const getTitle = (): string => {
+    return exercise ? `${exercise.title}` : "Loading Program...";
+  };
+
+  // Format exercise text content based on current step
+  const { formattedDescription, formattedInstructions } = useExerciseText({
+    stepType,
+    description: descriptions,
+    instructions: instructions,
+  });
+
+  const { buttons, exerciseComplete } = useNavigationButtons({
+    stepType,
+    checkAnswerResults,
+    onPrevious: () => setStep(step - 1),
+    onNext: () => setStep(step + 1),
+    onSubmit: () => {
+      const completeExercise = async () => {
+        try {
+          await userService.completeExercise(user.id, exerciseId!);
+          setStep(() => step + 1);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      completeExercise();
+    },
+  });
+
   /* ************************
    * UI
    ************************ */
+
+  // TODO: better loading state
+  if (!exercise) {
+    return <div>Loading...</div>;
+  }
 
   // Main content
   return (

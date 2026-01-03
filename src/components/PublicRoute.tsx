@@ -1,12 +1,13 @@
-import { type User as FirebaseUser } from "firebase/auth";
 import { Navigate } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext";
 
 interface PublicRouteProps {
-  authUser: FirebaseUser | null;
   children: React.ReactNode;
 }
 
-export function PublicRoute({ authUser, children }: PublicRouteProps) {
+export function PublicRoute({ children }: PublicRouteProps) {
+  const { authUser } = useAuthContext();
+
   if (authUser) {
     return <Navigate to="/" replace />;
   }

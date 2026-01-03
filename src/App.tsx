@@ -2,14 +2,15 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { PublicRoute } from "./components/PublicRoute";
-import { useAuth } from "./hooks/useAuth";
+import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
 import ExercisePage from "./pages/Exercise/ExercisePage";
 import ExercisesPage from "./pages/Exercises/ExercisesPage";
 import LoginPage from "./pages/Login/LoginPage";
 import "./styles/global.css";
 
-export default function App() {
-  const { authUser, authLoading, user, error } = useAuth();
+const AppContent = () => {
+  // Must be inside AuthProvider, which is why we have this sub-component
+  const { authLoading, error } = useAuthContext();
 
   // TODO: better error handling
   if (error) {
@@ -23,13 +24,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
-        <Header isAuthenticated={!!authUser} />
+        <Header />
         <Routes>
           {/* Public routes */}
           <Route
             path="/login"
             element={
-              <PublicRoute authUser={authUser}>
+              <PublicRoute>
                 <LoginPage />
               </PublicRoute>
             }
@@ -39,18 +40,16 @@ export default function App() {
           <Route
             path="/exercises"
             element={
-              <ProtectedRoute authUser={authUser}>
-                {/* TODO: get rid of user prop */}
-                {user && <ExercisesPage user={user} />}
+              <ProtectedRoute>
+                <ExercisesPage />
               </ProtectedRoute>
             }
           />
           <Route
             path="/exercise/:exerciseId"
             element={
-              <ProtectedRoute authUser={authUser}>
-                {/* TODO: get rid of user prop */}
-                {user && <ExercisePage user={user} />}
+              <ProtectedRoute>
+                <ExercisePage />
               </ProtectedRoute>
             }
           />
@@ -60,5 +59,13 @@ export default function App() {
         </Routes>
       </div>
     </BrowserRouter>
+  );
+};
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

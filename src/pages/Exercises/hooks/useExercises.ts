@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react";
-import { exerciseService } from "../services/exerciseService";
-import { type Exercise } from "../types/Exercise";
+import { exerciseService } from "../../../services/exerciseService";
+import { type Exercise } from "../../../types/Exercise";
 
 interface ExercisesState {
   exercises: Exercise[] | null;
   error: Error | null;
 }
 
-export function useExercises(userId: string | null): ExercisesState {
+export function useExercises(userId: string): ExercisesState {
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!userId) {
-      setExercises(null);
-      return;
-    }
-
     const fetchExercises = async () => {
       try {
         const exercises = await exerciseService.fetchAll();
