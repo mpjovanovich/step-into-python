@@ -1,6 +1,11 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
     // Exercises collection - authenticated users can read
     match /exercises/{exerciseId} {
       allow read: if request.auth != null;

@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
-    "deploy": "firebase deploy",
     "dev": "vite",
+    "firebase:deploy": "firebase deploy",
+    "firebase:emulate": "firebase emulators:start",
+    "firebase:emulate:firestore": "firebase emulators:start --only firestore",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:firestore": "vitest run firestore.rules.test.js"
   },
   "dependencies": {
     "firebase": "^10.14.1",
@@ -23,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@firebase/testing": "^0.20.11",
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
