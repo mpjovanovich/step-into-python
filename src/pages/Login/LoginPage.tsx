@@ -1,35 +1,129 @@
-import { EmailAuthProvider } from "firebase/auth";
-import * as firebaseui from "firebaseui";
-import "firebaseui/dist/firebaseui.css";
-import { useEffect } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
 import { auth } from "../../firebase";
 
 const LoginPage = () => {
-  useEffect(() => {
-    const ui =
-      firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-    ui.start("#firebaseui-auth-container", {
-      signInOptions: [
-        {
-          provider: EmailAuthProvider.PROVIDER_ID,
-          requireDisplayName: false,
-          signInMethod: EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD,
-          disableSignUp: {
-            status: true,
-          },
-        },
-      ],
-      signInSuccessUrl: "/",
-      signInFlow: "redirect",
-      tosUrl: undefined,
-      privacyPolicyUrl: undefined,
-    });
-  }, []);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
+    try {
+      // The useAuth hook has an onAuthStateChanged listener waiting for changes
+      // to the auth state. It will update the authUser, and from there the
+      // Navigation logic in App.tsx will navigate to the home page.
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err: any) {
+      // Handle specific Firebase auth errors
+      let errorMessage = "Failed to sign in. Please try again.";
+
+      if (
+        err.code === "auth/user-not-found" ||
+        err.code === "auth/wrong-password" ||
+        err.code === "auth/invalid-email"
+      ) {
+        errorMessage = "Invalid email or password.";
+      } else if (err.code === "auth/too-many-requests") {
+        errorMessage = "Too many failed attempts. Please try again later.";
+      }
+
+      setError(errorMessage);
+      setLoading(false);
+    }
+  };
+
+  // TODO: extract styles to a CSS file.
   return (
-    <div style={{ padding: "2rem" }}>
-      <div id="firebaseui-auth-container"></div>
+    <div style={{ padding: "2rem", maxWidth: "400px", margin: "0 auto" }}>
+      <h1 style={{ marginBottom: "1.5rem", color: "white" }}>Sign In</h1>
+
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: "1rem" }}>
+          <label
+            htmlFor="email"
+            style={{ display: "block", color: "white", marginBottom: "0.5rem" }}
+          >
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading}
+            style={{
+              width: "100%",
+              padding: "0.75rem",
+              fontSize: "1rem",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "1rem" }}>
+          <label
+            htmlFor="password"
+            style={{ display: "block", color: "white", marginBottom: "0.5rem" }}
+          >
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={loading}
+            style={{
+              width: "100%",
+              padding: "0.75rem",
+              fontSize: "1rem",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+        {error && (
+          <div
+            style={{
+              padding: "0.75rem",
+              marginBottom: "1rem",
+              backgroundColor: "#fee",
+              color: "#c33",
+              borderRadius: "4px",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            width: "100%",
+            padding: "0.75rem",
+            fontSize: "1rem",
+            backgroundColor: loading ? "#ccc" : "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
+        >
+          {loading ? "Signing in..." : "Sign In"}
+        </button>
+      </form>
     </div>
   );
 };

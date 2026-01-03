@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "firebase": "^10.14.1",
-    "firebaseui": "^6.1.0",
     "node": "^24.12.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

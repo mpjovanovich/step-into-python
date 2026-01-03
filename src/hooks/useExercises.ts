@@ -1,0 +1,36 @@
+import { useEffect, useState } from "react";
+import { exerciseService } from "../services/exerciseService";
+import { type Exercise } from "../types/Exercise";
+
+interface ExercisesState {
+  exercises: Exercise[] | null;
+  error: Error | null;
+}
+
+export function useExercises(userId: string | null): ExercisesState {
+  const [exercises, setExercises] = useState<Exercise[] | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!userId) {
+      setExercises(null);
+      return;
+    }
+
+    const fetchExercises = async () => {
+      try {
+        const exercises = await exerciseService.fetchAll();
+        setExercises(exercises);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch exercises")
+        );
+        setExercises(null);
+      }
+    };
+
+    fetchExercises();
+  }, [userId]);
+
+  return { exercises, error };
+}

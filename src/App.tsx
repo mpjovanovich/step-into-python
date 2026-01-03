@@ -1,49 +1,62 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
 import Header from "./components/Header";
-import { useAppData } from "./hooks/useAppData";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { PublicRoute } from "./components/PublicRoute";
+import { useAuth } from "./hooks/useAuth";
 import ExercisePage from "./pages/Exercise/ExercisePage";
 import ExercisesPage from "./pages/Exercises/ExercisesPage";
 import LoginPage from "./pages/Login/LoginPage";
 import "./styles/global.css";
 
 export default function App() {
-  const { isReady, authUser, user, exercises } = useAppData();
+  const { authUser, authLoading, user, error } = useAuth();
 
-  if (!isReady) {
-    return null;
+  // TODO: better error handling
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
-  const isAuthenticated = !!authUser;
+  if (authLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <BrowserRouter>
       <div className="app-container">
-        <Header isAuthenticated={isAuthenticated} />
+        <Header isAuthenticated={!!authUser} />
         <Routes>
-          {isAuthenticated ? (
-            <>
-              {/* PROTECTED ROUTES */}
-              {/* Exercises page is root route */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-              <Route path="/login" element={<Navigate to="/" replace />} />
-              <Route
-                path="/"
-                element={<ExercisesPage user={user!} exercises={exercises!} />}
-              />
-              {/* Exercise page */}
-              <Route
-                path="/exercise/:exerciseId"
-                element={<ExercisePage user={user!} />}
-              />
-            </>
-          ) : (
-            <>
-              {/* PUBLIC ROUTES */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </>
-          )}
+          {/* Public routes */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute authUser={authUser}>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+
+          {/* Protected routes */}
+          <Route
+            path="/exercises"
+            element={
+              <ProtectedRoute authUser={authUser}>
+                {/* TODO: get rid of user prop */}
+                {user && <ExercisesPage user={user} />}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercise/:exerciseId"
+            element={
+              <ProtectedRoute authUser={authUser}>
+                {/* TODO: get rid of user prop */}
+                {user && <ExercisePage user={user} />}
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Convenience redirect for the root path */}
+          <Route path="*" element={<Navigate to="/exercises" replace />} />
         </Routes>
       </div>
     </BrowserRouter>

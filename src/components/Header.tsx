@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 
 interface HeaderProps {
@@ -11,7 +11,6 @@ const Header = ({ isAuthenticated }: HeaderProps) => {
     <header className="header">
       {
         <nav>
-          {/* TODO: This is really sparse... need a more subtle way to allow logout */}
           <Link className="app-title" to="/">
             Step Into Python
           </Link>
