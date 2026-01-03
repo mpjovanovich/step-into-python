@@ -8,7 +8,6 @@
     "dev": "vite",
     "firebase:deploy": "firebase deploy",
     "firebase:emulate": "firebase emulators:start",
-    "firebase:emulate:firestore": "firebase emulators:start --only firestore",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
