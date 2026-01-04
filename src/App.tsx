@@ -64,8 +64,20 @@ const AppContent = () => {
 };
 
 export default function App() {
+  const useEmulator = import.meta.env.VITE_USE_EMULATOR === "true";
   return (
     <AuthProvider>
+      {useEmulator && (
+        <div
+          style={{
+            background: "orange",
+            textAlign: "center",
+            fontSize: "12px",
+          }}
+        >
+          ⚠️ EMULATOR MODE: Local Data Only
+        </div>
+      )}
       <AppContent />
     </AuthProvider>
   );

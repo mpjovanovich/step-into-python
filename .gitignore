@@ -29,7 +29,7 @@ firebase-debug.log*
 firebase.config.ts
 
 # Config files and secrets
-.env*
+.env.local
 *.key
 *.pem
 credentials.json
