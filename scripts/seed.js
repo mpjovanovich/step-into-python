@@ -1,9 +1,8 @@
 import admin from "firebase-admin";
 
-if (!process.env.FIRESTORE_EMULATOR_HOST) {
-  throw new Error("This script should only be run in development!");
-}
-
+// This is what sets the script to run against the emulator.
+// Without this, the script will run against the production database.
+// Don't do this.
 process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
 process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
 
