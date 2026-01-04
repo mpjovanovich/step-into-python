@@ -1,6 +1,6 @@
 // React and external libraries
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 // Internal
 import Loading from "../../components/Loading";
@@ -41,41 +41,26 @@ const ExercisePage = () => {
     (boolean | null)[]
   >([]);
 
-  // Cheat mode to get the step from the URL
-  // Used for development only
-  const [searchParams] = useSearchParams();
-  const stepParam = searchParams.get("step");
-
   /* ************************
    * EFFECTS
    ************************ */
   // Fetch the exercise on mount.
   useEffect(() => {
     const fetchExercise = async () => {
-      if (exerciseId === "preview") {
-        // Preview mode for development. We'll never be here in prod.
-        // This goes with the preview script/server.
-        await fetchPreviewExercise();
-        return;
+      try {
+        const exerciseData = await exerciseService.fetchById(exerciseId!);
+        if (exerciseData) {
+          setExercise(exerciseData);
+        } else {
+          console.error("Exercise not found in Firestore");
+        }
+      } catch (err) {
+        console.error("Error fetching Firestore exercise:", err);
       }
-
-      // Normal prod exercise fetch
-      await fetchFirestoreExercise();
     };
 
     fetchExercise();
   }, [exerciseId]);
-
-  // Cheat mode to set the step from the URL
-  // Used for development only
-  useEffect(() => {
-    if (exercise && stepParam !== null) {
-      const requestedStep = parseInt(stepParam, 10);
-      if (!isNaN(requestedStep)) {
-        setStep(requestedStep);
-      }
-    }
-  }, [exercise, stepParam]);
 
   // Set the appropriate number of input fields for the user's responses based
   // on the number of answers in the exercise.
@@ -91,54 +76,6 @@ const ExercisePage = () => {
       setCheckAnswerResults(checkAnswers(userAnswers, answers));
     }
   }, [userAnswers]);
-
-  /* ************************
-   * HELPERS
-   ************************ */
-  // Development fetch from preview server
-  const fetchPreviewExercise = async () => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const filePath = params.get("path");
-
-      // Die hard if no file path is provided
-      if (!filePath) {
-        throw new Error("No file path provided for preview");
-      }
-
-      // Fetch from the preview server API
-      const response = await fetch(
-        `http://localhost:3001/api/exercise?path=${encodeURIComponent(
-          filePath
-        )}`
-      );
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || `Failed to load exercise: ${response.statusText}`
-        );
-      }
-
-      const exerciseData = await response.json();
-      setExercise(exerciseData as ExerciseType);
-    } catch (err) {
-      console.error("Error fetching preview exercise:", err);
-    }
-  };
-
-  // Production fetch from Firestore
-  const fetchFirestoreExercise = async () => {
-    try {
-      const exerciseData = await exerciseService.fetchById(exerciseId!);
-      if (exerciseData) {
-        setExercise(exerciseData);
-      } else {
-        console.error("Exercise not found in Firestore");
-      }
-    } catch (err) {
-      console.error("Error fetching Firestore exercise:", err);
-    }
-  };
 
   /* ********************************************************
    * STATE DERIVED FROM CURRENT STEP
