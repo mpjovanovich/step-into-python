@@ -7,10 +7,9 @@
     "build": "tsc -b && vite build",
     "dev": "vite",
     "deploy": "firebase deploy",
-    "emulators": "firebase emulators:start",
+    "emulators": "firebase emulators:start  --import=./seed",
     "lint": "eslint .",
     "preview": "vite preview",
-    "seed": "node scripts/seed.js",
     "test": "vitest",
     "test:firestore": "vitest run --config vitest.firestore.config.ts"
   },
