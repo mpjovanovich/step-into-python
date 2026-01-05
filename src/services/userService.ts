@@ -1,12 +1,9 @@
 import {
   Firestore,
   arrayUnion,
-  collection,
   doc,
   onSnapshot,
-  query,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import type { User } from "../types/User";
@@ -15,7 +12,7 @@ export interface UserService {
   completeExercise(userId: string, exerciseId: string): Promise<void>;
 
   subscribeToUser(
-    email: string,
+    userId: string,
     onUser: (user: User | null) => void
   ): () => void;
 }
@@ -29,15 +26,14 @@ function createUserService(db: Firestore): UserService {
     },
 
     subscribeToUser(
-      email: string,
+      userId: string,
       onUser: (user: User | null) => void
     ): () => void {
-      const q = query(collection(db, "users"), where("email", "==", email));
-      return onSnapshot(q, (snapshot) => {
+      const userDocRef = doc(db, "users", userId);
+      return onSnapshot(userDocRef, (snapshot) => {
         let user: User | null = null;
-        if (!snapshot.empty) {
-          const userDoc = snapshot.docs[0];
-          user = { ...userDoc.data(), id: userDoc.id } as User;
+        if (snapshot.exists()) {
+          user = { ...snapshot.data(), id: snapshot.id } as User;
         }
         onUser(user);
       });

@@ -47,7 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (firebaseUser && firebaseUser.email) {
           // Set up real-time listener for user data using userService
           unsubscribeUser = userService.subscribeToUser(
-            firebaseUser.email,
+            firebaseUser.uid,
             (userData: User | null) => {
               if (!userData) {
                 console.error("No matching user found in the database");
