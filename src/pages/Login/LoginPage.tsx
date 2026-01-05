@@ -42,30 +42,32 @@ const LoginPage = () => {
     <div style={{ padding: "2rem", maxWidth: "400px", margin: "0 auto" }}>
       <h1 style={{ marginBottom: "1.5rem", color: "white" }}>Sign In</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="on">
         <div style={{ marginBottom: "1rem" }}>
           <label
             htmlFor="email"
             style={{ display: "block", color: "white", marginBottom: "0.5rem" }}
           >
             Email
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              required
+              disabled={loading}
+              style={{
+                width: "100%",
+                padding: "0.75rem",
+                marginTop: "0.5rem",
+                fontSize: "1rem",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                boxSizing: "border-box",
+              }}
+            />
           </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              fontSize: "1rem",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              boxSizing: "border-box",
-            }}
-          />
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
@@ -74,23 +76,25 @@ const LoginPage = () => {
             style={{ display: "block", color: "white", marginBottom: "0.5rem" }}
           >
             Password
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+              disabled={loading}
+              style={{
+                width: "100%",
+                padding: "0.75rem",
+                marginTop: "0.5rem",
+                fontSize: "1rem",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                boxSizing: "border-box",
+              }}
+            />
           </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              fontSize: "1rem",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              boxSizing: "border-box",
-            }}
-          />
         </div>
 
         {error && (
