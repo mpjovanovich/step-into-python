@@ -15,7 +15,13 @@ const Header = () => {
             Step Into Python
           </Link>
           {isAuthenticated && (
-            <button className="logout-button" onClick={() => signOut(auth)}>
+            <button
+              className="logout-button"
+              onClick={() => {
+                signOut(auth);
+                // Clear the cache
+              }}
+            >
               Logout
             </button>
           )}

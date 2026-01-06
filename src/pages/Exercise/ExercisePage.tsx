@@ -11,6 +11,7 @@ import {
   getStepCount,
   type CodeForStep,
 } from "../../domain/templateParser";
+// TODO: Swap to exercise cache
 import { exerciseService } from "../../services/exerciseService";
 import { userService } from "../../services/userService";
 import { type Exercise as ExerciseType } from "../../types/Exercise";
@@ -46,6 +47,7 @@ const ExercisePage = () => {
    ************************ */
   // Fetch the exercise on mount.
   useEffect(() => {
+    // TODO: Swap to exercise cache
     const fetchExercise = async () => {
       try {
         const exerciseData = await exerciseService.fetchById(exerciseId!);
