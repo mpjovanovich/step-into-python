@@ -64,10 +64,9 @@ const AppContent = () => {
 };
 
 export default function App() {
-  const useEmulator = import.meta.env.VITE_USE_EMULATOR === "true";
   return (
     <AuthProvider>
-      {useEmulator && (
+      {import.meta.env.DEV && (
         <div
           style={{
             background: "orange",

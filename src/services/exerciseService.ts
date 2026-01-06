@@ -26,13 +26,27 @@ function createExercise(doc: DocumentSnapshot<DocumentData>): Exercise {
 
 function createExerciseService(db: Firestore): ExerciseService {
   const exerciseService = {
-    async fetchById(exerciseId: string): Promise<Exercise | null> {
+    async fetchByIdFromDatabase(exerciseId: string): Promise<Exercise | null> {
       const exerciseRef = doc(db, "exercises", exerciseId);
       const snap = await getDoc(exerciseRef);
       if (!snap.exists()) {
         return null;
       }
       return createExercise(snap);
+    },
+
+    async fetchDevExercise(): Promise<Exercise | null> {
+      const { fetchDevExercise } = await import(
+        "../../devTools/exerciseLoader"
+      );
+      return fetchDevExercise();
+    },
+
+    async fetchById(exerciseId: string): Promise<Exercise | null> {
+      if (import.meta.env.DEV && exerciseId === "debug") {
+        return this.fetchDevExercise();
+      }
+      return this.fetchByIdFromDatabase(exerciseId);
     },
 
     async fetchAll(): Promise<Exercise[]> {

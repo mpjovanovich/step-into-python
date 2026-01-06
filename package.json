@@ -10,7 +10,7 @@
     "emulators": "firebase emulators:start  --import=./seed",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
     "test:firestore": "vitest run --config vitest.firestore.config.ts"
   },
   "dependencies": {

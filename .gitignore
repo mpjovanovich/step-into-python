@@ -32,4 +32,4 @@ firebase.config.ts
 *.pem
 credentials.json
 *.local
-dev/
+devTools/data/
