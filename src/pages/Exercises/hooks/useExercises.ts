@@ -9,9 +9,9 @@ interface ExercisesState {
 }
 
 export function useExercises(userId: string): ExercisesState {
+  const exerciseCache = createExerciseCache(exerciseService, localStorage);
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const exerciseCache = createExerciseCache(exerciseService, localStorage);
 
   useEffect(() => {
     const fetchExercises = async () => {
