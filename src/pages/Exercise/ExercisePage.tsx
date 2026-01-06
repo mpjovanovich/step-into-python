@@ -25,7 +25,6 @@ const ExercisePage = () => {
   }
 
   const { exerciseId } = useParams();
-  // const [exercise, setExercise] = useState<ExerciseType | null>(null);
   const [step, setStep] = useState(0);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
   const [checkAnswerResults, setCheckAnswerResults] = useState<
