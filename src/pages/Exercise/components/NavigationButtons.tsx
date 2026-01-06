@@ -4,6 +4,7 @@ import { type ButtonState } from "../hooks/useNavigationButtons";
 
 interface NavigationButtonsProps {
   buttons: ButtonState[];
+  canFocus: boolean;
   exerciseComplete: boolean;
 }
 
@@ -11,6 +12,7 @@ interface NavigationButtonsProps {
 // There should be no logic here.
 const NavigationButtons = ({
   buttons,
+  canFocus,
   exerciseComplete,
 }: NavigationButtonsProps) => {
   return (
@@ -23,6 +25,7 @@ const NavigationButtons = ({
             className={styles.actionButton}
             onClick={button.onClick}
             disabled={!button.enabled}
+            autoFocus={canFocus && button.hasFocus}
           >
             {button.text}
           </button>
@@ -30,7 +33,9 @@ const NavigationButtons = ({
       <>
         {exerciseComplete && (
           <Link to="/" style={{ textDecoration: "none" }}>
-            <button className={styles.actionButton}>Home</button>
+            <button className={styles.actionButton} autoFocus={true}>
+              Home
+            </button>
           </Link>
         )}
       </>

@@ -14,6 +14,7 @@ export type ButtonState = {
   onClick: () => void;
   enabled: boolean;
   visible: boolean;
+  hasFocus: boolean;
 };
 
 export function useNavigationButtons({
@@ -34,6 +35,7 @@ export function useNavigationButtons({
     onClick: onPrevious,
     enabled: stepType === StepType.EXERCISE || stepType === StepType.SUBMIT,
     visible: true,
+    hasFocus: false,
   });
 
   // Visible during start and exercise steps.
@@ -41,21 +43,36 @@ export function useNavigationButtons({
   buttons.push({
     text: "Next",
     onClick: onNext,
-    enabled: allCorrect(checkAnswerResults),
+    enabled:
+      (stepType === StepType.START || stepType === StepType.EXERCISE) &&
+      allCorrect(checkAnswerResults),
     visible: stepType === StepType.START || stepType === StepType.EXERCISE,
+    hasFocus: false,
   });
 
   // Visible and enabled only on submit step.
   buttons.push({
     text: "Submit",
     onClick: onSubmit,
-    enabled: true,
+    enabled: stepType === StepType.SUBMIT,
     visible: stepType === StepType.SUBMIT,
+    hasFocus: false,
   });
 
   // Used to display a link to the home page. We can't do this as a button
   // because of the navigation requirements.
   const exerciseComplete = stepType === StepType.COMPLETE;
+
+  // Put focus on the last visible button if that button is enabled.
+  const lastVisibleButtonIndex = buttons.findLastIndex(
+    (button: ButtonState) => button.visible
+  );
+  if (
+    lastVisibleButtonIndex !== -1 &&
+    buttons[lastVisibleButtonIndex].enabled
+  ) {
+    buttons[lastVisibleButtonIndex].hasFocus = true;
+  }
 
   return { buttons, exerciseComplete };
 }

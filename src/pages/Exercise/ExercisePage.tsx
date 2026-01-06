@@ -125,6 +125,7 @@ const ExercisePage = () => {
             exercise && (
               <NavigationButtons
                 buttons={buttons}
+                canFocus={answers.length === 0}
                 exerciseComplete={exerciseComplete}
               />
             )

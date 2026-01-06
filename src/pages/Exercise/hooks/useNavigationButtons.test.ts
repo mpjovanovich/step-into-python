@@ -73,7 +73,7 @@ describe("navigation buttons", () => {
   // Note that "finalStep" is the final step number from the template, so in
   // this case it would be 3.
 
-  describe("visible and enabled states:", () => {
+  describe("visible, enabled, and focus states:", () => {
     it("on start step: previous = visible disabled, next = visible enabled, submit = invisible", () => {
       const { buttons } = useNavigationButtons({
         stepType: StepType.START,
@@ -83,12 +83,17 @@ describe("navigation buttons", () => {
         onSubmit: () => {},
       });
 
+      // const { previous, next, submit } = getButtonsByText(buttons);
       const { previous, next, submit } = getButtonsByText(buttons);
       expect(previous.visible).toBe(true);
       expect(previous.enabled).toBe(false);
+      expect(previous.hasFocus).toBe(false);
       expect(next.visible).toBe(true);
       expect(next.enabled).toBe(true);
+      expect(next.hasFocus).toBe(true);
       expect(submit.visible).toBe(false);
+      expect(submit.enabled).toBe(false);
+      expect(submit.hasFocus).toBe(false);
     });
 
     it("on template step, no answers required for step: previous = visible enabled, next = visible enabled, submit = invisible", () => {
@@ -103,9 +108,13 @@ describe("navigation buttons", () => {
       const { previous, next, submit } = getButtonsByText(buttons);
       expect(previous.visible).toBe(true);
       expect(previous.enabled).toBe(true);
+      expect(previous.hasFocus).toBe(false);
       expect(next.visible).toBe(true);
       expect(next.enabled).toBe(true);
+      expect(next.hasFocus).toBe(true);
       expect(submit.visible).toBe(false);
+      expect(submit.enabled).toBe(false);
+      expect(submit.hasFocus).toBe(false);
     });
 
     it("on template step, all correct answers: previous = visible enabled, next = visible enabled, submit = invisible", () => {
@@ -120,9 +129,13 @@ describe("navigation buttons", () => {
       const { previous, next, submit } = getButtonsByText(buttons);
       expect(previous.visible).toBe(true);
       expect(previous.enabled).toBe(true);
+      expect(previous.hasFocus).toBe(false);
       expect(next.visible).toBe(true);
       expect(next.enabled).toBe(true);
+      expect(next.hasFocus).toBe(true);
       expect(submit.visible).toBe(false);
+      expect(submit.enabled).toBe(false);
+      expect(submit.hasFocus).toBe(false);
     });
 
     it("on template step, contains incorrect answers: previous = visible enabled, next = visible disabled, submit = invisible", () => {
@@ -137,9 +150,13 @@ describe("navigation buttons", () => {
       const { previous, next, submit } = getButtonsByText(buttons);
       expect(previous.visible).toBe(true);
       expect(previous.enabled).toBe(true);
+      expect(previous.hasFocus).toBe(false);
       expect(next.visible).toBe(true);
       expect(next.enabled).toBe(false);
+      expect(next.hasFocus).toBe(false);
       expect(submit.visible).toBe(false);
+      expect(submit.enabled).toBe(false);
+      expect(submit.hasFocus).toBe(false);
     });
 
     it("on submit step: previous = visible enabled, next = invisible, submit = visible enabled", () => {
@@ -154,9 +171,13 @@ describe("navigation buttons", () => {
       const { previous, next, submit } = getButtonsByText(buttons);
       expect(previous.visible).toBe(true);
       expect(previous.enabled).toBe(true);
+      expect(previous.hasFocus).toBe(false);
       expect(next.visible).toBe(false);
+      expect(next.enabled).toBe(false);
+      expect(next.hasFocus).toBe(false);
       expect(submit.visible).toBe(true);
       expect(submit.enabled).toBe(true);
+      expect(submit.hasFocus).toBe(true);
     });
 
     it("on complete step: previous = visible disabled, next = invisible, submit = invisible", () => {
@@ -171,8 +192,13 @@ describe("navigation buttons", () => {
       const { previous, next, submit } = getButtonsByText(buttons);
       expect(previous.visible).toBe(true);
       expect(previous.enabled).toBe(false);
+      expect(previous.hasFocus).toBe(false);
       expect(next.visible).toBe(false);
+      expect(next.enabled).toBe(false);
+      expect(next.hasFocus).toBe(false);
       expect(submit.visible).toBe(false);
+      expect(submit.enabled).toBe(false);
+      expect(submit.hasFocus).toBe(false);
     });
   });
 

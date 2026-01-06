@@ -18,6 +18,10 @@
   cursor: not-allowed;
 }
 
+.actionButton:focus {
+  outline: 2px solid #b3a5d6;
+}
+
 .buttonContainer {
   display: flex;
   align-items: center;
