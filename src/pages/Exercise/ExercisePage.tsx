@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 // Internal
+import { createExerciseCache } from "../../cache/exerciseCache";
 import Loading from "../../components/Loading";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { checkAnswers } from "../../domain/answerChecker";
@@ -11,7 +12,6 @@ import {
   getStepCount,
   type CodeForStep,
 } from "../../domain/templateParser";
-// TODO: Swap to exercise cache
 import { exerciseService } from "../../services/exerciseService";
 import { userService } from "../../services/userService";
 import { type Exercise as ExerciseType } from "../../types/Exercise";
@@ -41,26 +41,21 @@ const ExercisePage = () => {
   const [checkAnswerResults, setCheckAnswerResults] = useState<
     (boolean | null)[]
   >([]);
+  const exerciseCache = createExerciseCache(exerciseService, localStorage);
 
   /* ************************
    * EFFECTS
    ************************ */
   // Fetch the exercise on mount.
   useEffect(() => {
-    // TODO: Swap to exercise cache
     const fetchExercise = async () => {
-      try {
-        const exerciseData = await exerciseService.fetchById(exerciseId!);
-        if (exerciseData) {
-          setExercise(exerciseData);
-        } else {
-          console.error("Exercise not found in Firestore");
-        }
-      } catch (err) {
-        console.error("Error fetching Firestore exercise:", err);
+      const exercise = await exerciseCache.fetchById(exerciseId!);
+      if (exercise) {
+        setExercise(exercise);
+      } else {
+        console.error("Exercise not found.");
       }
     };
-
     fetchExercise();
   }, [exerciseId]);
 
