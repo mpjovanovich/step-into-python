@@ -1,25 +1,19 @@
 // React and external libraries
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 // Internal
-import { createExerciseCache } from "../../cache/exerciseCache";
 import Loading from "../../components/Loading";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { checkAnswers } from "../../domain/answerChecker";
-import {
-  getCodeForStep,
-  getStepCount,
-  type CodeForStep,
-} from "../../domain/templateParser";
-import { exerciseService } from "../../services/exerciseService";
+import { getCodeForStep, type CodeForStep } from "../../domain/templateParser";
 import { userService } from "../../services/userService";
-import { type Exercise as ExerciseType } from "../../types/Exercise";
 import { getStepType } from "../../types/StepType";
 import styles from "./ExercisePage.module.css";
 import ExerciseText from "./components/ExerciseText";
 import NavigationButtons from "./components/NavigationButtons";
 import ProgramOutput from "./components/ProgramOutput";
+import { useExercise } from "./hooks/useExercise";
 import { useExerciseText } from "./hooks/useExerciseText";
 import { useNavigationButtons } from "./hooks/useNavigationButtons";
 
@@ -31,33 +25,21 @@ const ExercisePage = () => {
   }
 
   const { exerciseId } = useParams();
-  const [exercise, setExercise] = useState<ExerciseType | null>(null);
+  // const [exercise, setExercise] = useState<ExerciseType | null>(null);
   const [step, setStep] = useState(0);
-  const finalStep = useMemo(() => {
-    if (!exercise) return 0;
-    return getStepCount(exercise.template);
-  }, [exercise]);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
   const [checkAnswerResults, setCheckAnswerResults] = useState<
     (boolean | null)[]
   >([]);
-  const exerciseCache = createExerciseCache(exerciseService, localStorage);
 
   /* ************************
    * EFFECTS
    ************************ */
   // Fetch the exercise on mount.
-  useEffect(() => {
-    const fetchExercise = async () => {
-      const exercise = await exerciseCache.fetchById(exerciseId!);
-      if (exercise) {
-        setExercise(exercise);
-      } else {
-        console.error("Exercise not found.");
-      }
-    };
-    fetchExercise();
-  }, [exerciseId]);
+  const { exercise, finalStep, error } = useExercise(exerciseId!);
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   // Set the appropriate number of input fields for the user's responses based
   // on the number of answers in the exercise.

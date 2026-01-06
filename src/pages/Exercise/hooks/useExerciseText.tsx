@@ -49,10 +49,10 @@ function formatDescription(
       return (
         <>
           <p>
-            your program is complete. try copying and pasting it into a python
+            Your program is complete. Try copying and pasting it into a python
             interpreter to see if it works.
           </p>
-          <p>make sure to click submit!</p>
+          <p>Make sure to click Submit!</p>
         </>
       );
 
