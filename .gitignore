@@ -10,7 +10,6 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-*.local
 
 # Editor directories and files
 .vscode/*
@@ -29,7 +28,8 @@ firebase-debug.log*
 firebase.config.ts
 
 # Config files and secrets
-.env.local
 *.key
 *.pem
 credentials.json
+*.local
+dev/
