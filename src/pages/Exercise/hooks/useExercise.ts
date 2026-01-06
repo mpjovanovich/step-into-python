@@ -21,11 +21,19 @@ export function useExercise(exerciseId: string): ExerciseState {
 
   useEffect(() => {
     const fetchExercise = async () => {
-      const exercise = await exerciseCache.fetchById(exerciseId!);
-      if (exercise) {
-        setExercise(exercise);
-      } else {
-        setError(new Error("Exercise not found."));
+      try {
+        const exercise = await exerciseCache.fetchById(exerciseId!);
+        if (exercise) {
+          setExercise(exercise);
+        } else {
+          setError(new Error("Exercise not found."));
+        }
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error
+            : new Error("Failed to fetch exercise.")
+        );
       }
     };
     fetchExercise();
