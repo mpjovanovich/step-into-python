@@ -2,14 +2,17 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ExercisePage from "../pages/Exercise/ExercisePage";
 import ExercisesPage from "../pages/Exercises/ExercisesPage";
 import LoginPage from "../pages/Login/LoginPage";
-import Header from "./Header";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 
-const Router = () => {
+const Router = ({
+  children,
+}: {
+  children?: React.ReactNode; //
+}) => {
   return (
     <BrowserRouter>
-      <Header />
+      {children}
       <Routes>
         {/* Public routes */}
         <Route
