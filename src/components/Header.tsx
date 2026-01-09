@@ -1,12 +1,12 @@
 import { signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
 import { createExerciseCache } from "../cache/exerciseCache";
-import { useAuthContext } from "../contexts/AuthContext";
 import { auth } from "../firebase";
+import { useAuth } from "../hooks/useAuth";
 import { exerciseService } from "../services/exerciseService";
 
 const Header = () => {
-  const { authUser } = useAuthContext();
+  const { authUser } = useAuth();
   const isAuthenticated = !!authUser;
   const exerciseCache = createExerciseCache(exerciseService, localStorage);
 

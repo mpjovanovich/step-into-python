@@ -3,15 +3,16 @@ import Header from "./components/Header";
 import Loading from "./components/Loading";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
-import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
+import { useAuth } from "./hooks/useAuth";
 import ExercisePage from "./pages/Exercise/ExercisePage";
 import ExercisesPage from "./pages/Exercises/ExercisesPage";
 import LoginPage from "./pages/Login/LoginPage";
+import { AuthProvider } from "./providers/AuthProvider";
 import "./styles/global.css";
 
 const AppContent = () => {
   // Must be inside AuthProvider, which is why we have this sub-component
-  const { authLoading, error } = useAuthContext();
+  const { authLoading, error } = useAuth();
 
   // TODO: better error handling
   if (error) {

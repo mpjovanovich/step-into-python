@@ -1,29 +1,26 @@
 import { onAuthStateChanged, type User as FirebaseUser } from "firebase/auth";
 import {
   createContext,
-  useContext,
   useEffect,
   useState,
-  type ReactNode,
+  type PropsWithChildren,
 } from "react";
 import { auth } from "../firebase";
 import { userService } from "../services/userService";
 import { type User } from "../types/User";
 
-interface AuthState {
+export interface AuthContextType {
   authUser: FirebaseUser | null;
   authLoading: boolean;
   user: User | null;
   error: Error | null;
 }
 
-const AuthContext = createContext<AuthState | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export function AuthProvider({ children }: AuthProviderProps) {
+export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
@@ -78,12 +75,4 @@ export function AuthProvider({ children }: AuthProviderProps) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuthContext(): AuthState {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuthContext must be used within an AuthProvider");
-  }
-  return context;
-}
+};

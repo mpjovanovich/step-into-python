@@ -4,9 +4,9 @@ import { useParams } from "react-router-dom";
 
 // Internal
 import Loading from "../../components/Loading";
-import { useAuthContext } from "../../contexts/AuthContext";
 import { checkAnswers } from "../../domain/answerChecker";
 import { getCodeForStep, type CodeForStep } from "../../domain/templateParser";
+import { useAuth } from "../../hooks/useAuth";
 import { userService } from "../../services/userService";
 import { getStepType } from "../../types/StepType";
 import styles from "./ExercisePage.module.css";
@@ -18,7 +18,7 @@ import { useExerciseText } from "./hooks/useExerciseText";
 import { useNavigationButtons } from "./hooks/useNavigationButtons";
 
 const ExercisePage = () => {
-  const { user } = useAuthContext();
+  const { user } = useAuth();
   // Should never happen because of ProtectedRoute logic
   if (!user) {
     throw new Error("Cannot load page: no user");

@@ -1,12 +1,12 @@
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Loading from "../../components/Loading";
-import { useAuthContext } from "../../contexts/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 import { formatExerciseNumber } from "../../utils/formatters";
 import { useExercises } from "./hooks/useExercises";
 
 const ExercisesPage = () => {
-  const { user } = useAuthContext();
+  const { user } = useAuth();
   // Should never happen because of ProtectedRoute logic
   if (!user) {
     throw new Error("Cannot load page: no user");
