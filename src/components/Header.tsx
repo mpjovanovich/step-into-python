@@ -12,24 +12,22 @@ const Header = () => {
 
   return (
     <header className="header">
-      {
-        <nav>
-          <Link className="app-title" to="/">
-            Step Into Python
-          </Link>
-          {isAuthenticated && (
-            <button
-              className="logout-button"
-              onClick={() => {
-                signOut(auth);
-                exerciseCache.clear();
-              }}
-            >
-              Logout
-            </button>
-          )}
-        </nav>
-      }
+      <nav>
+        <Link className="app-title" to="/">
+          Step Into Python
+        </Link>
+        {isAuthenticated && (
+          <button
+            className="logout-button"
+            onClick={() => {
+              signOut(auth);
+              exerciseCache.clear();
+            }}
+          >
+            Logout
+          </button>
+        )}
+      </nav>
     </header>
   );
 };
