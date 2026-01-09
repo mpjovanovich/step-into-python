@@ -1,9 +1,10 @@
-interface ExerciseTextProps {
+const ExerciseText = ({
+  description,
+  instructions,
+}: {
   description: React.ReactNode;
   instructions: React.ReactNode;
-}
-
-const ExerciseText = ({ description, instructions }: ExerciseTextProps) => {
+}) => {
   return (
     <>
       <h3>Description</h3>

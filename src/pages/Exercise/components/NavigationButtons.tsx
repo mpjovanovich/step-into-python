@@ -2,19 +2,17 @@ import { Link } from "react-router-dom";
 import styles from "../ExercisePage.module.css";
 import { type ButtonState } from "../hooks/useNavigationButtons";
 
-interface NavigationButtonsProps {
-  buttons: ButtonState[];
-  canFocus: boolean;
-  exerciseComplete: boolean;
-}
-
 // This is a dumb view component that renders the navigation buttons.
 // There should be no logic here.
 const NavigationButtons = ({
   buttons,
   canFocus,
   exerciseComplete,
-}: NavigationButtonsProps) => {
+}: {
+  buttons: ButtonState[];
+  canFocus: boolean;
+  exerciseComplete: boolean;
+}) => {
   return (
     <div className={styles.buttonContainer}>
       {buttons

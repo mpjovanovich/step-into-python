@@ -5,15 +5,6 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { BLANK_REGEX } from "../../../constants";
 import styles from "../ExercisePage.module.css";
 
-interface ProgramOutputProps {
-  code: string;
-  copyCode: string;
-  answers: string[];
-  userAnswers: string[];
-  setUserAnswers: (userAnswers: string[]) => void;
-  checkAnswerResults: (boolean | null)[];
-}
-
 const renderTemplate = (
   code: string,
   answers: string[],
@@ -84,7 +75,14 @@ const ProgramOutput = ({
   userAnswers,
   setUserAnswers,
   checkAnswerResults,
-}: ProgramOutputProps) => {
+}: {
+  code: string;
+  copyCode: string;
+  answers: string[];
+  userAnswers: string[];
+  setUserAnswers: (userAnswers: string[]) => void;
+  checkAnswerResults: (boolean | null)[];
+}) => {
   const [copyText, setCopyText] = useState("Copy");
 
   return (
