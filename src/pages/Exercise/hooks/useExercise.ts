@@ -10,8 +10,10 @@ interface ExerciseState {
   error: Error | null;
 }
 
+// Create cache once at module level
+const exerciseCache = createExerciseCache(exerciseService, localStorage);
+
 export function useExercise(exerciseId: string): ExerciseState {
-  const exerciseCache = createExerciseCache(exerciseService, localStorage);
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const finalStep = useMemo(() => {
@@ -22,7 +24,7 @@ export function useExercise(exerciseId: string): ExerciseState {
   useEffect(() => {
     const fetchExercise = async () => {
       try {
-        const exercise = await exerciseCache.fetchById(exerciseId!);
+        const exercise = await exerciseCache.fetchById(exerciseId);
         if (exercise) {
           setExercise(exercise);
         } else {

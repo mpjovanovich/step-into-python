@@ -22,7 +22,7 @@ export class Precondition {
     }
   }
 
-  static notEmptyArray(array: any[]) {
+  static notEmptyArray<T>(array: T[]) {
     if (array.length === 0) {
       throw new Error(this.MESSAGES.NOT_EMPTY_ARRAY);
     }

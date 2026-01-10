@@ -14,7 +14,7 @@ export function checkAnswers(
   userAnswers: string[],
   correctAnswers: string[]
 ): (boolean | null)[] {
-  Precondition.notEmptyArray(correctAnswers);
+  Precondition.notEmptyArray<string>(correctAnswers);
   Precondition.isTrue(userAnswers.length === correctAnswers.length);
 
   return correctAnswers.map((correct, i) => {

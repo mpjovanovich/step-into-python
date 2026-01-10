@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createExerciseCache } from "../../../cache/exerciseCache";
 import { exerciseService } from "../../../services/exerciseService";
 import { type Exercise } from "../../../types/Exercise";
@@ -9,7 +9,10 @@ interface ExercisesState {
 }
 
 export function useExercises(userId: string): ExercisesState {
-  const exerciseCache = createExerciseCache(exerciseService, localStorage);
+  const exerciseCache = useMemo(
+    () => createExerciseCache(exerciseService, localStorage),
+    []
+  );
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
@@ -27,7 +30,7 @@ export function useExercises(userId: string): ExercisesState {
     };
 
     fetchExercises();
-  }, [userId]);
+  }, [userId, exerciseCache]);
 
   return { exercises, error };
 }

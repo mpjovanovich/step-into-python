@@ -1,5 +1,5 @@
 // React and external libraries
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 // Internal
@@ -27,25 +27,24 @@ const ExercisePage = () => {
   const { exerciseId } = useParams();
   const [step, setStep] = useState(0);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  const [checkAnswerResults, setCheckAnswerResults] = useState<
-    (boolean | null)[]
-  >([]);
 
-  // Fetch the exercise; we have caching in place for exercise retrieval so no
-  // urgent need to memoize this.
+  // Fetch exercise data
   const { exercise, finalStep, error } = useExercise(exerciseId!);
   if (error) {
     throw error;
   }
 
-  let codeForStep: CodeForStep | null = null;
-  if (exercise) {
-    codeForStep = getCodeForStep({
-      title: exercise?.title ?? "",
-      questionTemplate: exercise?.template ?? [],
+  // Derive values from exercise and current step
+  const codeForStep = useMemo((): CodeForStep | null => {
+    if (!exercise) return null;
+    return getCodeForStep({
+      title: exercise.title,
+      questionTemplate: exercise.template,
       currentStep: step,
     });
-  }
+  }, [exercise, step]);
+
+  // Convenience variables from current exercise step and code
   const code = codeForStep?.code ?? "";
   const copyCode = codeForStep?.copyCode ?? "";
   const answers = codeForStep?.answers ?? [];
@@ -53,24 +52,18 @@ const ExercisePage = () => {
   const instructions = exercise?.instructions[step];
   const stepType = getStepType(step, finalStep);
 
-  // Set the appropriate number of input fields for the user's responses based
-  // on the number of answers in the exercise.
+  // Reset user answers when step changes
   useEffect(() => {
     setUserAnswers(Array(answers.length).fill(""));
-    setCheckAnswerResults(Array(answers.length).fill(null));
-  }, [step]);
+  }, [step, answers.length]);
 
-  // Check the user's answers against the correct answers; this will happen on
-  // keyup of input fields
-  useEffect(() => {
-    if (userAnswers.length > 0 && answers.length > 0) {
-      setCheckAnswerResults(checkAnswers(userAnswers, answers));
+  // Check the user's answers against the correct answers; compute as derived state
+  const checkAnswerResults = useMemo(() => {
+    if (userAnswers.length === 0 || answers.length === 0) {
+      return Array(answers.length).fill(null);
     }
-  }, [userAnswers]);
-
-  const getTitle = (): string => {
-    return exercise ? `${exercise.title}` : "Loading Program...";
-  };
+    return checkAnswers(userAnswers, answers);
+  }, [userAnswers, answers]);
 
   // Format exercise text content based on current step
   const { formattedDescription, formattedInstructions } = useExerciseText({
@@ -100,7 +93,6 @@ const ExercisePage = () => {
   /* ************************
    * UI
    ************************ */
-
   if (!exercise) {
     return <Loading />;
   }
@@ -108,23 +100,20 @@ const ExercisePage = () => {
   // Main content
   return (
     <div className={styles.exercise}>
-      <h1 className={"title"}>{getTitle()}</h1>
+      <h1 className={"title"}>
+        {exercise ? `${exercise.title}` : "Loading Program..."}
+      </h1>
       <div className={styles.container}>
         <div className={styles.instructions}>
           <ExerciseText
             description={formattedDescription}
             instructions={formattedInstructions}
           />
-          {
-            /* Don't show the buttons until we have an exercise loaded. */
-            exercise && (
-              <NavigationButtons
-                buttons={buttons}
-                canFocus={answers.length === 0}
-                exerciseComplete={exerciseComplete}
-              />
-            )
-          }
+          <NavigationButtons
+            buttons={buttons}
+            canFocus={answers.length === 0}
+            exerciseComplete={exerciseComplete}
+          />
         </div>
         <ProgramOutput
           code={code}

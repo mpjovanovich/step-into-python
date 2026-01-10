@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { auth } from "../../firebase";
@@ -18,18 +19,26 @@ const LoginPage = () => {
       // to the auth state. It will update the authUser, and from there the
       // Navigation logic in App.tsx will navigate to the home page.
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Handle specific Firebase auth errors
       let errorMessage = "Failed to sign in. Please try again.";
 
       if (
-        err.code === "auth/user-not-found" ||
-        err.code === "auth/wrong-password" ||
-        err.code === "auth/invalid-email"
+        err instanceof FirebaseError &&
+        err.code === "auth/too-many-requests"
+      ) {
+        errorMessage = "Too many failed attempts. Please try again later.";
+      } else if (
+        err &&
+        typeof err === "object" &&
+        "code" in err &&
+        (err.code === "auth/user-not-found" ||
+          err.code === "auth/wrong-password" ||
+          err.code === "auth/invalid-email")
       ) {
         errorMessage = "Invalid email or password.";
-      } else if (err.code === "auth/too-many-requests") {
-        errorMessage = "Too many failed attempts. Please try again later.";
+      } else {
+        throw err;
       }
 
       setError(errorMessage);

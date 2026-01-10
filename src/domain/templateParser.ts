@@ -97,9 +97,5 @@ function getStepRangeFromLine(line: string): {
 
 function getCodeFromLine(line: string): string {
   // First question mark is syntax for step range.
-  const [_, ...codeParts] = line.split("?");
-  // Any additional question marks are part of the code.
-  const lineCode = codeParts.join("?");
-
-  return lineCode;
+  return line.split("?").slice(1).join("?");
 }
