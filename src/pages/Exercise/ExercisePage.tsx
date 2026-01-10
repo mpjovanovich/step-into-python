@@ -58,6 +58,7 @@ const ExercisePage = () => {
           />
           <NavigationButtons
             stepType={currentStep.stepType}
+            checkAnswerResults={checkAnswerResults}
             canFocus={currentStep.answers.length === 0}
             onPrevious={() => setStep(step - 1)}
             onNext={() => setStep(step + 1)}

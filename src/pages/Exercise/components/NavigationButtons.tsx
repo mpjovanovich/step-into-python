@@ -6,21 +6,20 @@ import { getButtonStates } from "../utils/ButtonStateUtils";
 
 const NavigationButtons = ({
   stepType,
+  checkAnswerResults,
   canFocus,
   onPrevious,
   onNext,
   onSubmit,
 }: {
   stepType: ExerciseStepType;
+  checkAnswerResults: (boolean | null)[];
   canFocus: boolean;
   onPrevious: () => void;
   onNext: () => void;
   onSubmit: () => void;
 }) => {
-  const buttons = getButtonStates({
-    stepType,
-    checkAnswerResults: [],
-  });
+  const buttons = getButtonStates(stepType, checkAnswerResults);
   const previous = buttons.get(ExerciseButtonType.PREVIOUS);
   const next = buttons.get(ExerciseButtonType.NEXT);
   const submit = buttons.get(ExerciseButtonType.SUBMIT);

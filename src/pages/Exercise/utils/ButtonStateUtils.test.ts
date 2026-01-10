@@ -14,10 +14,7 @@ function unwrapButtons(buttons: Map<ExerciseButtonType, ExerciseButtonState>) {
 
 describe("navigation buttons", () => {
   it("creates all buttons in the correct order", () => {
-    const buttons = getButtonStates({
-      stepType: ExerciseStepType.EXERCISE,
-      checkAnswerResults: [],
-    });
+    const buttons = getButtonStates(ExerciseStepType.EXERCISE, []);
     expect(buttons.size).toBe(3);
     expect(Array.from(buttons.keys())).toEqual([
       ExerciseButtonType.PREVIOUS,
@@ -28,10 +25,7 @@ describe("navigation buttons", () => {
 
   describe("visible, enabled, and focus states:", () => {
     it("on start step: previous = visible disabled, next = visible enabled, submit = invisible", () => {
-      const buttons = getButtonStates({
-        stepType: ExerciseStepType.START,
-        checkAnswerResults: [true],
-      });
+      const buttons = getButtonStates(ExerciseStepType.START, [true]);
 
       const { previous, next, submit } = unwrapButtons(buttons);
       expect(previous.visible).toBe(true);
@@ -46,10 +40,7 @@ describe("navigation buttons", () => {
     });
 
     it("on template step, no answers required for step: previous = visible enabled, next = visible enabled, submit = invisible", () => {
-      const buttons = getButtonStates({
-        stepType: ExerciseStepType.EXERCISE,
-        checkAnswerResults: [],
-      });
+      const buttons = getButtonStates(ExerciseStepType.EXERCISE, []);
 
       const { previous, next, submit } = unwrapButtons(buttons);
       expect(previous.visible).toBe(true);
@@ -64,10 +55,7 @@ describe("navigation buttons", () => {
     });
 
     it("on template step, all correct answers: previous = visible enabled, next = visible enabled, submit = invisible", () => {
-      const buttons = getButtonStates({
-        stepType: ExerciseStepType.EXERCISE,
-        checkAnswerResults: [true],
-      });
+      const buttons = getButtonStates(ExerciseStepType.EXERCISE, [true]);
 
       const { previous, next, submit } = unwrapButtons(buttons);
       expect(previous.visible).toBe(true);
@@ -82,10 +70,7 @@ describe("navigation buttons", () => {
     });
 
     it("on template step, contains incorrect answers: previous = visible enabled, next = visible disabled, submit = invisible", () => {
-      const buttons = getButtonStates({
-        stepType: ExerciseStepType.EXERCISE,
-        checkAnswerResults: [false],
-      });
+      const buttons = getButtonStates(ExerciseStepType.EXERCISE, [false]);
 
       const { previous, next, submit } = unwrapButtons(buttons);
       expect(previous.visible).toBe(true);
@@ -100,10 +85,7 @@ describe("navigation buttons", () => {
     });
 
     it("on submit step: previous = visible enabled, next = invisible, submit = visible enabled", () => {
-      const buttons = getButtonStates({
-        stepType: ExerciseStepType.SUBMIT,
-        checkAnswerResults: [],
-      });
+      const buttons = getButtonStates(ExerciseStepType.SUBMIT, []);
 
       const { previous, next, submit } = unwrapButtons(buttons);
       expect(previous.visible).toBe(true);
@@ -118,10 +100,7 @@ describe("navigation buttons", () => {
     });
 
     it("on complete step: previous = visible disabled, next = invisible, submit = invisible", () => {
-      const buttons = getButtonStates({
-        stepType: ExerciseStepType.COMPLETE,
-        checkAnswerResults: [],
-      });
+      const buttons = getButtonStates(ExerciseStepType.COMPLETE, []);
 
       const { previous, next, submit } = unwrapButtons(buttons);
       expect(previous.visible).toBe(true);

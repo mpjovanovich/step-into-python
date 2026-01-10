@@ -3,13 +3,10 @@ import { type ExerciseButtonState } from "../../../types/ExerciseButtonState";
 import { ExerciseButtonType } from "../../../types/ExerciseButtonType";
 import { ExerciseStepType } from "../../../types/ExerciseStepType";
 
-export function getButtonStates({
-  stepType,
-  checkAnswerResults,
-}: {
-  stepType: ExerciseStepType;
-  checkAnswerResults: (boolean | null)[];
-}): Map<ExerciseButtonType, ExerciseButtonState> {
+export function getButtonStates(
+  stepType: ExerciseStepType,
+  checkAnswerResults: (boolean | null)[]
+): Map<ExerciseButtonType, ExerciseButtonState> {
   const buttons = new Map<ExerciseButtonType, ExerciseButtonState>([
     [
       ExerciseButtonType.PREVIOUS,
