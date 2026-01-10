@@ -31,14 +31,27 @@ const ExercisePage = () => {
     (boolean | null)[]
   >([]);
 
-  /* ************************
-   * EFFECTS
-   ************************ */
-  // Fetch the exercise on mount.
+  // Fetch the exercise; we have caching in place for exercise retrieval so no
+  // urgent need to memoize this.
   const { exercise, finalStep, error } = useExercise(exerciseId!);
   if (error) {
-    return <div>Error: {error.message}</div>;
+    throw error;
   }
+
+  let codeForStep: CodeForStep | null = null;
+  if (exercise) {
+    codeForStep = getCodeForStep({
+      title: exercise?.title ?? "",
+      questionTemplate: exercise?.template ?? [],
+      currentStep: step,
+    });
+  }
+  const code = codeForStep?.code ?? "";
+  const copyCode = codeForStep?.copyCode ?? "";
+  const answers = codeForStep?.answers ?? [];
+  const descriptions = exercise?.descriptions[step];
+  const instructions = exercise?.instructions[step];
+  const stepType = getStepType(step, finalStep);
 
   // Set the appropriate number of input fields for the user's responses based
   // on the number of answers in the exercise.
@@ -54,24 +67,6 @@ const ExercisePage = () => {
       setCheckAnswerResults(checkAnswers(userAnswers, answers));
     }
   }, [userAnswers]);
-
-  /* ********************************************************
-   * STATE DERIVED FROM CURRENT STEP
-   ******************************************************** */
-  let codeForStep: CodeForStep | null = null;
-  if (exercise) {
-    codeForStep = getCodeForStep({
-      title: exercise?.title ?? "",
-      questionTemplate: exercise?.template ?? [],
-      currentStep: step,
-    });
-  }
-  const code = codeForStep?.code ?? "";
-  const copyCode = codeForStep?.copyCode ?? "";
-  const answers = codeForStep?.answers ?? [];
-  const descriptions = exercise?.descriptions[step];
-  const instructions = exercise?.instructions[step];
-  const stepType = getStepType(step, finalStep);
 
   const getTitle = (): string => {
     return exercise ? `${exercise.title}` : "Loading Program...";
