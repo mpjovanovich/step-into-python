@@ -79,12 +79,8 @@ const ExercisePage = () => {
     onNext: () => setStep(step + 1),
     onSubmit: () => {
       const completeExercise = async () => {
-        try {
-          await userService.completeExercise(user.id, exerciseId!);
-          setStep(() => step + 1);
-        } catch (err) {
-          console.error(err);
-        }
+        await userService.completeExercise(user.id, exerciseId!);
+        setStep(() => step + 1);
       };
       completeExercise();
     },
