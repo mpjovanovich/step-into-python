@@ -1,45 +1,48 @@
 import { useEffect, useMemo, useState } from "react";
-import { createExerciseCache } from "../../../cache/exerciseCache";
-import { getStepCount } from "../../../domain/templateParser";
-import { exerciseService } from "../../../services/exerciseService";
+import {
+  getCodeForStep,
+  getStepCount,
+  type CodeForStep,
+} from "../../../domain/templateParser";
+import { useExerciseCache } from "../../../hooks/useExerciseCache";
 import { type Exercise } from "../../../types/Exercise";
 
-interface ExerciseState {
+export function useExercise(
+  exerciseId: string,
+  step: number
+): {
+  codeForStep: CodeForStep | null;
   exercise: Exercise | null;
   finalStep: number;
-  error: Error | null;
-}
-
-// Create cache once at module level
-const exerciseCache = createExerciseCache(exerciseService, localStorage);
-
-export function useExercise(exerciseId: string): ExerciseState {
+} {
   const [exercise, setExercise] = useState<Exercise | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const finalStep = useMemo(() => {
-    if (!exercise) return 0;
-    return getStepCount(exercise.template);
-  }, [exercise]);
+  const exerciseCache = useExerciseCache();
 
   useEffect(() => {
     const fetchExercise = async () => {
-      try {
-        const exercise = await exerciseCache.fetchById(exerciseId);
-        if (exercise) {
-          setExercise(exercise);
-        } else {
-          setError(new Error("Exercise not found."));
-        }
-      } catch (error) {
-        setError(
-          error instanceof Error
-            ? error
-            : new Error("Failed to fetch exercise.")
-        );
+      const exercise = await exerciseCache.fetchById(exerciseId);
+      if (exercise) {
+        setExercise(exercise);
+      } else {
+        throw new Error("Exercise not found.");
       }
     };
     fetchExercise();
   }, [exerciseId]);
 
-  return { exercise, finalStep, error };
+  const finalStep = useMemo(() => {
+    if (!exercise) return 0;
+    return getStepCount(exercise.template);
+  }, [exercise]);
+
+  const codeForStep = useMemo((): CodeForStep | null => {
+    if (!exercise) return null;
+    return getCodeForStep({
+      title: exercise.title,
+      questionTemplate: exercise.template,
+      currentStep: step,
+    });
+  }, [exercise, step]);
+
+  return { codeForStep, exercise, finalStep };
 }

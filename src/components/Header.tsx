@@ -1,14 +1,13 @@
 import { signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import { createExerciseCache } from "../cache/exerciseCache";
 import { auth } from "../firebase";
 import { useAuth } from "../hooks/useAuth";
-import { exerciseService } from "../services/exerciseService";
+import { useExerciseCache } from "../hooks/useExerciseCache";
 
 const Header = () => {
   const { authUser } = useAuth();
   const isAuthenticated = !!authUser;
-  const exerciseCache = createExerciseCache(exerciseService, localStorage);
+  const exerciseCache = useExerciseCache();
 
   return (
     <header className="header">

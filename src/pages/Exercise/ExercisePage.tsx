@@ -5,9 +5,9 @@ import { useParams } from "react-router-dom";
 // Internal
 import Loading from "../../components/Loading";
 import { checkAnswers } from "../../domain/answerChecker";
-import { getCodeForStep, type CodeForStep } from "../../domain/templateParser";
 import { useAuth } from "../../hooks/useAuth";
 import { userService } from "../../services/userService";
+import { type CurrentStep } from "../../types/CurrentStep";
 import styles from "./ExercisePage.module.css";
 import ExerciseText from "./components/ExerciseText";
 import NavigationButtons from "./components/NavigationButtons";
@@ -15,7 +15,7 @@ import ProgramOutput from "./components/ProgramOutput";
 import { useExercise } from "./hooks/useExercise";
 import { useExerciseText } from "./hooks/useExerciseText";
 import { useNavigationButtons } from "./hooks/useNavigationButtons";
-import { getStepType } from "./utils/ExerciseUtils";
+import { getCurrentStepProperties } from "./utils/ExerciseUtils";
 
 const ExercisePage = () => {
   const { user } = useAuth();
@@ -24,56 +24,42 @@ const ExercisePage = () => {
     throw new Error("Cannot load page: no user");
   }
 
-  const { exerciseId } = useParams();
-  const [step, setStep] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<string[]>([]);
-
   // Fetch exercise data
-  const { exercise, finalStep, error } = useExercise(exerciseId!);
-  if (error) {
-    throw error;
-  }
-
-  // Derive values from exercise and current step
-  const codeForStep = useMemo((): CodeForStep | null => {
-    if (!exercise) return null;
-    return getCodeForStep({
-      title: exercise.title,
-      questionTemplate: exercise.template,
-      currentStep: step,
-    });
-  }, [exercise, step]);
+  const [step, setStep] = useState(0);
+  const { exerciseId } = useParams();
+  const { codeForStep, exercise, finalStep } = useExercise(exerciseId!, step);
 
   // Convenience variables from current exercise step and code
-  const code = codeForStep?.code ?? "";
-  const copyCode = codeForStep?.copyCode ?? "";
-  const answers = codeForStep?.answers ?? [];
-  const descriptions = exercise?.descriptions[step];
-  const instructions = exercise?.instructions[step];
-  const stepType = getStepType(step, finalStep);
+  const currentStep: CurrentStep = getCurrentStepProperties(
+    codeForStep,
+    exercise,
+    step,
+    finalStep
+  );
 
   // Reset user answers when step changes
+  const [userAnswers, setUserAnswers] = useState<string[]>([]);
   useEffect(() => {
-    setUserAnswers(Array(answers.length).fill(""));
-  }, [step, answers.length]);
+    setUserAnswers(Array(currentStep.answers.length).fill(""));
+  }, [step, currentStep.answers.length]);
 
   // Check the user's answers against the correct answers; compute as derived state
   const checkAnswerResults = useMemo(() => {
-    if (userAnswers.length === 0 || answers.length === 0) {
-      return Array(answers.length).fill(null);
+    if (userAnswers.length === 0 || currentStep.answers.length === 0) {
+      return Array(currentStep.answers.length).fill(null);
     }
-    return checkAnswers(userAnswers, answers);
-  }, [userAnswers, answers]);
+    return checkAnswers(userAnswers, currentStep.answers);
+  }, [userAnswers, currentStep.answers]);
 
   // Format exercise text content based on current step
   const { formattedDescription, formattedInstructions } = useExerciseText({
-    stepType,
-    description: descriptions,
-    instructions: instructions,
+    stepType: currentStep.stepType,
+    description: currentStep.descriptions,
+    instructions: currentStep.instructions,
   });
 
   const { buttons, exerciseComplete } = useNavigationButtons({
-    stepType,
+    stepType: currentStep.stepType,
     checkAnswerResults,
     onPrevious: () => setStep(step - 1),
     onNext: () => setStep(step + 1),
@@ -107,14 +93,14 @@ const ExercisePage = () => {
           />
           <NavigationButtons
             buttons={buttons}
-            canFocus={answers.length === 0}
+            canFocus={currentStep.answers.length === 0}
             exerciseComplete={exerciseComplete}
           />
         </div>
         <ProgramOutput
-          code={code}
-          copyCode={copyCode}
-          answers={answers}
+          code={currentStep.code}
+          copyCode={currentStep.copyCode}
+          answers={currentStep.answers}
           userAnswers={userAnswers}
           setUserAnswers={setUserAnswers}
           checkAnswerResults={checkAnswerResults}
