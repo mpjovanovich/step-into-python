@@ -10,7 +10,6 @@ const auth = getAuth(app);
 
 const useEmulator = import.meta.env.DEV;
 if (useEmulator) {
-  console.log("🔥 Using Firebase Emulators");
   connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
   connectFirestoreEmulator(db, "127.0.0.1", 8080);
 }
