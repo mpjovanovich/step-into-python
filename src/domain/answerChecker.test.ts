@@ -1,4 +1,3 @@
-import { describe, expect, it } from "vitest";
 import { allCorrect, checkAnswers } from "./answerChecker";
 
 describe("checks user answers", () => {

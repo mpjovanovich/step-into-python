@@ -8,7 +8,6 @@ import { checkAnswers } from "../../domain/answerChecker";
 import { getCodeForStep, type CodeForStep } from "../../domain/templateParser";
 import { useAuth } from "../../hooks/useAuth";
 import { userService } from "../../services/userService";
-import { getStepType } from "../../types/StepType";
 import styles from "./ExercisePage.module.css";
 import ExerciseText from "./components/ExerciseText";
 import NavigationButtons from "./components/NavigationButtons";
@@ -16,6 +15,7 @@ import ProgramOutput from "./components/ProgramOutput";
 import { useExercise } from "./hooks/useExercise";
 import { useExerciseText } from "./hooks/useExerciseText";
 import { useNavigationButtons } from "./hooks/useNavigationButtons";
+import { getStepType } from "./utils/ExerciseUtils";
 
 const ExercisePage = () => {
   const { user } = useAuth();

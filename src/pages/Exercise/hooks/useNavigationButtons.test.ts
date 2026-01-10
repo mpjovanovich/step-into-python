@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from "vitest";
 import { StepType } from "../../../types/StepType";
 import { useNavigationButtons, type ButtonState } from "./useNavigationButtons";
 

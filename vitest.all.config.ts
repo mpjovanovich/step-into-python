@@ -6,5 +6,6 @@ export default defineConfig({
   test: {
     exclude: ["**/node_modules/**", "**/dist/**", "firestore.rules.test.js"],
     include: ["**/src/**/*.test.ts"],
+    globals: true,
   },
 });

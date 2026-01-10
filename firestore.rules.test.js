@@ -5,7 +5,6 @@ import {
 } from "@firebase/rules-unit-testing";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import fs from "fs";
-import { beforeAll, beforeEach, describe, it } from "vitest";
 
 /*
  * This script requires the firebase emulator to be running.
