@@ -12,7 +12,6 @@ import ExerciseInstructions from "./components/ExerciseInstructions";
 import NavigationButtons from "./components/NavigationButtons";
 import ProgramOutput from "./components/ProgramOutput";
 import { useExercise } from "./hooks/useExercise";
-import { useNavigationButtons } from "./hooks/useNavigationButtons";
 
 const ExercisePage = () => {
   const { user } = useAuth();
@@ -33,21 +32,6 @@ const ExercisePage = () => {
     userAnswers,
     setUserAnswers
   );
-
-  // THIS NEEDS MOVED TO UTILITY FUNCTIONS, IT IS NOT A HOOK
-  const { buttons, exerciseComplete } = useNavigationButtons({
-    stepType: currentStep.stepType,
-    checkAnswerResults,
-    onPrevious: () => setStep(step - 1),
-    onNext: () => setStep(step + 1),
-    onSubmit: () => {
-      const completeExercise = async () => {
-        await userService.completeExercise(user.id, exerciseId!);
-        setStep(() => step + 1);
-      };
-      completeExercise();
-    },
-  });
 
   /* ************************
    * UI
@@ -73,9 +57,17 @@ const ExercisePage = () => {
             instructions={currentStep.instructions}
           />
           <NavigationButtons
-            buttons={buttons}
+            stepType={currentStep.stepType}
             canFocus={currentStep.answers.length === 0}
-            exerciseComplete={exerciseComplete}
+            onPrevious={() => setStep(step - 1)}
+            onNext={() => setStep(step + 1)}
+            onSubmit={() => {
+              const completeExercise = async () => {
+                await userService.completeExercise(user.id, exerciseId!);
+                setStep(() => step + 1);
+              };
+              completeExercise();
+            }}
           />
         </div>
         <ProgramOutput

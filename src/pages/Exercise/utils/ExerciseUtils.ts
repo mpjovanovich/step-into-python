@@ -1,7 +1,7 @@
 import { type CodeForStep } from "../../../domain/templateParser";
 import { type CurrentStep } from "../../../types/CurrentStep";
 import { type Exercise } from "../../../types/Exercise";
-import { StepType } from "../../../types/StepType";
+import { ExerciseStepType } from "../../../types/ExerciseStepType";
 
 export function getCurrentStepProperties(
   codeForStep: CodeForStep | null,
@@ -19,18 +19,18 @@ export function getCurrentStepProperties(
   };
 }
 
-function getStepType(currentStep: number, finalStep: number): StepType {
+function getStepType(currentStep: number, finalStep: number): ExerciseStepType {
   if (currentStep === 0) {
-    return StepType.START;
+    return ExerciseStepType.START;
   }
   if (currentStep >= 1 && currentStep <= finalStep) {
-    return StepType.EXERCISE;
+    return ExerciseStepType.EXERCISE;
   }
   if (currentStep === finalStep + 1) {
-    return StepType.SUBMIT;
+    return ExerciseStepType.SUBMIT;
   }
   if (currentStep === finalStep + 2) {
-    return StepType.COMPLETE;
+    return ExerciseStepType.COMPLETE;
   }
   throw new Error(`Invalid step number: ${currentStep}`);
 }

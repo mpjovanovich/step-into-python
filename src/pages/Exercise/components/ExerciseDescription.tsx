@@ -1,12 +1,12 @@
 import { MdCheckCircle } from "react-icons/md";
-import { StepType } from "../../../types/StepType";
+import { ExerciseStepType } from "../../../types/ExerciseStepType";
 
 function formatDescription(
-  stepType: StepType,
+  stepType: ExerciseStepType,
   description: string
 ): React.ReactNode {
   switch (stepType) {
-    case StepType.START:
+    case ExerciseStepType.START:
       return (
         <>
           <p>
@@ -25,7 +25,7 @@ function formatDescription(
         </>
       );
 
-    case StepType.EXERCISE:
+    case ExerciseStepType.EXERCISE:
       return (
         <>
           {description?.split("\n").map((line, i) => (
@@ -34,7 +34,7 @@ function formatDescription(
         </>
       );
 
-    case StepType.SUBMIT:
+    case ExerciseStepType.SUBMIT:
       return (
         <>
           <p>
@@ -45,7 +45,7 @@ function formatDescription(
         </>
       );
 
-    case StepType.COMPLETE:
+    case ExerciseStepType.COMPLETE:
       return (
         <>
           <span className="inline-flex-wrapper">
@@ -69,7 +69,7 @@ const ExerciseDescription = ({
   stepType,
   description,
 }: {
-  stepType: StepType;
+  stepType: ExerciseStepType;
   description: string;
 }) => {
   return (

@@ -22,11 +22,12 @@
  * - SUBMIT: The submit step (finalStep + 1)
  * - COMPLETE: The completion step (finalStep + 2 and beyond)
  */
-export const StepType = {
+export const ExerciseStepType = {
   START: "START",
   EXERCISE: "EXERCISE",
   SUBMIT: "SUBMIT",
   COMPLETE: "COMPLETE",
 } as const;
 
-export type StepType = (typeof StepType)[keyof typeof StepType];
+export type ExerciseStepType =
+  (typeof ExerciseStepType)[keyof typeof ExerciseStepType];

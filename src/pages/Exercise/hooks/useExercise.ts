@@ -6,8 +6,11 @@ import {
   type CodeForStep,
 } from "../../../domain/templateParser";
 import { useExerciseCache } from "../../../hooks/useExerciseCache";
+// import { userService } from "../../../services/userService";
+// import { type ButtonState } from "../../../types/ButtonState";
 import { type CurrentStep } from "../../../types/CurrentStep";
 import { type Exercise } from "../../../types/Exercise";
+// import { getButtonStates } from "../utils/ButtonStateUtils";
 import { getCurrentStepProperties } from "../utils/ExerciseUtils";
 
 export function useExercise(
@@ -16,9 +19,9 @@ export function useExercise(
   userAnswers: string[],
   setUserAnswers: (userAnswers: string[]) => void
 ): {
-  checkAnswerResults: (boolean | null)[];
-  currentStep: CurrentStep;
   exercise: Exercise | null;
+  currentStep: CurrentStep;
+  checkAnswerResults: (boolean | null)[];
 } {
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const exerciseCache = useExerciseCache();
@@ -69,5 +72,9 @@ export function useExercise(
     return checkAnswers(userAnswers, currentStep.answers);
   }, [userAnswers, currentStep.answers]);
 
-  return { checkAnswerResults, currentStep, exercise };
+  return {
+    checkAnswerResults,
+    currentStep,
+    exercise,
+  };
 }

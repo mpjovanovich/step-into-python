@@ -1,42 +1,72 @@
 import { Link } from "react-router-dom";
+import { ExerciseButtonType } from "../../../types/ExerciseButtonType";
+import { ExerciseStepType } from "../../../types/ExerciseStepType";
 import styles from "../ExercisePage.module.css";
-import { type ButtonState } from "../hooks/useNavigationButtons";
+import { getButtonStates } from "../utils/ButtonStateUtils";
 
-// This is a dumb view component that renders the navigation buttons.
-// There should be no logic here.
 const NavigationButtons = ({
-  buttons,
+  stepType,
   canFocus,
-  exerciseComplete,
+  onPrevious,
+  onNext,
+  onSubmit,
 }: {
-  buttons: ButtonState[];
+  stepType: ExerciseStepType;
   canFocus: boolean;
-  exerciseComplete: boolean;
+  onPrevious: () => void;
+  onNext: () => void;
+  onSubmit: () => void;
 }) => {
+  const buttons = getButtonStates({
+    stepType,
+    checkAnswerResults: [],
+  });
+  const previous = buttons.get(ExerciseButtonType.PREVIOUS);
+  const next = buttons.get(ExerciseButtonType.NEXT);
+  const submit = buttons.get(ExerciseButtonType.SUBMIT);
+
   return (
     <div className={styles.buttonContainer}>
-      {buttons
-        .filter((button) => button.visible)
-        .map((button) => (
-          <button
-            key={button.text}
-            className={styles.actionButton}
-            onClick={button.onClick}
-            disabled={!button.enabled}
-            autoFocus={canFocus && button.hasFocus}
-          >
-            {button.text}
+      {previous?.visible && (
+        <button
+          key={ExerciseButtonType.PREVIOUS}
+          className={styles.actionButton}
+          onClick={onPrevious}
+          disabled={!previous.enabled}
+          autoFocus={canFocus && previous.hasFocus}
+        >
+          Previous
+        </button>
+      )}
+      {next?.visible && (
+        <button
+          key={ExerciseButtonType.NEXT}
+          className={styles.actionButton}
+          onClick={onNext}
+          disabled={!next.enabled}
+          autoFocus={canFocus && next.hasFocus}
+        >
+          Next
+        </button>
+      )}
+      {submit?.visible && (
+        <button
+          key={ExerciseButtonType.SUBMIT}
+          className={styles.actionButton}
+          onClick={onSubmit}
+          disabled={!submit.enabled}
+          autoFocus={canFocus && submit.hasFocus}
+        >
+          Submit
+        </button>
+      )}
+      {stepType === ExerciseStepType.COMPLETE && (
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <button className={styles.actionButton} autoFocus={true}>
+            Home
           </button>
-        ))}
-      <>
-        {exerciseComplete && (
-          <Link to="/" style={{ textDecoration: "none" }}>
-            <button className={styles.actionButton} autoFocus={true}>
-              Home
-            </button>
-          </Link>
-        )}
-      </>
+        </Link>
+      )}
     </div>
   );
 };
