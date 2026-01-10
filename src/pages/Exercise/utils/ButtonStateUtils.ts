@@ -1,11 +1,10 @@
-import { allCorrect } from "../../../domain/answerChecker";
 import { type ExerciseButtonState } from "../../../types/ExerciseButtonState";
 import { ExerciseButtonType } from "../../../types/ExerciseButtonType";
 import { ExerciseStepType } from "../../../types/ExerciseStepType";
 
 export function getButtonStates(
   stepType: ExerciseStepType,
-  checkAnswerResults: (boolean | null)[]
+  allCorrect: boolean
 ): Map<ExerciseButtonType, ExerciseButtonState> {
   const buttons = new Map<ExerciseButtonType, ExerciseButtonState>([
     [
@@ -24,7 +23,7 @@ export function getButtonStates(
         enabled:
           (stepType === ExerciseStepType.START ||
             stepType === ExerciseStepType.EXERCISE) &&
-          allCorrect(checkAnswerResults),
+          allCorrect,
         visible:
           stepType === ExerciseStepType.START ||
           stepType === ExerciseStepType.EXERCISE,

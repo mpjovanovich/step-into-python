@@ -1,9 +1,7 @@
-// React and external libraries
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-
-// Internal
 import Loading from "../../components/Loading";
+import { allCorrect } from "../../domain/answerChecker";
 import { useAuth } from "../../hooks/useAuth";
 import { userService } from "../../services/userService";
 import styles from "./ExercisePage.module.css";
@@ -58,7 +56,7 @@ const ExercisePage = () => {
           />
           <NavigationButtons
             stepType={currentStep.stepType}
-            checkAnswerResults={checkAnswerResults}
+            allCorrect={allCorrect(checkAnswerResults)}
             canFocus={currentStep.answers.length === 0}
             onPrevious={() => setStep(step - 1)}
             onNext={() => setStep(step + 1)}
