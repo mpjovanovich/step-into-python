@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run --config vitest.all.config.ts",
+    "test:ui": "vitest run --ui --config vitest.all.config.ts",
     "test:firestore": "vitest run --config vitest.firestore.config.ts"
   },
   "dependencies": {
