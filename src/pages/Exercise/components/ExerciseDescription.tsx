@@ -1,17 +1,6 @@
 import { MdCheckCircle } from "react-icons/md";
 import { StepType } from "../../../types/StepType";
 
-interface UseExerciseTextParams {
-  stepType: StepType;
-  description?: string;
-  instructions?: string;
-}
-
-interface UseExerciseTextReturn {
-  formattedDescription: React.ReactNode;
-  formattedInstructions: React.ReactNode;
-}
-
 function formatDescription(
   stepType: StepType,
   description: string
@@ -76,42 +65,19 @@ function formatDescription(
   }
 }
 
-function formatInstructions(
-  stepType: StepType,
-  instructions: string
-): React.ReactNode {
-  // If instructions are provided, format them as a list of paragraphs.
-  if (instructions.length > 0) {
-    return (
-      <>
-        {instructions.split("\n").map((line, i) => (
-          <p key={i}>{line}</p>
-        ))}
-      </>
-    );
-  }
-
-  // If no instructions are provided, return the appropriate text for the step type.
-  switch (stepType) {
-    case StepType.START || StepType.EXERCISE:
-      return <p>Click Next to continue</p>;
-    case StepType.SUBMIT:
-      return <p>Click Submit</p>;
-    case StepType.COMPLETE:
-      return <p>Click Home to return to the home page.</p>;
-  }
-}
-
-export function useExerciseText({
+const ExerciseDescription = ({
   stepType,
-  description = "",
-  instructions = "",
-}: UseExerciseTextParams): UseExerciseTextReturn {
-  const formattedDescription = formatDescription(stepType, description);
-  const formattedInstructions = formatInstructions(stepType, instructions);
+  description,
+}: {
+  stepType: StepType;
+  description: string;
+}) => {
+  return (
+    <>
+      <h3>Description</h3>
+      {formatDescription(stepType, description)}
+    </>
+  );
+};
 
-  return {
-    formattedDescription,
-    formattedInstructions,
-  };
-}
+export default ExerciseDescription;

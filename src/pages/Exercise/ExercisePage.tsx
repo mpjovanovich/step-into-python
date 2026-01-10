@@ -7,11 +7,11 @@ import Loading from "../../components/Loading";
 import { useAuth } from "../../hooks/useAuth";
 import { userService } from "../../services/userService";
 import styles from "./ExercisePage.module.css";
-import ExerciseText from "./components/ExerciseText";
+import ExerciseDescription from "./components/ExerciseDescription";
+import ExerciseInstructions from "./components/ExerciseInstructions";
 import NavigationButtons from "./components/NavigationButtons";
 import ProgramOutput from "./components/ProgramOutput";
 import { useExercise } from "./hooks/useExercise";
-import { useExerciseText } from "./hooks/useExerciseText";
 import { useNavigationButtons } from "./hooks/useNavigationButtons";
 
 const ExercisePage = () => {
@@ -34,13 +34,7 @@ const ExercisePage = () => {
     setUserAnswers
   );
 
-  // Format exercise text content based on current step
-  const { formattedDescription, formattedInstructions } = useExerciseText({
-    stepType: currentStep.stepType,
-    description: currentStep.descriptions,
-    instructions: currentStep.instructions,
-  });
-
+  // THIS NEEDS MOVED TO UTILITY FUNCTIONS, IT IS NOT A HOOK
   const { buttons, exerciseComplete } = useNavigationButtons({
     stepType: currentStep.stepType,
     checkAnswerResults,
@@ -70,9 +64,13 @@ const ExercisePage = () => {
       </h1>
       <div className={styles.container}>
         <div className={styles.instructions}>
-          <ExerciseText
-            description={formattedDescription}
-            instructions={formattedInstructions}
+          <ExerciseDescription
+            stepType={currentStep.stepType}
+            description={currentStep.descriptions}
+          />
+          <ExerciseInstructions
+            stepType={currentStep.stepType}
+            instructions={currentStep.instructions}
           />
           <NavigationButtons
             buttons={buttons}
