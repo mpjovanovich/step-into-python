@@ -1,5 +1,5 @@
+import { Link } from "@tanstack/react-router";
 import { signOut } from "firebase/auth";
-import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { useAuth } from "../hooks/useAuth";
 import { useExerciseCache } from "../hooks/useExerciseCache";
@@ -12,7 +12,7 @@ const Header = () => {
   return (
     <header className="header">
       <nav>
-        <Link className="app-title" to="/">
+        <Link className="app-title" to="/exercises">
           Step Into Python
         </Link>
         {isAuthenticated && (

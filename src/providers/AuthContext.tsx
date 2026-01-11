@@ -3,8 +3,8 @@ import { createContext } from "react";
 import { type User } from "../types/User";
 
 export interface AuthContextType {
+  authStateReady: () => Promise<void>;
   authUser: FirebaseUser | null;
-  authLoading: boolean;
   user: User | null;
 }
 

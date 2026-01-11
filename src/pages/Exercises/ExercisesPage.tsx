@@ -1,5 +1,5 @@
+import { Link } from "@tanstack/react-router";
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
-import { Link } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { useAuth } from "../../hooks/useAuth";
 import { formatExerciseNumber } from "../../utils/formatters";
@@ -31,7 +31,7 @@ const ExercisesPage = () => {
                   <MdRadioButtonUnchecked className="icon-incomplete" />
                 )}
               </span>
-              <Link to={`/exercise/${exercise.id}`}>
+              <Link to={"/exercise"}>
                 {formatExerciseNumber(exercise.order)}
                 {": "}
                 {exercise.title}

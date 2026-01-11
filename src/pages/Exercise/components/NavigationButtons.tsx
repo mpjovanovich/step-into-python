@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { ExerciseButtonType } from "../../../types/ExerciseButtonType";
 import { ExerciseStepType } from "../../../types/ExerciseStepType";
 import styles from "../ExercisePage.module.css";
@@ -60,7 +60,7 @@ const NavigationButtons = ({
         </button>
       )}
       {stepType === ExerciseStepType.COMPLETE && (
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/exercises" style={{ textDecoration: "none" }}>
           <button className={styles.actionButton} autoFocus={true}>
             Home
           </button>

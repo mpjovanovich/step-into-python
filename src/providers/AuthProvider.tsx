@@ -7,7 +7,6 @@ import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
   // Listen for auth state changes.
@@ -22,9 +21,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       }
 
       setAuthUser(firebaseUser);
-      setAuthLoading(false);
 
-      if (firebaseUser && firebaseUser.email) {
+      if (firebaseUser) {
         // Set up real-time listener for user data using userService
         unsubscribeUser = userService.subscribeToUser(
           firebaseUser.uid,
@@ -51,7 +49,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ authUser, authLoading, user }}>
+    <AuthContext.Provider
+      value={{ authStateReady: () => auth.authStateReady(), authUser, user }}
+    >
       {children}
     </AuthContext.Provider>
   );
