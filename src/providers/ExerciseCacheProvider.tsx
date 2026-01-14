@@ -1,4 +1,4 @@
-import { useMemo, type PropsWithChildren } from "react";
+import { useMemo } from "react";
 import {
   createExerciseCache,
   type ExerciseCache,
@@ -6,7 +6,11 @@ import {
 import { exerciseService } from "../services/exerciseService";
 import { ExerciseCacheContext } from "./ExerciseCacheContext";
 
-export const ExerciseCacheProvider = ({ children }: PropsWithChildren) => {
+export const ExerciseCacheProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   // Create the cache instance when the provider mounts
   // At this point we're guaranteed to be in the browser, so localStorage is available
   const exerciseCache = useMemo<ExerciseCache>(() => {

@@ -12,8 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedExercisesRouteImport } from './routes/_authenticated/exercises'
-import { Route as AuthenticatedExercisesExerciseIdRouteImport } from './routes/_authenticated/exercises.$exerciseId'
+import { Route as AuthenticatedExercisesIndexRouteImport } from './routes/_authenticated/exercises/index'
+import { Route as AuthenticatedExercisesExerciseIdRouteImport } from './routes/_authenticated/exercises/$exerciseId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -29,50 +29,51 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedExercisesRoute = AuthenticatedExercisesRouteImport.update({
-  id: '/exercises',
-  path: '/exercises',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
+const AuthenticatedExercisesIndexRoute =
+  AuthenticatedExercisesIndexRouteImport.update({
+    id: '/exercises/',
+    path: '/exercises/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedExercisesExerciseIdRoute =
   AuthenticatedExercisesExerciseIdRouteImport.update({
-    id: '/$exerciseId',
-    path: '/$exerciseId',
-    getParentRoute: () => AuthenticatedExercisesRoute,
+    id: '/exercises/$exerciseId',
+    path: '/exercises/$exerciseId',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
-  '/exercises': typeof AuthenticatedExercisesRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
   '/exercises/$exerciseId': typeof AuthenticatedExercisesExerciseIdRoute
+  '/exercises': typeof AuthenticatedExercisesIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/exercises': typeof AuthenticatedExercisesRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
   '/exercises/$exerciseId': typeof AuthenticatedExercisesExerciseIdRoute
+  '/exercises': typeof AuthenticatedExercisesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
-  '/_authenticated/exercises': typeof AuthenticatedExercisesRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/exercises/$exerciseId': typeof AuthenticatedExercisesExerciseIdRoute
+  '/_authenticated/exercises/': typeof AuthenticatedExercisesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/exercises' | '/' | '/exercises/$exerciseId'
+  fullPaths: '/login' | '/' | '/exercises/$exerciseId' | '/exercises'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/exercises' | '/' | '/exercises/$exerciseId'
+  to: '/login' | '/' | '/exercises/$exerciseId' | '/exercises'
   id:
     | '__root__'
     | '/_authenticated'
     | '/login'
-    | '/_authenticated/exercises'
     | '/_authenticated/'
     | '/_authenticated/exercises/$exerciseId'
+    | '/_authenticated/exercises/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -103,46 +104,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/exercises': {
-      id: '/_authenticated/exercises'
+    '/_authenticated/exercises/': {
+      id: '/_authenticated/exercises/'
       path: '/exercises'
       fullPath: '/exercises'
-      preLoaderRoute: typeof AuthenticatedExercisesRouteImport
+      preLoaderRoute: typeof AuthenticatedExercisesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/exercises/$exerciseId': {
       id: '/_authenticated/exercises/$exerciseId'
-      path: '/$exerciseId'
+      path: '/exercises/$exerciseId'
       fullPath: '/exercises/$exerciseId'
       preLoaderRoute: typeof AuthenticatedExercisesExerciseIdRouteImport
-      parentRoute: typeof AuthenticatedExercisesRoute
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
-interface AuthenticatedExercisesRouteChildren {
-  AuthenticatedExercisesExerciseIdRoute: typeof AuthenticatedExercisesExerciseIdRoute
-}
-
-const AuthenticatedExercisesRouteChildren: AuthenticatedExercisesRouteChildren =
-  {
-    AuthenticatedExercisesExerciseIdRoute:
-      AuthenticatedExercisesExerciseIdRoute,
-  }
-
-const AuthenticatedExercisesRouteWithChildren =
-  AuthenticatedExercisesRoute._addFileChildren(
-    AuthenticatedExercisesRouteChildren,
-  )
-
 interface AuthenticatedRouteChildren {
-  AuthenticatedExercisesRoute: typeof AuthenticatedExercisesRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedExercisesExerciseIdRoute: typeof AuthenticatedExercisesExerciseIdRoute
+  AuthenticatedExercisesIndexRoute: typeof AuthenticatedExercisesIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedExercisesRoute: AuthenticatedExercisesRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedExercisesExerciseIdRoute: AuthenticatedExercisesExerciseIdRoute,
+  AuthenticatedExercisesIndexRoute: AuthenticatedExercisesIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

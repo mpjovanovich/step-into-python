@@ -6,8 +6,7 @@ import { auth } from "../firebase";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async ({ context }) => {
-    await context.auth.authStateReady();
-    if (context.auth.authUser) {
+    if (context.auth.user) {
       throw redirect({ to: "/exercises" });
     }
   },

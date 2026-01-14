@@ -1,20 +1,25 @@
 import { onAuthStateChanged, type User as FirebaseUser } from "firebase/auth";
-import { useEffect, useState, type PropsWithChildren } from "react";
+import { useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { userService } from "../services/userService";
 import { type User } from "../types/User";
 import { AuthContext } from "./AuthContext";
 
-export const AuthProvider = ({ children }: PropsWithChildren) => {
+export const AuthProvider = ({
+  children,
+  fallback = null,
+}: {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}) => {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
+  const [isReady, setIsReady] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
-  // Listen for auth state changes.
   useEffect(() => {
     let unsubscribeUser: (() => void) | undefined;
 
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
-      // Clean up previous user subscription if present
       if (unsubscribeUser) {
         unsubscribeUser();
         unsubscribeUser = undefined;
@@ -23,7 +28,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setAuthUser(firebaseUser);
 
       if (firebaseUser) {
-        // Set up real-time listener for user data using userService
         unsubscribeUser = userService.subscribeToUser(
           firebaseUser.uid,
           (userData: User | null) => {
@@ -31,27 +35,27 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
               console.error("No matching user found in the database");
             }
             setUser(userData);
+            setIsReady(true);
           }
         );
       } else {
-        // Clear user state when logged out
         setUser(null);
+        setIsReady(true);
       }
     });
 
-    // Clean up both listeners when component unmounts
     return () => {
       unsubscribeAuth();
-      if (unsubscribeUser) {
-        unsubscribeUser();
-      }
+      unsubscribeUser?.();
     };
   }, []);
 
+  if (!isReady) {
+    return fallback;
+  }
+
   return (
-    <AuthContext.Provider
-      value={{ authStateReady: () => auth.authStateReady(), authUser, user }}
-    >
+    <AuthContext.Provider value={{ authUser, user }}>
       {children}
     </AuthContext.Provider>
   );
