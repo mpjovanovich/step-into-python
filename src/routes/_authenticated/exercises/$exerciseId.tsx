@@ -6,6 +6,5 @@ export const Route = createFileRoute("/_authenticated/exercises/$exerciseId")({
 
 function RouteComponent() {
   const { exerciseId } = Route.useParams();
-  console.log(exerciseId);
   return <div>Exercise {exerciseId}</div>;
 }

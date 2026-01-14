@@ -28,16 +28,16 @@ export const AuthProvider = ({
       setAuthUser(firebaseUser);
 
       if (firebaseUser) {
-        unsubscribeUser = userService.subscribeToUser(
-          firebaseUser.uid,
-          (userData: User | null) => {
-            if (!userData) {
-              console.error("No matching user found in the database");
-            }
-            setUser(userData);
-            setIsReady(true);
+        const fetchUser = async () => {
+          const user = await userService.fetchById(firebaseUser.uid);
+          if (user) {
+            setUser(user);
+          } else {
+            setUser(null);
           }
-        );
+          setIsReady(true);
+        };
+        fetchUser();
       } else {
         setUser(null);
         setIsReady(true);
@@ -46,7 +46,6 @@ export const AuthProvider = ({
 
     return () => {
       unsubscribeAuth();
-      unsubscribeUser?.();
     };
   }, []);
 
