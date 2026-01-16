@@ -1,9 +1,8 @@
+import App from "@/App";
+import EmulatorWarning from "@/components/EmulatorWarning";
+import "@/styles/global.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
-import EmulatorWarning from "./components/EmulatorWarning";
-import { ExerciseCacheProvider } from "./providers/ExerciseCacheProvider";
-import "./styles/global.css";
 
 const rootElement = document.getElementById("root")!;
 
@@ -12,9 +11,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <EmulatorWarning />
-      <ExerciseCacheProvider>
-        <App />
-      </ExerciseCacheProvider>
+      <App />
     </StrictMode>
   );
 }

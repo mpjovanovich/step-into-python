@@ -1,10 +1,10 @@
+import CodeCopyButton from "@/pages/Exercise/components/CodeCopyButton";
+import CodeHighlight from "@/pages/Exercise/components/CodeHighlight";
+import CodeInput from "@/pages/Exercise/components/CodeInput";
+import CodeInputResult from "@/pages/Exercise/components/CodeInputResult";
+import styles from "@/pages/Exercise/ExercisePage.module.css";
+import { splitTemplateIntoParts } from "@/pages/Exercise/utils/ProgramOutputUtils";
 import React from "react";
-import styles from "../ExercisePage.module.css";
-import { splitTemplateIntoParts } from "../utils/ProgramOutputUtils";
-import CodeCopyButton from "./CodeCopyButton";
-import CodeHighlight from "./CodeHighlight";
-import CodeInput from "./CodeInput";
-import CodeInputResult from "./CodeInputResult";
 
 const ProgramOutput = ({
   code,

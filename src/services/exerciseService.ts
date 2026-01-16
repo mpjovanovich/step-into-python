@@ -1,3 +1,5 @@
+import { db } from "@/firebase";
+import type { Exercise } from "@/types/Exercise";
 import {
   Firestore,
   collection,
@@ -9,8 +11,6 @@ import {
   type DocumentData,
   type DocumentSnapshot,
 } from "firebase/firestore";
-import { db } from "../firebase";
-import type { Exercise } from "../types/Exercise";
 
 export interface ExerciseService {
   fetchById(exerciseId: string): Promise<Exercise | null>;
@@ -36,9 +36,8 @@ function createExerciseService(db: Firestore): ExerciseService {
     },
 
     async fetchDevExercise(): Promise<Exercise | null> {
-      const { fetchDevExercise } = await import(
-        "../../devTools/exerciseLoader"
-      );
+      const { fetchDevExercise } =
+        await import("../../devTools/exerciseLoader");
       return fetchDevExercise();
     },
 

@@ -1,8 +1,8 @@
+import { auth } from "@/firebase";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { auth } from "../firebase";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async ({ context }) => {

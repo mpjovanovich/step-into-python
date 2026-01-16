@@ -1,5 +1,8 @@
-import { type ExerciseService } from "../services/exerciseService";
-import { type Exercise } from "../types/Exercise";
+import {
+  type ExerciseService,
+  exerciseService,
+} from "@/services/exerciseService";
+import { type Exercise } from "@/types/Exercise";
 
 // If we want to genericize this later we can, but for now YAGNI
 export interface ExerciseCache extends ExerciseService {
@@ -54,4 +57,20 @@ export function createExerciseCache(
       storage.removeItem(EXERCISES_KEY);
     },
   };
+}
+
+let exerciseCache: ExerciseCache | null = null;
+
+export function getExerciseCache(
+  exerciseServiceParam?: ExerciseService,
+  storageParam?: Storage
+): ExerciseCache {
+  if (!exerciseCache) {
+    const service = exerciseServiceParam ?? exerciseService;
+    const storage =
+      storageParam ??
+      (typeof window !== "undefined" ? window.localStorage : ({} as Storage));
+    exerciseCache = createExerciseCache(service, storage);
+  }
+  return exerciseCache;
 }

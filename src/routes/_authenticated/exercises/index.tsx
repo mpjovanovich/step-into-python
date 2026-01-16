@@ -1,28 +1,41 @@
-import { createFileRoute, Link, useRouteContext } from "@tanstack/react-router";
+import { getExerciseCache } from "@/cache/exerciseCache";
+import { userService } from "@/services/userService";
+import { type Exercise } from "@/types/Exercise";
+import { formatExerciseNumber } from "@/utils/formatters";
+import {
+  createFileRoute,
+  Link,
+  redirect,
+  useLoaderData,
+} from "@tanstack/react-router";
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
-import Loading from "../../../components/Loading";
-import { formatExerciseNumber } from "../../../utils/formatters";
-import { useExercises } from "./hooks/useExercises";
 
 export const Route = createFileRoute("/_authenticated/exercises/")({
   component: RouteComponent,
+  loader: async ({ context }) => {
+    const user = await userService.getUser(context.auth.authUser!.uid);
+    if (!user) {
+      // TODO: Handle error; this should never happen.
+      throw redirect({ to: "/login" });
+    }
+
+    const exerciseCache = getExerciseCache();
+    const exercises = await exerciseCache.fetchAll();
+
+    return { user, exercises };
+  },
 });
 
 function RouteComponent() {
-  const { user } = useRouteContext({
-    from: "/_authenticated",
+  const { user, exercises } = useLoaderData({
+    from: "/_authenticated/exercises/",
   });
-
-  const { exercises } = useExercises(user.id);
-  if (!exercises) {
-    return <Loading />;
-  }
 
   return (
     <div style={{ padding: "0 2rem" }}>
       <h1 className="title">Exercises: {user.name}</h1>
       <ul className="exercises-list">
-        {exercises!.map((exercise) => (
+        {exercises!.map((exercise: Exercise) => (
           <li key={exercise.id}>
             <span className="inline-flex-wrapper">
               <span className="completed-exercise">

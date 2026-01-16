@@ -1,7 +1,7 @@
-import { type CodeForStep } from "../../../domain/templateParser";
-import { type CurrentStep } from "../../../types/CurrentStep";
-import { type Exercise } from "../../../types/Exercise";
-import { ExerciseStepType } from "../../../types/ExerciseStepType";
+import { type CodeForStep } from "@/domain/templateParser";
+import { type CurrentStep } from "@/types/CurrentStep";
+import { type Exercise } from "@/types/Exercise";
+import { ExerciseStepType } from "@/types/ExerciseStepType";
 
 export function getCurrentStepProperties(
   codeForStep: CodeForStep | null,

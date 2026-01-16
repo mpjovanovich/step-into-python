@@ -1,6 +1,6 @@
-import { type ExerciseButtonState } from "../../../types/ExerciseButtonState";
-import { ExerciseButtonType } from "../../../types/ExerciseButtonType";
-import { ExerciseStepType } from "../../../types/ExerciseStepType";
+import { type ExerciseButtonState } from "@/types/ExerciseButtonState";
+import { ExerciseButtonType } from "@/types/ExerciseButtonType";
+import { ExerciseStepType } from "@/types/ExerciseStepType";
 
 export function getButtonStates(
   stepType: ExerciseStepType,

@@ -1,3 +1,5 @@
+import { db } from "@/firebase";
+import type { User } from "@/types/User";
 import {
   Firestore,
   arrayUnion,
@@ -5,8 +7,6 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "../firebase";
-import type { User } from "../types/User";
 
 export interface UserService {
   completeExercise(userId: string, exerciseId: string): Promise<void>;

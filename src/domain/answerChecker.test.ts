@@ -1,4 +1,4 @@
-import { allCorrect, checkAnswers } from "./answerChecker";
+import { allCorrect, checkAnswers } from "@/domain/answerChecker";
 
 describe("checks user answers", () => {
   it("gives null result for unanswered answer", () => {

@@ -1,5 +1,5 @@
+import { ExerciseStepType } from "@/types/ExerciseStepType";
 import { MdCheckCircle } from "react-icons/md";
-import { ExerciseStepType } from "../../../types/ExerciseStepType";
 
 function formatDescription(
   stepType: ExerciseStepType,

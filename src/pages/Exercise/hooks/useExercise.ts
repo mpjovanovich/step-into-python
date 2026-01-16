@@ -1,17 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { checkAnswers } from "../../../domain/answerChecker";
+import { checkAnswers } from "@/domain/answerChecker";
 import {
   getCodeForStep,
   getStepCount,
   type CodeForStep,
-} from "../../../domain/templateParser";
-import { useExerciseCache } from "../../../hooks/useExerciseCache";
-// import { userService } from "../../../services/userService";
-// import { type ButtonState } from "../../../types/ButtonState";
-import { type CurrentStep } from "../../../types/CurrentStep";
-import { type Exercise } from "../../../types/Exercise";
-// import { getButtonStates } from "../utils/ButtonStateUtils";
-import { getCurrentStepProperties } from "../utils/ExerciseUtils";
+} from "@/domain/templateParser";
+import { useExerciseCache } from "@/hooks/useExerciseCache";
+import { getCurrentStepProperties } from "@/pages/Exercise/utils/ExerciseUtils";
+import { type CurrentStep } from "@/types/CurrentStep";
+import { type Exercise } from "@/types/Exercise";
+import { useEffect, useMemo, useState } from "react";
 
 export function useExercise(
   exerciseId: string,

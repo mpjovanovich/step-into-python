@@ -1,4 +1,4 @@
-import { Precondition } from "../utils/Preconditions";
+import { Precondition } from "@/utils/Preconditions";
 
 /**
  * The result of checking a single answer.

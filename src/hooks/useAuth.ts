@@ -1,6 +1,6 @@
+import { auth } from "@/firebase";
 import { onAuthStateChanged, type User as FirebaseUser } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth } from "../firebase";
 
 export interface AuthContextType {
   authReady: boolean;
@@ -13,9 +13,11 @@ export function useAuth(): AuthContextType {
 
   useEffect(() => {
     auth.authStateReady().then(() => {
+      setAuthUser(auth.currentUser);
       setAuthReady(true);
     });
 
+    // This will detect changes, like logout.
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
       setAuthUser(firebaseUser);
     });

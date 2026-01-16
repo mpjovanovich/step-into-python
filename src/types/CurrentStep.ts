@@ -1,4 +1,4 @@
-import { ExerciseStepType } from "./ExerciseStepType";
+import { ExerciseStepType } from "@/types/ExerciseStepType";
 
 export interface CurrentStep {
   code: string;

@@ -1,14 +1,13 @@
+import { getExerciseCache } from "@/cache/exerciseCache";
+import { auth } from "@/firebase";
+import { useAuth } from "@/hooks/useAuth";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
-import { useAuth } from "../hooks/useAuth";
-import { useExerciseCache } from "../hooks/useExerciseCache";
 
 const Header = () => {
   const navigate = useNavigate();
   const { authUser } = useAuth();
   const isAuthenticated = !!authUser;
-  const exerciseCache = useExerciseCache();
 
   return (
     <header className="header">
@@ -20,7 +19,7 @@ const Header = () => {
           <button
             className="logout-button"
             onClick={async () => {
-              exerciseCache.clear();
+              getExerciseCache().clear();
               await signOut(auth);
               navigate({ to: "/login" });
             }}

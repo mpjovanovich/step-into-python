@@ -1,7 +1,7 @@
+import { createExerciseCache } from "@/cache/exerciseCache";
+import { type ExerciseService } from "@/services/exerciseService";
+import type { Exercise } from "@/types/Exercise";
 import { describe, expect, it } from "vitest";
-import { type ExerciseService } from "../services/exerciseService";
-import type { Exercise } from "../types/Exercise";
-import { createExerciseCache } from "./exerciseCache";
 
 class StorageMock {
   private store: Record<string, string> = {};

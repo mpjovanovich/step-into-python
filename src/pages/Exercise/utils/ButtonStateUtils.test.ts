@@ -1,7 +1,7 @@
-import { type ExerciseButtonState } from "../../../types/ExerciseButtonState";
-import { ExerciseButtonType } from "../../../types/ExerciseButtonType";
-import { ExerciseStepType } from "../../../types/ExerciseStepType";
-import { getButtonStates } from "./ButtonStateUtils";
+import { getButtonStates } from "@/pages/Exercise/utils/ButtonStateUtils";
+import { type ExerciseButtonState } from "@/types/ExerciseButtonState";
+import { ExerciseButtonType } from "@/types/ExerciseButtonType";
+import { ExerciseStepType } from "@/types/ExerciseStepType";
 
 function unwrapButtons(buttons: Map<ExerciseButtonType, ExerciseButtonState>) {
   const [previous, next, submit] = [

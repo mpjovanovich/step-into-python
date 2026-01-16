@@ -1,4 +1,4 @@
-import { ExerciseStepType } from "../../../types/ExerciseStepType";
+import { ExerciseStepType } from "@/types/ExerciseStepType";
 
 function formatInstructions(
   stepType: ExerciseStepType,

@@ -1,7 +1,7 @@
+import Loading from "@/components/Loading";
+import { useAuth } from "@/hooks/useAuth";
+import { routeTree } from "@/routeTree.gen";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import Loading from "./components/Loading";
-import { useAuth } from "./hooks/useAuth";
-import { routeTree } from "./routeTree.gen";
 
 const router = createRouter({
   routeTree,

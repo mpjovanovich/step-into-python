@@ -1,4 +1,4 @@
-import { BLANK_REGEX } from "../../../constants";
+import { BLANK_REGEX } from "@/constants";
 
 export const splitTemplateIntoParts = (
   template: string

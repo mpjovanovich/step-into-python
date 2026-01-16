@@ -1,6 +1,6 @@
+import styles from "@/pages/Exercise/ExercisePage.module.css";
 import { useState } from "react";
 import { MdCheck, MdContentCopy } from "react-icons/md";
-import styles from "../ExercisePage.module.css";
 
 const CodeCopyButton = ({
   copyCode,

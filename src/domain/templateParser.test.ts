@@ -3,7 +3,7 @@ import {
   getStepCount,
   type CodeForStep,
   type CodeParseOptions,
-} from "./templateParser";
+} from "@/domain/templateParser";
 
 describe("generates correct step count", () => {
   it("single step, single line", () => {
