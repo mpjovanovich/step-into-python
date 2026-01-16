@@ -32,7 +32,6 @@ export function checkAnswers(
   });
 }
 
-// TODO: Don't know which of the two below I'm going to use; get rid of one when we're sure.
 export function allCorrect(results: (boolean | null)[]): boolean {
   return results.every((r) => r === true);
 }

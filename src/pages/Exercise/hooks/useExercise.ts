@@ -23,6 +23,7 @@ export function useExercise(
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const exerciseCache = getExerciseCache();
 
+  // TODO: This can probably be removed now that we're fetching it in the loader
   useEffect(() => {
     const fetchExercise = async () => {
       const exercise = await exerciseCache.fetchById(exerciseId);
