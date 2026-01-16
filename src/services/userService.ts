@@ -2,7 +2,7 @@ import {
   Firestore,
   arrayUnion,
   doc,
-  getDoc,
+  onSnapshot,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
@@ -10,7 +10,11 @@ import type { User } from "../types/User";
 
 export interface UserService {
   completeExercise(userId: string, exerciseId: string): Promise<void>;
-  fetchById(userId: string): Promise<User | null>;
+
+  subscribeToUser(
+    userId: string,
+    onUser: (user: User | null) => void
+  ): () => void;
 }
 
 function createUserService(db: Firestore): UserService {
@@ -21,13 +25,18 @@ function createUserService(db: Firestore): UserService {
       });
     },
 
-    async fetchById(userId: string): Promise<User | null> {
+    subscribeToUser(
+      userId: string,
+      onUser: (user: User | null) => void
+    ): () => void {
       const userDocRef = doc(db, "users", userId);
-      const snapshot = await getDoc(userDocRef);
-      if (snapshot.exists()) {
-        return { ...snapshot.data(), id: snapshot.id } as User;
-      }
-      return null;
+      return onSnapshot(userDocRef, (snapshot) => {
+        let user: User | null = null;
+        if (snapshot.exists()) {
+          user = { ...snapshot.data(), id: snapshot.id } as User;
+        }
+        onUser(user);
+      });
     },
   };
 
