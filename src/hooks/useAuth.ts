@@ -1,11 +1,7 @@
 import { auth } from "@/firebase";
+import { type AuthContextType } from "@/types/AuthContextType";
 import { onAuthStateChanged, type User as FirebaseUser } from "firebase/auth";
 import { useEffect, useState } from "react";
-
-export interface AuthContextType {
-  authReady: boolean;
-  authUser: FirebaseUser | null;
-}
 
 export function useAuth(): AuthContextType {
   const [authReady, setAuthReady] = useState(false);

@@ -1,12 +1,12 @@
 import { getExerciseCache } from "@/cache/exerciseCache";
 import { auth } from "@/firebase";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/hooks/useAuthContext";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { signOut } from "firebase/auth";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { authUser } = useAuth();
+  const { authUser } = useAuthContext();
   const isAuthenticated = !!authUser;
 
   return (

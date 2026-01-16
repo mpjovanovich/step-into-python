@@ -3,6 +3,7 @@ import EmulatorWarning from "@/components/EmulatorWarning";
 import "@/styles/global.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { AuthProvider } from "./components/AuthContext";
 
 const rootElement = document.getElementById("root")!;
 
@@ -11,7 +12,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <EmulatorWarning />
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </StrictMode>
   );
 }

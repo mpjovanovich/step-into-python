@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { type AuthContextType } from "@/hooks/useAuth";
+import { type AuthContextType } from "@/types/AuthContextType";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
 interface RouterContext {

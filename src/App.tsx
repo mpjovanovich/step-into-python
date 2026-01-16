@@ -1,5 +1,5 @@
 import Loading from "@/components/Loading";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/hooks/useAuthContext";
 import { routeTree } from "@/routeTree.gen";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 
@@ -10,13 +10,13 @@ const router = createRouter({
 });
 
 const App = () => {
-  const auth = useAuth();
+  const authContext = useAuthContext();
 
-  if (!auth.authReady) {
+  if (!authContext.authReady) {
     return <Loading />;
   }
 
-  return <RouterProvider router={router} context={{ auth }} />;
+  return <RouterProvider router={router} context={{ auth: authContext }} />;
 };
 
 export default App;
