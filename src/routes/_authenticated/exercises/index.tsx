@@ -12,22 +12,24 @@ import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 
 export const Route = createFileRoute("/_authenticated/exercises/")({
   loader: async ({ context }) => {
+    // Get user
     const user = await userService.getUser(context.auth.authUser!.uid);
     if (!user) {
       // TODO: Handle error; this should never happen.
       throw redirect({ to: "/login" });
     }
 
+    // Get exercises
     const exerciseCache = getExerciseCache();
     const exercises = await exerciseCache.fetchAll();
 
-    return { user, exercises };
+    return { exercises, user };
   },
   component: ExercisesPage,
 });
 
 function ExercisesPage() {
-  const { user, exercises } = useLoaderData({
+  const { exercises, user } = useLoaderData({
     from: "/_authenticated/exercises/",
   });
 
@@ -45,7 +47,7 @@ function ExercisesPage() {
                   <MdRadioButtonUnchecked className="icon-incomplete" />
                 )}
               </span>
-              <Link to={"/exercise"}>
+              <Link to={`/exercises/${exercise.id}`}>
                 {formatExerciseNumber(exercise.order)}
                 {": "}
                 {exercise.title}

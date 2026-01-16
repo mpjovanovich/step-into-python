@@ -1,8 +1,8 @@
-import styles from "@/pages/Exercise/ExercisePage.module.css";
-import { getButtonStates } from "@/pages/Exercise/utils/ButtonStateUtils";
 import { ExerciseButtonType } from "@/types/ExerciseButtonType";
 import { ExerciseStepType } from "@/types/ExerciseStepType";
 import { Link } from "@tanstack/react-router";
+import styles from "../route.module.css";
+import { getButtonStates } from "../utils/ButtonStateUtils";
 
 const NavigationButtons = ({
   stepType,

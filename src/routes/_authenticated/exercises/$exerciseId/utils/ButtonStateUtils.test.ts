@@ -1,4 +1,4 @@
-import { getButtonStates } from "@/pages/Exercise/utils/ButtonStateUtils";
+import { getButtonStates } from "@/routes/_authenticated/exercises/$exerciseId/utils/ButtonStateUtils";
 import { type ExerciseButtonState } from "@/types/ExerciseButtonState";
 import { ExerciseButtonType } from "@/types/ExerciseButtonType";
 import { ExerciseStepType } from "@/types/ExerciseStepType";
