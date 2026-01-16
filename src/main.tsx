@@ -2,8 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import EmulatorWarning from "./components/EmulatorWarning";
-import Loading from "./components/Loading";
-import { AuthProvider } from "./providers/AuthProvider";
 import { ExerciseCacheProvider } from "./providers/ExerciseCacheProvider";
 import "./styles/global.css";
 
@@ -14,11 +12,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <EmulatorWarning />
-      <AuthProvider fallback={<Loading />}>
-        <ExerciseCacheProvider>
-          <App />
-        </ExerciseCacheProvider>
-      </AuthProvider>
+      <ExerciseCacheProvider>
+        <App />
+      </ExerciseCacheProvider>
     </StrictMode>
   );
 }

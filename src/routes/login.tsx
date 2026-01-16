@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
@@ -6,11 +6,12 @@ import { auth } from "../firebase";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async ({ context }) => {
-    if (context.auth.user) {
+    if (context.auth.authUser?.uid) {
       throw redirect({ to: "/exercises" });
     }
   },
   component: () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -23,9 +24,11 @@ export const Route = createFileRoute("/login")({
       setLoading(true);
 
       try {
-        // The useAuth hook has an onAuthStateChanged listener waiting for changes
-        // to the auth state. It will update the authUser.
+        console.log("signing in");
         await signInWithEmailAndPassword(auth, email, password);
+        console.log("signed in");
+        navigate({ to: "/exercises" });
+        console.log("navigated to exercises");
       } catch (err: unknown) {
         // Handle specific Firebase auth errors
         let errorMessage = "Failed to sign in. Please try again.";
