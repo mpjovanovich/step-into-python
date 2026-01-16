@@ -12,7 +12,7 @@ const Header = () => {
   return (
     <header className="header">
       <nav>
-        <Link className="app-title" to="/exercises">
+        <Link className="app-title" to="/exercises/">
           Step Into Python
         </Link>
         {isAuthenticated && (
@@ -21,7 +21,7 @@ const Header = () => {
             onClick={async () => {
               getExerciseCache().clear();
               await signOut(auth);
-              navigate({ to: "/login" });
+              navigate({ to: "/login/" });
             }}
           >
             Logout

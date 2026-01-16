@@ -11,8 +11,10 @@ export default defineConfig({
     // Docs say to make sure that '@tanstack/router-plugin' is passed before
     // '@vitejs/plugin-react'
     tanstackRouter({
-      target: "react",
       autoCodeSplitting: true,
+      generatedRouteTree: "./src/routeTree.gen.ts",
+      routesDirectory: "./src/routes",
+      target: "react",
     }),
     react(),
   ],

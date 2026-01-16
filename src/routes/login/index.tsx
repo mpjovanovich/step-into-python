@@ -4,7 +4,7 @@ import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/login/")({
   beforeLoad: async ({ context }) => {
     if (context.auth.authUser?.uid) {
       throw redirect({ to: "/exercises" });
