@@ -11,7 +11,6 @@ import {
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 
 export const Route = createFileRoute("/_authenticated/exercises/")({
-  component: RouteComponent,
   loader: async ({ context }) => {
     const user = await userService.getUser(context.auth.authUser!.uid);
     if (!user) {
@@ -24,9 +23,10 @@ export const Route = createFileRoute("/_authenticated/exercises/")({
 
     return { user, exercises };
   },
+  component: ExercisesPage,
 });
 
-function RouteComponent() {
+function ExercisesPage() {
   const { user, exercises } = useLoaderData({
     from: "/_authenticated/exercises/",
   });

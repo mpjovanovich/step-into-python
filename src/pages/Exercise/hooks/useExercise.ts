@@ -1,10 +1,10 @@
+import { getExerciseCache } from "@/cache/exerciseCache";
 import { checkAnswers } from "@/domain/answerChecker";
 import {
   getCodeForStep,
   getStepCount,
   type CodeForStep,
 } from "@/domain/templateParser";
-import { useExerciseCache } from "@/hooks/useExerciseCache";
 import { getCurrentStepProperties } from "@/pages/Exercise/utils/ExerciseUtils";
 import { type CurrentStep } from "@/types/CurrentStep";
 import { type Exercise } from "@/types/Exercise";
@@ -21,7 +21,7 @@ export function useExercise(
   checkAnswerResults: (boolean | null)[];
 } {
   const [exercise, setExercise] = useState<Exercise | null>(null);
-  const exerciseCache = useExerciseCache();
+  const exerciseCache = getExerciseCache();
 
   useEffect(() => {
     const fetchExercise = async () => {
@@ -33,7 +33,7 @@ export function useExercise(
       }
     };
     fetchExercise();
-  }, [exerciseId]);
+  }, [exerciseId, exerciseCache]);
 
   const finalStep = useMemo(() => {
     if (!exercise) return 0;
@@ -59,7 +59,7 @@ export function useExercise(
   // Reset user answers when step changes
   useEffect(() => {
     setUserAnswers(Array(currentStep.answers.length).fill(""));
-  }, [step, currentStep.answers.length]);
+  }, [step, currentStep.answers.length, setUserAnswers]);
 
   // Check the user's answers against the correct answers; compute as derived state
   const checkAnswerResults = useMemo(() => {
