@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useExerciseCache } from "../../../hooks/useExerciseCache";
-import { type Exercise } from "../../../types/Exercise";
+import { useExerciseCache } from "../../../../hooks/useExerciseCache";
+import { type Exercise } from "../../../../types/Exercise";
 
 interface ExercisesState {
   exercises: Exercise[] | null;

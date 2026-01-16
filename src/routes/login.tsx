@@ -24,11 +24,8 @@ export const Route = createFileRoute("/login")({
       setLoading(true);
 
       try {
-        console.log("signing in");
         await signInWithEmailAndPassword(auth, email, password);
-        console.log("signed in");
         navigate({ to: "/exercises" });
-        console.log("navigated to exercises");
       } catch (err: unknown) {
         // Handle specific Firebase auth errors
         let errorMessage = "Failed to sign in. Please try again.";
