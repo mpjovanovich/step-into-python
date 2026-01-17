@@ -16,4 +16,9 @@ test("complete exercise", async ({ page }) => {
   const loginButton = page.getByRole("button", { name: /sign in/i });
   await expect(loginButton).toBeVisible();
   await loginButton.click();
+
+  /* EXERCISES PAGE */
+  await expect(
+    page.getByRole("heading", { name: /^exercises.*/i })
+  ).toBeVisible();
 });
