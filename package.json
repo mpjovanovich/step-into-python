@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
-    "dev": "concurrently \"npm run emulators\" \"vite\"",
+    "cleanup": "lsof -ti:8080,9099,5173 | xargs kill -9 2>/dev/null || true",
+    "dev": "npm run cleanup && concurrently \"npm run emulators\" \"vite\"",
     "deploy": "firebase deploy",
     "emulators": "firebase emulators:start --import=./seed",
     "lint": "eslint .",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.57.0",
     "@tanstack/router-plugin": "^1.147.1",
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.5",

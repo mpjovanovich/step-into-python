@@ -33,3 +33,10 @@ firebase.config.ts
 credentials.json
 *.local
 devTools/data/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
