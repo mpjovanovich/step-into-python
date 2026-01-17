@@ -8,11 +8,11 @@ import {
   useLoaderData,
 } from "@tanstack/react-router";
 import { useState } from "react";
-import ExerciseDescription from "./components/ExerciseDescription";
-import ExerciseInstructions from "./components/ExerciseInstructions";
-import NavigationButtons from "./components/NavigationButtons";
-import ProgramOutput from "./components/ProgramOutput";
-import { useExercise } from "./hooks/useExercise";
+import ExerciseDescription from "./components/-ExerciseDescription";
+import ExerciseInstructions from "./components/-ExerciseInstructions";
+import NavigationButtons from "./components/-NavigationButtons";
+import ProgramOutput from "./components/-ProgramOutput";
+import { useExercise } from "./hooks/-useExercise";
 import styles from "./route.module.css";
 
 export const Route = createFileRoute("/_authenticated/exercises/$exerciseId/")({

@@ -1,7 +1,7 @@
-import { getButtonStates } from "@/routes/_authenticated/exercises/$exerciseId/utils/ButtonStateUtils";
 import { type ExerciseButtonState } from "@/types/ExerciseButtonState";
 import { ExerciseButtonType } from "@/types/ExerciseButtonType";
 import { ExerciseStepType } from "@/types/ExerciseStepType";
+import { getButtonStates } from "./-ButtonStateUtils";
 
 function unwrapButtons(buttons: Map<ExerciseButtonType, ExerciseButtonState>) {
   const [previous, next, submit] = [

@@ -1,10 +1,10 @@
 import React from "react";
-import CodeCopyButton from "../components/CodeCopyButton";
 import styles from "../route.module.css";
-import { splitTemplateIntoParts } from "../utils/ProgramOutputUtils";
-import CodeHighlight from "./CodeHighlight";
-import CodeInput from "./CodeInput";
-import CodeInputResult from "./CodeInputResult";
+import { splitTemplateIntoParts } from "../utils/-ProgramOutputUtils";
+import CodeCopyButton from "./-CodeCopyButton";
+import CodeHighlight from "./-CodeHighlight";
+import CodeInput from "./-CodeInput";
+import CodeInputResult from "./-CodeInputResult";
 
 const ProgramOutput = ({
   code,
