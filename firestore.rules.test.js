@@ -11,7 +11,7 @@ import fs from "fs";
  * Run `npm run firebase:emulate:firestore` to start the emulator.
  * See: https://firebase.google.com/docs/rules/unit-tests
  */
-const projectId = "test-project";
+const projectId = "stepintopython";
 
 describe("firestore database", () => {
   let testEnv;

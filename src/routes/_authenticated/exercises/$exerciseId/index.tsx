@@ -27,7 +27,6 @@ export const Route = createFileRoute("/_authenticated/exercises/$exerciseId/")({
 
     // Get exercise
     const { exerciseId } = params;
-    console.log("exerciseId", exerciseId);
     const exerciseCache = getExerciseCache();
     const exercise = await exerciseCache.fetchById(exerciseId);
     if (!exercise) {

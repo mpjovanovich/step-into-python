@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-// Just login for now
+// Sanity check for happy path user journey:
+// Login -> Exercises -> Complete Exercise -> Check for completion -> Logout
 test("complete exercise", async ({ page }) => {
   /* LOGIN FORM */
   await page.goto("/login/");
