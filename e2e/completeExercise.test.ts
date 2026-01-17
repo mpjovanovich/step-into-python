@@ -1,18 +1,19 @@
 import { expect, test } from "@playwright/test";
 
 // Just login for now
-test("login", async ({ page }) => {
+test("complete exercise", async ({ page }) => {
+  /* LOGIN FORM */
   await page.goto("/login/");
 
-  // Check for login UI - should have a "password" label
-  await expect(page.getByLabel(/password/i)).toBeVisible();
+  const emailInput = page.getByLabel(/email/i);
+  await expect(emailInput).toBeVisible();
+  await emailInput.fill("dev@dev.com");
 
-  //   // Fill in login form
-  //   await page.getByLabel('Email').fill('test@test.com');
-  //   await page.getByLabel('Password').fill('test');
+  const passwordInput = page.getByLabel(/password/i);
+  await expect(passwordInput).toBeVisible();
+  await passwordInput.fill("devUser");
 
-  //   // Click login button
-  //   await page.getByRole('button', { name: 'Login' }).click();
-
-  // Check for dashboard UI
+  const loginButton = page.getByRole("button", { name: /sign in/i });
+  await expect(loginButton).toBeVisible();
+  await loginButton.click();
 });

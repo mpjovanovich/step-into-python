@@ -12,8 +12,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run --config vitest.all.config.ts",
-    "test:ui": "vitest --ui --config vitest.all.config.ts",
-    "test:firestore": "vitest run --config vitest.firestore.config.ts"
+    "test:e2e": "npx playwright test",
+    "test:firestore": "vitest run --config vitest.firestore.config.ts",
+    "test:ui": "vitest --ui --config vitest.all.config.ts"
   },
   "dependencies": {
     "@firebase/rules-unit-testing": "^5.0.0",
