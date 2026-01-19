@@ -88,9 +88,12 @@ test("complete exercise", async ({ page }) => {
   await expect(submitButton).toBeEnabled();
   await submitButton.click();
 
-  // TODO: We are going to redirect to exercises page with toast notification in upcoming work.
-  // Not worth testing this bit until we do; after that we will check here to make sure that
-  // we are redirected to the exercises page.
+  /* EXERCISES PAGE */
+  // We should have been navigated to the exercises page with a toast
+  // notification after completing the exercise.
+  await expect(
+    page.getByRole("heading", { name: /^exercises/i })
+  ).toBeVisible();
 
   /* LOGOUT */
   logoutButton = page.getByRole("button", { name: /logout/i });

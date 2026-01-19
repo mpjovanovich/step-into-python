@@ -22,8 +22,6 @@ function formatInstructions(
       return <p>Click Next to continue</p>;
     case ExerciseStepType.SUBMIT:
       return <p>Click Submit</p>;
-    case ExerciseStepType.COMPLETE:
-      return <p>Click Home to return to the home page.</p>;
   }
 }
 

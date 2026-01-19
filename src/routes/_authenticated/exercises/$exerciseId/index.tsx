@@ -6,8 +6,10 @@ import {
   notFound,
   redirect,
   useLoaderData,
+  useNavigate,
 } from "@tanstack/react-router";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import ExerciseDescription from "./components/-ExerciseDescription";
 import ExerciseInstructions from "./components/-ExerciseInstructions";
 import NavigationButtons from "./components/-NavigationButtons";
@@ -42,9 +44,11 @@ function ExercisePage() {
   const { exercise, user } = useLoaderData({
     from: "/_authenticated/exercises/$exerciseId/",
   });
+  const navigate = useNavigate();
 
   // Page state
   const [step, setStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
 
   // Fetch exercise data
@@ -82,8 +86,18 @@ function ExercisePage() {
             onNext={() => setStep(step + 1)}
             onSubmit={() => {
               const completeExercise = async () => {
-                await userService.completeExercise(user.id, exercise.id);
-                setStep(() => step + 1);
+                try {
+                  setIsSubmitting(true);
+                  await userService.completeExercise(user.id, exercise.id);
+                  setIsSubmitting(false);
+                  toast.success("Exercise complete!");
+                  navigate({ to: "/exercises" });
+                } catch (error) {
+                  console.error(error);
+                  // TODO: Handle error. Toast? Global error component?
+                } finally {
+                  setIsSubmitting(false);
+                }
               };
               completeExercise();
             }}

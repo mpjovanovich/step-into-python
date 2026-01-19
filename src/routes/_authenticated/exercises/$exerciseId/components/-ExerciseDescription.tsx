@@ -1,5 +1,4 @@
 import { ExerciseStepType } from "@/types/ExerciseStepType";
-import { MdCheckCircle } from "react-icons/md";
 
 function formatDescription(
   stepType: ExerciseStepType,
@@ -42,24 +41,6 @@ function formatDescription(
             interpreter to see if it works.
           </p>
           <p>Make sure to click Submit!</p>
-        </>
-      );
-
-    case ExerciseStepType.COMPLETE:
-      return (
-        <>
-          <span className="inline-flex-wrapper">
-            <MdCheckCircle className="icon-complete" />
-            <span
-              style={{
-                marginTop: "10px",
-                marginLeft: "8px",
-                marginBottom: "10px",
-              }}
-            >
-              Exercise Complete!
-            </span>
-          </span>
         </>
       );
   }

@@ -1,6 +1,5 @@
 import { ExerciseButtonType } from "@/types/ExerciseButtonType";
 import { ExerciseStepType } from "@/types/ExerciseStepType";
-import { Link } from "@tanstack/react-router";
 import styles from "../route.module.css";
 import { getButtonStates } from "../utils/-ButtonStateUtils";
 
@@ -58,13 +57,6 @@ const NavigationButtons = ({
         >
           Submit
         </button>
-      )}
-      {stepType === ExerciseStepType.COMPLETE && (
-        <Link to="/exercises" style={{ textDecoration: "none" }}>
-          <button className={styles.actionButton} autoFocus={true}>
-            Home
-          </button>
-        </Link>
       )}
     </div>
   );
