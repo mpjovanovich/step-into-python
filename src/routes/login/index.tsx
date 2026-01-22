@@ -1,8 +1,5 @@
-import { auth } from "@/firebase";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { FirebaseError } from "firebase/app";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useForm } from "react-hook-form";
+import { useLogin } from "./hooks/-useLogin";
 
 export const Route = createFileRoute("/login/")({
   beforeLoad: async ({ context }) => {
@@ -13,63 +10,21 @@ export const Route = createFileRoute("/login/")({
   component: LoginPage,
 });
 
-type LoginFormData = {
-  email: string;
-  password: string;
-};
-
 function LoginPage() {
   const navigate = useNavigate();
 
-  // TODO: Extract this to a custom hook.
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    setError,
-  } = useForm<LoginFormData>({
-    defaultValues: {
-      email: "",
-      password: "",
+  const { register, handleSubmit, errors, isSubmitting } = useLogin({
+    onSuccess: () => {
+      navigate({ to: "/exercises" });
     },
   });
-
-  function getFirebaseAuthErrorMessage(error: FirebaseError): string {
-    // TODO: Log errors to error reporting service.
-    switch (error.code) {
-      case "auth/too-many-requests":
-        return "Too many failed attempts. Please try again later.";
-      case "auth/user-not-found":
-      case "auth/wrong-password":
-      case "auth/invalid-email":
-      case "auth/invalid-credential":
-        return "Invalid email or password.";
-      default:
-        return "Unknown error occurred. Please contact support.";
-    }
-  }
-
-  // TODO: Refactor this whole component. It's messy.
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      navigate({ to: "/exercises" });
-    } catch (err: unknown) {
-      if (!(err instanceof FirebaseError)) {
-        throw err;
-      }
-
-      const errorMessage = getFirebaseAuthErrorMessage(err);
-      setError("root", { type: "manual", message: errorMessage });
-    }
-  };
 
   // TODO: extract styles to a CSS file.
   return (
     <div style={{ padding: "2rem", maxWidth: "400px", margin: "0 auto" }}>
       <h1 style={{ marginBottom: "1.5rem", color: "white" }}>Sign In</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="on">
+      <form onSubmit={handleSubmit} autoComplete="on">
         <div style={{ marginBottom: "1rem" }}>
           <label
             htmlFor="email"
