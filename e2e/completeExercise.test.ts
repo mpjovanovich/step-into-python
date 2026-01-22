@@ -24,7 +24,7 @@ test("complete exercise", async ({ page }) => {
 
   let passwordInput = page.getByLabel(/password/i);
   await expect(passwordInput).toBeVisible();
-  await passwordInput.fill("devUser");
+  await passwordInput.fill("testPassword");
 
   let loginButton = page.getByRole("button", { name: /sign in/i });
   await expect(loginButton).toBeVisible();

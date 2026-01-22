@@ -2,7 +2,7 @@ import { auth } from "@/firebase";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export const Route = createFileRoute("/login/")({
   beforeLoad: async ({ context }) => {
@@ -13,46 +13,54 @@ export const Route = createFileRoute("/login/")({
   component: LoginPage,
 });
 
+type LoginFormData = {
+  email: string;
+  password: string;
+};
+
 function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+
+  // TODO: Extract this to a custom hook.
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm<LoginFormData>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  function getFirebaseAuthErrorMessage(error: FirebaseError): string {
+    // TODO: Log errors to error reporting service.
+    switch (error.code) {
+      case "auth/too-many-requests":
+        return "Too many failed attempts. Please try again later.";
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+      case "auth/invalid-email":
+      case "auth/invalid-credential":
+        return "Invalid email or password.";
+      default:
+        return "Unknown error occurred. Please contact support.";
+    }
+  }
 
   // TODO: Refactor this whole component. It's messy.
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, data.email, data.password);
       navigate({ to: "/exercises" });
     } catch (err: unknown) {
-      // Handle specific Firebase auth errors
-      let errorMessage = "Failed to sign in. Please try again.";
-
-      if (
-        err instanceof FirebaseError &&
-        err.code === "auth/too-many-requests"
-      ) {
-        errorMessage = "Too many failed attempts. Please try again later.";
-      } else if (
-        err &&
-        typeof err === "object" &&
-        "code" in err &&
-        (err.code === "auth/user-not-found" ||
-          err.code === "auth/wrong-password" ||
-          err.code === "auth/invalid-email")
-      ) {
-        errorMessage = "Invalid email or password.";
-      } else {
+      if (!(err instanceof FirebaseError)) {
         throw err;
       }
 
-      setError(errorMessage);
-      setLoading(false);
+      const errorMessage = getFirebaseAuthErrorMessage(err);
+      setError("root", { type: "manual", message: errorMessage });
     }
   };
 
@@ -61,7 +69,7 @@ function LoginPage() {
     <div style={{ padding: "2rem", maxWidth: "400px", margin: "0 auto" }}>
       <h1 style={{ marginBottom: "1.5rem", color: "white" }}>Sign In</h1>
 
-      <form onSubmit={handleSubmit} autoComplete="on">
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="on">
         <div style={{ marginBottom: "1rem" }}>
           <label
             htmlFor="email"
@@ -75,22 +83,33 @@ function LoginPage() {
             <input
               id="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
-              required
-              disabled={loading}
+              {...register("email", {
+                required: "Email is required",
+              })}
+              disabled={isSubmitting}
               style={{
                 width: "100%",
                 padding: "0.75rem",
                 marginTop: "0.5rem",
                 fontSize: "1rem",
-                border: "1px solid #ccc",
+                border: errors.email ? "1px solid #c33" : "1px solid #ccc",
                 borderRadius: "4px",
                 boxSizing: "border-box",
               }}
             />
           </label>
+          {errors.email && (
+            <div
+              style={{
+                color: "#c33",
+                fontSize: "0.875rem",
+                marginTop: "0.25rem",
+              }}
+            >
+              {errors.email.message}
+            </div>
+          )}
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
@@ -106,25 +125,40 @@ function LoginPage() {
             <input
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
-              required
-              disabled={loading}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 12,
+                  message: "Password must be at least 12 characters",
+                },
+              })}
+              disabled={isSubmitting}
               style={{
                 width: "100%",
                 padding: "0.75rem",
                 marginTop: "0.5rem",
                 fontSize: "1rem",
-                border: "1px solid #ccc",
+                border: errors.password ? "1px solid #c33" : "1px solid #ccc",
                 borderRadius: "4px",
                 boxSizing: "border-box",
               }}
             />
           </label>
+          {errors.password && (
+            <div
+              style={{
+                color: "#c33",
+                fontSize: "0.875rem",
+                marginTop: "0.25rem",
+              }}
+            >
+              {errors.password.message}
+            </div>
+          )}
         </div>
 
-        {error && (
+        {errors.root && (
           <div
             style={{
               padding: "0.75rem",
@@ -134,25 +168,25 @@ function LoginPage() {
               borderRadius: "4px",
             }}
           >
-            {error}
+            {errors.root.message}
           </div>
         )}
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isSubmitting}
           style={{
             width: "100%",
             padding: "0.75rem",
             fontSize: "1rem",
-            backgroundColor: loading ? "#ccc" : "#007bff",
+            backgroundColor: isSubmitting ? "#ccc" : "#007bff",
             color: "white",
             border: "none",
             borderRadius: "4px",
-            cursor: loading ? "not-allowed" : "pointer",
+            cursor: isSubmitting ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Signing in..." : "Sign In"}
+          {isSubmitting ? "Signing in..." : "Sign In"}
         </button>
       </form>
     </div>
