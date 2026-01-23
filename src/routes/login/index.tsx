@@ -12,10 +12,12 @@ export const Route = createFileRoute("/login/")({
 
 function LoginPage() {
   const navigate = useNavigate();
-
   const { register, handleSubmit, errors, isSubmitting } = useLogin({
     onSuccess: () => {
       navigate({ to: "/exercises" });
+      // This is just here to block until the navigation is complete.
+      // It will never resolve.
+      return new Promise(() => {});
     },
   });
 

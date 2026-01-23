@@ -48,7 +48,6 @@ function ExercisePage() {
 
   // Page state
   const [step, setStep] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
 
   // Fetch exercise data
@@ -87,16 +86,12 @@ function ExercisePage() {
             onSubmit={() => {
               const completeExercise = async () => {
                 try {
-                  setIsSubmitting(true);
                   await userService.completeExercise(user.id, exercise.id);
-                  setIsSubmitting(false);
                   toast.success("Exercise complete!");
                   navigate({ to: "/exercises" });
                 } catch (error) {
                   console.error(error);
                   // TODO: Handle error. Toast? Global error component?
-                } finally {
-                  setIsSubmitting(false);
                 }
               };
               completeExercise();

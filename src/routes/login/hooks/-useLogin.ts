@@ -26,7 +26,7 @@ function getFirebaseAuthErrorMessage(error: FirebaseError): string {
 export function useLogin({
   onSuccess,
 }: {
-  onSuccess: () => void; //
+  onSuccess: () => Promise<void>; //
 }) {
   const {
     register,
@@ -43,7 +43,7 @@ export function useLogin({
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
-      onSuccess();
+      await onSuccess();
     } catch (err: unknown) {
       if (!(err instanceof FirebaseError)) {
         throw err;
@@ -53,6 +53,7 @@ export function useLogin({
       setError("root", { type: "manual", message: errorMessage });
     }
   };
+
   return {
     register,
     handleSubmit: handleSubmit(onSubmit),
