@@ -1,3 +1,8 @@
+import FormButton from "@/components/FormButton";
+import FormError from "@/components/FormError";
+import FormField from "@/components/FormField";
+import FormLabel from "@/components/FormLabel";
+import FormText from "@/components/FormText";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useLogin } from "./hooks/-useLogin";
 
@@ -21,23 +26,15 @@ function LoginPage() {
     },
   });
 
-  // TODO: extract styles to a CSS file.
   return (
     <div style={{ padding: "2rem", maxWidth: "400px", margin: "0 auto" }}>
       <h1 style={{ marginBottom: "1.5rem", color: "white" }}>Sign In</h1>
 
       <form onSubmit={handleSubmit} autoComplete="on">
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            htmlFor="email"
-            style={{
-              display: "block",
-              color: "white",
-              marginBottom: "0.5rem",
-            }}
-          >
+        <FormField>
+          <FormLabel htmlFor="email">
             Email
-            <input
+            <FormText
               id="email"
               type="email"
               autoComplete="email"
@@ -45,41 +42,15 @@ function LoginPage() {
                 required: "Email is required",
               })}
               disabled={isSubmitting}
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                marginTop: "0.5rem",
-                fontSize: "1rem",
-                border: errors.email ? "1px solid #c33" : "1px solid #ccc",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-              }}
             />
-          </label>
-          {errors.email && (
-            <div
-              style={{
-                color: "#c33",
-                fontSize: "0.875rem",
-                marginTop: "0.25rem",
-              }}
-            >
-              {errors.email.message}
-            </div>
-          )}
-        </div>
+          </FormLabel>
+          {errors.email && <FormError>{errors.email.message}</FormError>}
+        </FormField>
 
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            htmlFor="password"
-            style={{
-              display: "block",
-              color: "white",
-              marginBottom: "0.5rem",
-            }}
-          >
+        <FormField>
+          <FormLabel htmlFor="password">
             Password
-            <input
+            <FormText
               id="password"
               type="password"
               autoComplete="current-password"
@@ -91,60 +62,20 @@ function LoginPage() {
                 },
               })}
               disabled={isSubmitting}
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                marginTop: "0.5rem",
-                fontSize: "1rem",
-                border: errors.password ? "1px solid #c33" : "1px solid #ccc",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-              }}
             />
-          </label>
-          {errors.password && (
-            <div
-              style={{
-                color: "#c33",
-                fontSize: "0.875rem",
-                marginTop: "0.25rem",
-              }}
-            >
-              {errors.password.message}
-            </div>
-          )}
-        </div>
+          </FormLabel>
+          {errors.password && <FormError>{errors.password.message}</FormError>}
+        </FormField>
 
-        {errors.root && (
-          <div
-            style={{
-              padding: "0.75rem",
-              marginBottom: "1rem",
-              backgroundColor: "#fee",
-              color: "#c33",
-              borderRadius: "4px",
-            }}
-          >
-            {errors.root.message}
-          </div>
-        )}
+        {errors.root && <FormError>{errors.root.message}</FormError>}
 
-        <button
+        <FormButton
+          isDisabled={isSubmitting}
           type="submit"
-          disabled={isSubmitting}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            fontSize: "1rem",
-            backgroundColor: isSubmitting ? "#ccc" : "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: isSubmitting ? "not-allowed" : "pointer",
-          }}
+          style={{ width: "100%" }}
         >
           {isSubmitting ? "Signing in..." : "Sign In"}
-        </button>
+        </FormButton>
       </form>
     </div>
   );
