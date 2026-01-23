@@ -12,7 +12,7 @@ const CodeHighlight = ({
       style={vscDarkPlus}
       customStyle={{
         display: "inline",
-        padding: "0 4px",
+        padding: "0",
         background: "transparent",
       }}
       codeTagProps={{
