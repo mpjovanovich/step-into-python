@@ -1,5 +1,4 @@
 import App from "@/App";
-import EmulatorWarning from "@/components/EmulatorWarning";
 import "@/styles/global.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -13,7 +12,6 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <Toaster />
-      <EmulatorWarning />
       <AuthProvider>
         <App />
       </AuthProvider>

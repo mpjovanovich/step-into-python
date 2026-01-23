@@ -5,7 +5,7 @@ const FormError = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     return (
       <div
         style={{
-          color: "#e89bb8",
+          color: "#eb3434",
           fontSize: "1rem",
           marginTop: "0.25rem",
           ...style,
