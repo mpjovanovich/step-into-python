@@ -6,9 +6,13 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Errors collection
+    match /errors/{errorId} {
+      allow create: if request.auth != null;
+    }
+
     // Exercises collection
     match /exercises/{exerciseId} {
-      // authenticated users can read
       allow read: if request.auth != null;
     }
     

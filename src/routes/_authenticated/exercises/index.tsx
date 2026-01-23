@@ -5,8 +5,7 @@ import { formatExerciseNumber } from "@/utils/formatters";
 import {
   createFileRoute,
   Link,
-  redirect,
-  useLoaderData,
+  useLoaderData
 } from "@tanstack/react-router";
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 
@@ -14,16 +13,20 @@ export const Route = createFileRoute("/_authenticated/exercises/")({
   loader: async ({ context }) => {
     // Get user
     const user = await userService.getUser(context.auth.authUser!.uid);
-    if (!user) {
-      // TODO: Handle error; this should never happen.
-      throw redirect({ to: "/login" });
+    if (user.error) {
+      // Let the error boundary handle the error.
+      throw new Error(user.error);
     }
 
     // Get exercises
     const exerciseCache = getExerciseCache();
     const exercises = await exerciseCache.fetchAll();
+    if (exercises.error) {
+      // Let the error boundary handle the error.
+      throw new Error(exercises.error);
+    }
 
-    return { exercises, user };
+    return { exercises: exercises.data, user: user.data };
   },
   component: ExercisesPage,
 });

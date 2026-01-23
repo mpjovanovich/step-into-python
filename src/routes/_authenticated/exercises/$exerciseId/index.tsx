@@ -3,10 +3,8 @@ import { allCorrect } from "@/domain/answerChecker";
 import { userService } from "@/services/userService";
 import {
   createFileRoute,
-  notFound,
-  redirect,
   useLoaderData,
-  useNavigate,
+  useNavigate
 } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -19,23 +17,21 @@ import styles from "./route.module.css";
 
 export const Route = createFileRoute("/_authenticated/exercises/$exerciseId/")({
   loader: async ({ context, params }) => {
-    console.log("loader");
-    // Get user
     const user = await userService.getUser(context.auth.authUser!.uid);
-    if (!user) {
-      // TODO: Handle error; this should never happen.
-      throw redirect({ to: "/login" });
+    if (user.error) {
+      // Let the error boundary handle the error.
+      throw new Error(user.error);
     }
 
-    // Get exercise
     const { exerciseId } = params;
     const exerciseCache = getExerciseCache();
     const exercise = await exerciseCache.fetchById(exerciseId);
-    if (!exercise) {
-      throw notFound();
+    if (exercise.error) {
+      // Let the error boundary handle the error.
+      throw new Error(exercise.error);
     }
 
-    return { exercise, user };
+    return { exercise: exercise.data, user: user.data };
   },
   component: ExercisePage,
 });

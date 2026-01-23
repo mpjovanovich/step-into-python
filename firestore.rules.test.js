@@ -27,6 +27,42 @@ describe("firestore database", () => {
     });
   });
 
+  describe("for errors collection", () => {
+    describe("for unauthenticated user", () => {
+      let authContext;
+      let db;
+
+      beforeEach(async () => {
+        await testEnv.clearFirestore();
+        authContext = testEnv.unauthenticatedContext();
+        db = authContext.firestore();
+      });
+
+      it("should deny reads", async () => {
+        await assertFails(getDoc(doc(db, "errors", "1")));
+      });
+
+      it("should deny writes", async () => {
+        await assertFails(setDoc(doc(db, "errors", "1"), { test: true }));
+      });
+    });
+
+    describe("for authenticated user", () => {
+      let authContext;
+      let db;
+
+      beforeEach(async () => {
+        await testEnv.clearFirestore();
+        authContext = testEnv.authenticatedContext("user1");
+        db = authContext.firestore();
+      });
+
+      it("should allow writes", async () => {
+        await assertSucceeds(setDoc(doc(db, "errors", "1"), { test: true }));
+      });
+    });
+  });
+
   describe("for exercises collection", () => {
     describe("for unauthenticated user", () => {
       let authContext;

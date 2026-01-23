@@ -3,6 +3,7 @@ import {
   exerciseService,
 } from "@/services/exerciseService";
 import { type Exercise } from "@/types/Exercise";
+import { type ServiceResponse } from "@/types/ServiceResponse";
 
 // If we want to genericize this later we can, but for now YAGNI
 export interface ExerciseCache extends ExerciseService {
@@ -29,28 +30,47 @@ export function createExerciseCache(
     );
   };
 
-  const loadExercises = async () => {
+  const loadExercises = async (): Promise<ServiceResponse<Exercise[]>> => {
     const exercises = await exerciseService.fetchAll();
+    if (exercises.error) {
+      return { data: null, error: exercises.error };
+    }
+
     const exercisesMap = new Map(
-      exercises.map((exercise) => [exercise.id, exercise])
+      exercises.data?.map((exercise) => [exercise.id, exercise]) ?? []
     );
+
     setSerializedExercises(exercisesMap);
+
+    return { data: exercises.data ?? [], error: null };
   };
 
   return {
-    fetchById: async (exerciseId: string) => {
+    fetchById: async (exerciseId: string): Promise<ServiceResponse<Exercise>> => {
       if (!storage.getItem(EXERCISES_KEY)) {
-        await loadExercises();
+        const exercises = await loadExercises();
+        if (exercises.error) {
+          return { data: null, error: exercises.error };
+        }
       }
+
       const exercises = getSerializedExercises();
-      return exercises.get(exerciseId) ?? null;
+      const exercise = exercises.get(exerciseId);
+      if (!exercise) {
+        return { data: null, error: "Exercise not found." };
+      }
+
+      return { data: exercise, error: null };
     },
 
-    fetchAll: async () => {
+    fetchAll: async (): Promise<ServiceResponse<Exercise[]>> => {
       if (!storage.getItem(EXERCISES_KEY)) {
-        await loadExercises();
+        const exercises = await loadExercises();
+        if (exercises.error) {
+          return { data: null, error: exercises.error };
+        }
       }
-      return Array.from(getSerializedExercises().values());
+      return { data: Array.from(getSerializedExercises().values()), error: null };
     },
 
     clear: () => {

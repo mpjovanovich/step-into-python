@@ -47,10 +47,10 @@ function createExampleExercise(id: string, title: string): Exercise {
 function createExerciseServiceStub(exercises: Exercise[]): ExerciseService {
   return {
     fetchById: async (exerciseId: string) => {
-      return exercises.find((exercise) => exercise.id === exerciseId) ?? null;
+      return { data: exercises.find((exercise) => exercise.id === exerciseId)!, error: null };
     },
     fetchAll: async () => {
-      return exercises;
+      return { data: exercises, error: null };
     },
   };
 }
@@ -64,7 +64,7 @@ describe("exercise cache", () => {
     );
 
     const result = await exerciseCache.fetchById("1");
-    expect(result).toBeNull();
+    expect(result?.data).toBeNull();
   });
 
   it("should return the specified exercise if it exists", async () => {
@@ -75,7 +75,7 @@ describe("exercise cache", () => {
     );
 
     const result = await exerciseCache.fetchById("1");
-    expect(result?.title).toBe("Test1");
+    expect(result?.data?.title).toBe("Test1");
   });
 
   it("should return all exercises if requested", async () => {
@@ -86,8 +86,8 @@ describe("exercise cache", () => {
     );
 
     const result = await exerciseCache.fetchAll();
-    expect(result).toHaveLength(exampleExercises.length);
-    expect(result?.[0]?.title).toBe("Test1");
-    expect(result?.[1]?.title).toBe("Test2");
+    expect(result?.data).toHaveLength(exampleExercises.length);
+    expect(result?.data?.[0]?.title).toBe("Test1");
+    expect(result?.data?.[1]?.title).toBe("Test2");
   });
 });
