@@ -67,8 +67,6 @@ function LoginPage() {
           {errors.password && <FormError>{errors.password.message}</FormError>}
         </FormField>
 
-        {errors.root && <FormError>{errors.root.message}</FormError>}
-
         <FormButton
           isDisabled={isSubmitting}
           type="submit"
@@ -76,6 +74,12 @@ function LoginPage() {
         >
           {isSubmitting ? "Signing in..." : "Sign In"}
         </FormButton>
+
+        {errors.root && (
+          <FormError style={{ marginTop: "1rem" }}>
+            {errors.root.message}
+          </FormError>
+        )}
       </form>
     </div>
   );
