@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from "react-hot-toast";
 import AuthProvider from "./components/AuthProvider";
+import DevTest from "./components/DevTest";
 
 const rootElement = document.getElementById("root")!;
 
@@ -16,7 +17,8 @@ if (!rootElement.innerHTML) {
       <Toaster />
       <AuthProvider>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <App />
+          <DevTest />
+          <App />
         </ErrorBoundary>
       </AuthProvider>
     </StrictMode>
