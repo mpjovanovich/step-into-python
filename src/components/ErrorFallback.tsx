@@ -1,12 +1,12 @@
 import { errorService } from "@/services/errorService";
 import { ErrorSeverity } from "@/types/ErrorSeverity";
+import { toError } from "@/utils/errorUtils";
 import { type FallbackProps } from "react-error-boundary";
 
 const ErrorFallback = ({ 
   error
 }: FallbackProps) => {
-  const errorObj = error instanceof Error ? error : new Error(String(error));
-  errorService.logError(errorObj, ErrorSeverity.ERROR);
+  errorService.logError(toError(error), ErrorSeverity.ERROR);
   return <div style={{ 
     color: "white", 
     textAlign: "center", 
