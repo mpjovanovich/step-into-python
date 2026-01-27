@@ -1,6 +1,6 @@
 import FIREBASE_CONFIG from "@/firebase.config";
 import { initializeApp } from "firebase/app";
-import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { connectAuthEmulator, getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 
 // Initialize Firebase
@@ -14,4 +14,4 @@ if (useEmulator) {
   connectFirestoreEmulator(db, "127.0.0.1", 8080);
 }
 
-export { auth, db };
+export { auth, db, sendPasswordResetEmail };

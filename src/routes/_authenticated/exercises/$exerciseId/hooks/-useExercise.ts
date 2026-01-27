@@ -7,7 +7,7 @@ import {
 import { type CurrentStep } from "@/types/CurrentStep";
 import { type Exercise } from "@/types/Exercise";
 import { useEffect, useMemo } from "react";
-import { getCurrentStepProperties } from "../utils/-ExerciseUtils";
+import { getCurrentStepProperties } from "../utils/-exerciseUtils";
 
 export function useExercise(
   exercise: Exercise,

@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../route.module.css";
-import { splitTemplateIntoParts } from "../utils/-ProgramOutputUtils";
+import { splitTemplateIntoParts } from "../utils/-programOutputUtils";
 import CodeCopyButton from "./-CodeCopyButton";
 import CodeHighlight from "./-CodeHighlight";
 import CodeInput from "./-CodeInput";

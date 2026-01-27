@@ -1,7 +1,7 @@
 import { ExerciseButtonType } from "@/types/ExerciseButtonType";
 import { ExerciseStepType } from "@/types/ExerciseStepType";
 import styles from "../route.module.css";
-import { getButtonStates } from "../utils/-ButtonStateUtils";
+import { getButtonStates } from "../utils/-buttonStateUtils";
 
 const NavigationButtons = ({
   stepType,
