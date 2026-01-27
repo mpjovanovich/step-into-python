@@ -98,20 +98,5 @@ describe("navigation buttons", () => {
       expect(submit.enabled).toBe(true);
       expect(submit.hasFocus).toBe(true);
     });
-
-    it("on complete step: previous = visible disabled, next = invisible, submit = invisible", () => {
-      const buttons = getButtonStates(ExerciseStepType.COMPLETE, true);
-
-      const { previous, next, submit } = unwrapButtons(buttons);
-      expect(previous.visible).toBe(true);
-      expect(previous.enabled).toBe(false);
-      expect(previous.hasFocus).toBe(false);
-      expect(next.visible).toBe(false);
-      expect(next.enabled).toBe(false);
-      expect(next.hasFocus).toBe(false);
-      expect(submit.visible).toBe(false);
-      expect(submit.enabled).toBe(false);
-      expect(submit.hasFocus).toBe(false);
-    });
   });
 });

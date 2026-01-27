@@ -29,8 +29,5 @@ function getStepType(currentStep: number, finalStep: number): ExerciseStepType {
   if (currentStep === finalStep + 1) {
     return ExerciseStepType.SUBMIT;
   }
-  if (currentStep === finalStep + 2) {
-    return ExerciseStepType.COMPLETE;
-  }
   throw new Error(`Invalid step number: ${currentStep}`);
 }

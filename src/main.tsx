@@ -5,7 +5,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from "react-hot-toast";
-import { AuthProvider } from "./components/AuthContext";
+import AuthProvider from "./components/AuthProvider";
 
 const rootElement = document.getElementById("root")!;
 
