@@ -1,9 +1,10 @@
 import { forwardRef, type HTMLAttributes } from "react";
 
 const FormError = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ style, children, ...props }) => {
+  ({ style, children, ...props }, ref) => {
     return (
       <div
+        ref={ref}
         style={{
           color: "#eb3434",
           fontSize: "1rem",
