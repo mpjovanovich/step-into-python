@@ -1,6 +1,7 @@
 import { getExerciseCache } from "@/cache/exerciseCache";
 import { auth } from "@/firebase";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import { version } from "@/version";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { signOut } from "firebase/auth";
 
@@ -13,7 +14,8 @@ const Header = () => {
     <header className="header">
       <nav>
         <Link className="app-title" to="/exercises/">
-          Step Into Python
+          Step Into Python{" - "}
+          <span className="version">{version}</span>
         </Link>
         {isAuthenticated && (
           <button

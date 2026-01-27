@@ -10,6 +10,7 @@
     "deploy": "firebase deploy",
     "emulators": "firebase emulators:start --import=./seed",
     "lint": "eslint .",
+    "prebuild": "node devTools/generate-version.ts",
     "preview": "vite preview",
     "test": "vitest run --config vitest.all.config.ts",
     "test:e2e": "npx playwright test",
