@@ -7,7 +7,7 @@ async function globalTeardown() {
   try {
     // Kill processes on all emulator ports
     await execAsync("lsof -ti:8080,9099 | xargs kill -9 2>/dev/null || true");
-  } catch (error) {
+  } catch {
     console.log("Cleanup completed");
   }
 }
