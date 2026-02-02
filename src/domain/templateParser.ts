@@ -71,8 +71,14 @@ export function getCodeForStep({
  * Extracts the number of steps in a template.
  */
 export function getStepCount(questionTemplate: string[]): number {
-  return getStepRangeFromLine(questionTemplate[questionTemplate.length - 1])
-    .startStep;
+  let maxStep = -1;
+  for (const line of questionTemplate) {
+    const step = getStepRangeFromLine(line).startStep;
+    if (step > maxStep) {
+      maxStep = step;
+    }
+  }
+  return maxStep;
 }
 
 function getStepRangeFromLine(line: string): {

@@ -21,6 +21,11 @@ describe("generates correct step count", () => {
     expect(result).toEqual(2);
   });
 
+  it("multiple steps, final step not on last line", () => {
+    const result = getStepCount(["1?", "2?", "1?"]);
+    expect(result).toEqual(2);
+  });
+
   it("multiple steps, explicit end step", () => {
     const result = getStepCount(["1:1?", "2:2?"]);
     expect(result).toEqual(2);
