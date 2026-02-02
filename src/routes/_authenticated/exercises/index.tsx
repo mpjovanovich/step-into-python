@@ -1,4 +1,4 @@
-import { getExerciseCache } from "@/cache/exerciseCache";
+import { exerciseService } from "@/services/exerciseService";
 import { userService } from "@/services/userService";
 import { type Exercise } from "@/types/Exercise";
 import { formatExerciseNumber } from "@/utils/formatters";
@@ -19,8 +19,7 @@ export const Route = createFileRoute("/_authenticated/exercises/")({
     }
 
     // Get exercises
-    const exerciseCache = getExerciseCache();
-    const exercises = await exerciseCache.fetchAll();
+    const exercises = await exerciseService.fetchAll();
     if (exercises.error) {
       // Let the error boundary handle the error.
       throw new Error(exercises.error);

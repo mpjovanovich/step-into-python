@@ -1,5 +1,5 @@
-import { getExerciseCache } from "@/cache/exerciseCache";
 import { allCorrect } from "@/domain/answerChecker";
+import { exerciseService } from "@/services/exerciseService";
 import { userService } from "@/services/userService";
 import {
   createFileRoute,
@@ -24,8 +24,7 @@ export const Route = createFileRoute("/_authenticated/exercises/$exerciseId/")({
     }
 
     const { exerciseId } = params;
-    const exerciseCache = getExerciseCache();
-    const exercise = await exerciseCache.fetchById(exerciseId);
+    const exercise = await exerciseService.fetchById(exerciseId);
     if (exercise.error) {
       // Let the error boundary handle the error.
       throw new Error(exercise.error);

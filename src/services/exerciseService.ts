@@ -1,3 +1,4 @@
+import { createExerciseCache } from "@/cache/exerciseCache";
 import { db } from "@/firebase";
 import { errorService } from "@/services/errorService";
 import { ErrorSeverity } from "@/types/ErrorSeverity";
@@ -75,4 +76,6 @@ function createExerciseService(db: Firestore): ExerciseService {
   return exerciseService;
 }
 
-export const exerciseService = createExerciseService(db);
+// Check whether to use cache using env variable
+const cacheEnabled: boolean = import.meta.env.VITE_DISABLE_CACHING !== 'true';
+export const exerciseService = cacheEnabled ? createExerciseCache(createExerciseService(db), localStorage) : createExerciseService(db);
