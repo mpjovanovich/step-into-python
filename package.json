@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
-    "cleanup": "lsof -ti:8080,9099,5173 | xargs kill -9 2>/dev/null || true",
+    "cleanup": "lsof -ti:8080,9099,5001,5173 | xargs kill -9 2>/dev/null || true",
     "dev": "npm run cleanup && concurrently \"npm run emulators\" \"vite\"",
     "deploy": "firebase deploy",
     "emulators": "firebase emulators:start --import=./seed",
