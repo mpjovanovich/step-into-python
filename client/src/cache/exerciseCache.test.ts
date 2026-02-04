@@ -1,6 +1,6 @@
 import { createExerciseCache } from "@/cache/exerciseCache";
-import { type ExerciseService } from "@/services/exerciseService";
-import type { Exercise } from "@/types/Exercise";
+import { type Exercise } from "@/types/Exercise";
+import { type ExerciseService } from "@/types/ExerciseService";
 import { describe, expect, it } from "vitest";
 
 class StorageMock {
@@ -46,8 +46,12 @@ function createExampleExercise(id: string, title: string): Exercise {
 
 function createExerciseServiceStub(exercises: Exercise[]): ExerciseService {
   return {
+    clearCache: () => {},
     fetchById: async (exerciseId: string) => {
-      return { data: exercises.find((exercise) => exercise.id === exerciseId)!, error: null };
+      return {
+        data: exercises.find((exercise) => exercise.id === exerciseId)!,
+        error: null,
+      };
     },
     fetchAll: async () => {
       return { data: exercises, error: null };

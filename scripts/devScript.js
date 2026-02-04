@@ -26,24 +26,24 @@ try {
   const displayName = "Student";
   const section = "001";
 
-    // Add auth user
-    const userRecord = await auth.createUser({
-      uid: uid,
-      email: email,
-      emailVerified: true,
-      password: password,
-      displayName: displayName,
-    });
+  // Add auth user
+  const userRecord = await auth.createUser({
+    uid: uid,
+    email: email,
+    emailVerified: true,
+    password: password,
+    displayName: displayName,
+  });
 
-    // Add firestore user
-    await db.collection("users").doc(userRecord.uid).set({
-      email: email,
-      name: displayName,
-      role: role,
-      section: section,
-      locked: false,
-      completedExercises: [],
-    });
+  // Add firestore user
+  await db.collection("users").doc(userRecord.uid).set({
+    email: email,
+    name: displayName,
+    role: role,
+    section: section,
+    locked: false,
+    completedExercises: [],
+  });
 
   // // Update exercise
   // await db.collection("exercises").doc("00.00-test-exercise").update({

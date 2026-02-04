@@ -1,6 +1,6 @@
-import { getExerciseCache } from "@/cache/exerciseCache";
 import { auth } from "@/firebase";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import { exerciseService } from "@/services/exerciseService";
 import { version } from "@/version";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { signOut } from "firebase/auth";
@@ -21,7 +21,7 @@ const Header = () => {
           <button
             className="logout-button"
             onClick={async () => {
-              getExerciseCache().clear();
+              exerciseService.clearCache();
               await signOut(auth);
               navigate({ to: "/login/" });
             }}

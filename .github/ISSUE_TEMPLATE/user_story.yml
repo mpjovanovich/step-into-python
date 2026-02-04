@@ -11,9 +11,9 @@ body:
       description: Describe the user story and acceptance criteria
       value: |
         As a [user role], I want [functionality or action] so that [business value].
-        
+
         #### Acceptance Criteria
-        
+
         - [ ] Criterion 1
     validations:
       required: true

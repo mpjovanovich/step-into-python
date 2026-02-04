@@ -25,7 +25,6 @@ dist-ssr
 # Firebase
 .firebase/
 firebase-debug.log*
-firebase.config.ts
 
 # Config files and secrets
 *.key

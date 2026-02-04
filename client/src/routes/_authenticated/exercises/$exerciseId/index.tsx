@@ -4,7 +4,7 @@ import { userService } from "@/services/userService";
 import {
   createFileRoute,
   useLoaderData,
-  useNavigate
+  useNavigate,
 } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";

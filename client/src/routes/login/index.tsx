@@ -3,7 +3,12 @@ import FormError from "@/components/FormError";
 import FormField from "@/components/FormField";
 import FormLabel from "@/components/FormLabel";
 import FormText from "@/components/FormText";
-import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router";
 import { useLogin } from "./hooks/-useLogin";
 
 export const Route = createFileRoute("/login/")({
@@ -75,7 +80,12 @@ function LoginPage() {
           {isSubmitting ? "Signing in..." : "Sign In"}
         </FormButton>
 
-        <Link to="/reset-password/" style={{ marginTop: "1rem", display: "block", textAlign: "center" }}>Forgot password?</Link>
+        <Link
+          to="/reset-password/"
+          style={{ marginTop: "1rem", display: "block", textAlign: "center" }}
+        >
+          Forgot password?
+        </Link>
 
         {errors.root && (
           <FormError style={{ marginTop: "1rem" }}>

@@ -3,6 +3,7 @@ import { db } from "@/firebase";
 import { errorService } from "@/services/errorService";
 import { ErrorSeverity } from "@/types/ErrorSeverity";
 import { type Exercise } from "@/types/Exercise";
+import { type ExerciseService } from "@/types/ExerciseService";
 import { type ServiceResponse } from "@/types/ServiceResponse";
 import {
   Firestore,
@@ -16,11 +17,6 @@ import {
   type DocumentSnapshot,
 } from "firebase/firestore";
 
-export interface ExerciseService {
-  fetchById(exerciseId: string): Promise<ServiceResponse<Exercise>>;
-  fetchAll(): Promise<ServiceResponse<Exercise[]>>;
-}
-
 function createExercise(doc: DocumentSnapshot<DocumentData>): Exercise {
   // Firestore doesn't include the id as part of the document, so we have to manually add it.
   // We also parse the template into an array of strings by splitting on newlines.
@@ -30,11 +26,19 @@ function createExercise(doc: DocumentSnapshot<DocumentData>): Exercise {
 
 function createExerciseService(db: Firestore): ExerciseService {
   const exerciseService = {
-    async fetchByIdFromDatabase(exerciseId: string): Promise<ServiceResponse<Exercise>> {
+    clearCache: () => {},
+
+    async fetchByIdFromDatabase(
+      exerciseId: string
+    ): Promise<ServiceResponse<Exercise>> {
       const exerciseRef = doc(db, "exercises", exerciseId);
       const snap = await getDoc(exerciseRef);
       if (!snap.exists()) {
-        await errorService.logError(new Error(`exercise not found`), ErrorSeverity.WARNING, { location: "exerciseService.fetchByIdFromDatabase", exerciseId });
+        await errorService.logError(
+          new Error(`exercise not found`),
+          ErrorSeverity.WARNING,
+          { location: "exerciseService.fetchByIdFromDatabase", exerciseId }
+        );
         return { data: null, error: "Exercise not found" };
       }
       return { data: createExercise(snap), error: null };
@@ -77,5 +81,7 @@ function createExerciseService(db: Firestore): ExerciseService {
 }
 
 // Check whether to use cache using env variable
-const cacheEnabled: boolean = import.meta.env.VITE_DISABLE_CACHING !== 'true';
-export const exerciseService = cacheEnabled ? createExerciseCache(createExerciseService(db), localStorage) : createExerciseService(db);
+const cacheEnabled: boolean = import.meta.env.VITE_DISABLE_CACHING !== "true";
+export const exerciseService = cacheEnabled
+  ? createExerciseCache(createExerciseService(db), localStorage)
+  : createExerciseService(db);

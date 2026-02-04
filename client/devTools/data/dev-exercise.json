@@ -1,0 +1,49 @@
+{
+  "course": "SDEV 120",
+  "title": "Nested If Statements",
+  "order": 4.3,
+  "descriptions": {
+    "1": "Sometimes we need to make a decision based on the result of another decision.\nLet's build a package shipping calculator program to show how this works.",
+    "2": "Our program will calculate shipping costs based on two factors: weight and destination.\nFirst, we'll get the package weight from the user. This may have a fractional part, so we should use a float.",
+    "3": "Next, we'll get the destination from the user.\nThey can enter either 'domestic' or 'international'.",
+    "4": "Now comes the nested if structure. We'll check the weight first.\nIf the package is light (5 pounds or less), we'll use one set of rates.",
+    "5": "Inside the light package section, we need to check the destination.\nIf it's domestic, the cost is $5.00. Otherwise (international), the cost is $15.00.\nThis is our first nested if - an if statement inside another if statement.",
+    "6": "Now we need to handle heavy packages (over 5 pounds).\nWe'll add an else clause to our outer if statement.\nPython knows that the else clause is paired with the weight check because it is at the same level of indentation as the if statement.",
+    "7": "Just like with light packages, we need to check the destination for heavy packages too.\nIf it's domestic, the cost is $10.00. Otherwise (international), the cost is $25.00.\nNotice how the structure mirrors the light package section - this is our second nested if.",
+    "8": "There are four possible paths of execution for this program:\n1) Light package, domestic destination\n2) Light package, international destination\n3) Heavy package, domestic destination\n4) Heavy package, international destination",
+    "9": "Let's review:\n1) Nested if statements are if statements placed inside other if statements\n2) Nested ifs let us make decisions based on multiple factors\n3) Indentation shows which if statements are nested inside others"
+  },
+  "instructions": {
+    "5": "Compare against the string \"domestic\".",
+    "7": "Compare against the string \"domestic\".\nWe are comparing against the same string here again because this line is inside of a different logical branch than the previous comparison."
+  },
+  "template": [
+    "1?# Package Shipping Calculator",
+    "1? ",
+    "1?# Initialize the cost variable. This will be updated later in the program.",
+    "1?cost = 0",
+    "2?",
+    "2?# Get package information",
+    "2?weight = float(input(\"Enter package weight in pounds: \"))",
+    "3?destination = input(\"Enter destination (domestic/international): \")",
+    "4?",
+    "4?# Calculate shipping cost",
+    "4?if weight <= 5:",
+    "4?    # Light package rates",
+    "4:4?    # TODO: Check destination",
+    "5?    if destination == @@\"domestic\"@@:",
+    "5?        cost = 5.00",
+    "5?    else:",
+    "5?        cost = 15.00",
+    "6?else:",
+    "6?    # Heavy package rates",
+    "6:6?    # TODO: Check destination",
+    "7?    if destination == @@\"domestic\"@@:",
+    "7?        cost = 10.00",
+    "7?    else:",
+    "7?        cost = 25.00",
+    "1?",
+    "1?# Display the result",
+    "1?print(f\"Shipping cost: ${cost}\")"
+  ]
+}

@@ -1,13 +1,10 @@
-import {
-  type ExerciseService,
-  exerciseService,
-} from "@/services/exerciseService";
 import { type Exercise } from "@/types/Exercise";
+import type { ExerciseService } from "@/types/ExerciseService";
 import { type ServiceResponse } from "@/types/ServiceResponse";
 
 // If we want to genericize this later we can, but for now YAGNI
 export interface ExerciseCache extends ExerciseService {
-  clear(): void;
+  clearCache(): void;
 }
 
 const EXERCISES_KEY = "exercises";
@@ -46,7 +43,9 @@ export function createExerciseCache(
   };
 
   return {
-    fetchById: async (exerciseId: string): Promise<ServiceResponse<Exercise>> => {
+    fetchById: async (
+      exerciseId: string
+    ): Promise<ServiceResponse<Exercise>> => {
       if (!storage.getItem(EXERCISES_KEY)) {
         const exercises = await loadExercises();
         if (exercises.error) {
@@ -70,27 +69,14 @@ export function createExerciseCache(
           return { data: null, error: exercises.error };
         }
       }
-      return { data: Array.from(getSerializedExercises().values()), error: null };
+      return {
+        data: Array.from(getSerializedExercises().values()),
+        error: null,
+      };
     },
 
-    clear: () => {
+    clearCache: () => {
       storage.removeItem(EXERCISES_KEY);
     },
   };
-}
-
-let exerciseCache: ExerciseCache | null = null;
-
-export function getExerciseCache(
-  exerciseServiceParam?: ExerciseService,
-  storageParam?: Storage
-): ExerciseCache {
-  if (!exerciseCache) {
-    const service = exerciseServiceParam ?? exerciseService;
-    const storage =
-      storageParam ??
-      (typeof window !== "undefined" ? window.localStorage : ({} as Storage));
-    exerciseCache = createExerciseCache(service, storage);
-  }
-  return exerciseCache;
 }

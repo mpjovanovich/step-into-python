@@ -1,1 +1,92 @@
-{"kind":"identitytoolkit#DownloadAccountResponse","users":[{"localId":"admin","lastLoginAt":"1770218858457","displayName":"Admin","emailVerified":true,"email":"admin@test.com","salt":"fakeSaltd1d8MMQoucufidD5jYQA","passwordHash":"fakeHash:salt=fakeSaltd1d8MMQoucufidD5jYQA:password=testPassword","passwordUpdatedAt":1770218858457,"validSince":"1770218858","createdAt":"1770218858457","providerUserInfo":[{"providerId":"password","email":"admin@test.com","federatedId":"admin@test.com","rawId":"admin@test.com","displayName":"Admin"}]},{"localId":"dev-user","createdAt":"1767635108321","lastLoginAt":"1767635108321","displayName":"Dev User","photoUrl":"","passwordHash":"fakeHash:salt=fakeSaltkWbIJAdX2g2yvZ8jt6g5:password=testPassword","salt":"fakeSaltkWbIJAdX2g2yvZ8jt6g5","passwordUpdatedAt":1770218040427,"providerUserInfo":[{"providerId":"password","email":"dev@dev.com","federatedId":"dev@dev.com","rawId":"dev@dev.com","displayName":"Dev User","photoUrl":""}],"validSince":"1770218040","email":"dev@dev.com","emailVerified":true,"disabled":false},{"localId":"instructor","lastLoginAt":"1770218951724","displayName":"Instructor","emailVerified":true,"email":"instructor@test.com","salt":"fakeSaltEy8AAdOVcbq1uxmGMlYe","passwordHash":"fakeHash:salt=fakeSaltEy8AAdOVcbq1uxmGMlYe:password=testPassword","passwordUpdatedAt":1770218951724,"validSince":"1770218951","createdAt":"1770218951724","providerUserInfo":[{"providerId":"password","email":"instructor@test.com","federatedId":"instructor@test.com","rawId":"instructor@test.com","displayName":"Instructor"}]},{"localId":"student","lastLoginAt":"1770219018827","displayName":"Student","emailVerified":true,"email":"student@test.com","salt":"fakeSaltouUD12rEEus7HStQea3N","passwordHash":"fakeHash:salt=fakeSaltouUD12rEEus7HStQea3N:password=testPassword","passwordUpdatedAt":1770219018827,"validSince":"1770219018","createdAt":"1770219018827","providerUserInfo":[{"providerId":"password","email":"student@test.com","federatedId":"student@test.com","rawId":"student@test.com","displayName":"Student"}]}]}
+{
+  "kind": "identitytoolkit#DownloadAccountResponse",
+  "users": [
+    {
+      "localId": "admin",
+      "lastLoginAt": "1770218858457",
+      "displayName": "Admin",
+      "emailVerified": true,
+      "email": "admin@test.com",
+      "salt": "fakeSaltd1d8MMQoucufidD5jYQA",
+      "passwordHash": "fakeHash:salt=fakeSaltd1d8MMQoucufidD5jYQA:password=testPassword",
+      "passwordUpdatedAt": 1770218858457,
+      "validSince": "1770218858",
+      "createdAt": "1770218858457",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "admin@test.com",
+          "federatedId": "admin@test.com",
+          "rawId": "admin@test.com",
+          "displayName": "Admin"
+        }
+      ]
+    },
+    {
+      "localId": "dev-user",
+      "createdAt": "1767635108321",
+      "lastLoginAt": "1767635108321",
+      "displayName": "Dev User",
+      "photoUrl": "",
+      "passwordHash": "fakeHash:salt=fakeSaltkWbIJAdX2g2yvZ8jt6g5:password=testPassword",
+      "salt": "fakeSaltkWbIJAdX2g2yvZ8jt6g5",
+      "passwordUpdatedAt": 1770218040427,
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "dev@dev.com",
+          "federatedId": "dev@dev.com",
+          "rawId": "dev@dev.com",
+          "displayName": "Dev User",
+          "photoUrl": ""
+        }
+      ],
+      "validSince": "1770218040",
+      "email": "dev@dev.com",
+      "emailVerified": true,
+      "disabled": false
+    },
+    {
+      "localId": "instructor",
+      "lastLoginAt": "1770218951724",
+      "displayName": "Instructor",
+      "emailVerified": true,
+      "email": "instructor@test.com",
+      "salt": "fakeSaltEy8AAdOVcbq1uxmGMlYe",
+      "passwordHash": "fakeHash:salt=fakeSaltEy8AAdOVcbq1uxmGMlYe:password=testPassword",
+      "passwordUpdatedAt": 1770218951724,
+      "validSince": "1770218951",
+      "createdAt": "1770218951724",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "instructor@test.com",
+          "federatedId": "instructor@test.com",
+          "rawId": "instructor@test.com",
+          "displayName": "Instructor"
+        }
+      ]
+    },
+    {
+      "localId": "student",
+      "lastLoginAt": "1770219018827",
+      "displayName": "Student",
+      "emailVerified": true,
+      "email": "student@test.com",
+      "salt": "fakeSaltouUD12rEEus7HStQea3N",
+      "passwordHash": "fakeHash:salt=fakeSaltouUD12rEEus7HStQea3N:password=testPassword",
+      "passwordUpdatedAt": 1770219018827,
+      "validSince": "1770219018",
+      "createdAt": "1770219018827",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "student@test.com",
+          "federatedId": "student@test.com",
+          "rawId": "student@test.com",
+          "displayName": "Student"
+        }
+      ]
+    }
+  ]
+}

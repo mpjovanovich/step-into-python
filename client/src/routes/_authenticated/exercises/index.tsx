@@ -2,11 +2,7 @@ import { exerciseService } from "@/services/exerciseService";
 import { userService } from "@/services/userService";
 import { type Exercise } from "@/types/Exercise";
 import { formatExerciseNumber } from "@/utils/formatters";
-import {
-  createFileRoute,
-  Link,
-  useLoaderData
-} from "@tanstack/react-router";
+import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
 import { MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
 
 export const Route = createFileRoute("/_authenticated/exercises/")({
