@@ -19,21 +19,32 @@ const auth = getAuth();
 const db = getFirestore();
 
 try {
-  // // Add auth user
-  //   const userRecord = await auth.createUser({
-  //     email: email,
-  //     emailVerified: false,
-  //     password: password,
-  //     displayName: displayName,
-  //     disabled: false,
-  //   });
-  // // Add firestore user
-  //   await db.collection("users").doc(userRecord.uid).set({
-  //     email: email,
-  //     name: displayName,
-  //     section: section,
-  //     completedExercises: [],
-  //   });
+  const email = "student@test.com";
+  const password = "testPassword";
+  const uid = "student";
+  const role = "STUDENT";
+  const displayName = "Student";
+  const section = "001";
+
+    // Add auth user
+    const userRecord = await auth.createUser({
+      uid: uid,
+      email: email,
+      emailVerified: true,
+      password: password,
+      displayName: displayName,
+    });
+
+    // Add firestore user
+    await db.collection("users").doc(userRecord.uid).set({
+      email: email,
+      name: displayName,
+      role: role,
+      section: section,
+      locked: false,
+      completedExercises: [],
+    });
+
   // // Update exercise
   // await db.collection("exercises").doc("00.00-test-exercise").update({
   //   template: "1?# Comment\n2?Code @@answer@@",

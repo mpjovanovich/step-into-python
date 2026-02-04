@@ -20,7 +20,7 @@ test("complete exercise", async ({ page }) => {
 
   let emailInput = page.getByLabel(/email/i);
   await expect(emailInput).toBeVisible();
-  await emailInput.fill("dev@dev.com");
+  await emailInput.fill("student@test.com");
 
   let passwordInput = page.getByLabel(/password/i);
   await expect(passwordInput).toBeVisible();
