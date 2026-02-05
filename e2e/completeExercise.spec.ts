@@ -14,6 +14,10 @@ test("complete exercise", async ({ page }) => {
   /* LOGIN FORM */
   /* **************************************** */
   await page.goto("/login/");
+  await page.screenshot({
+    path: "/home/mpjovanovich/user/Desktop/test-assertion.png",
+    fullPage: true,
+  });
 
   let logoutButton = page.getByRole("button", { name: /logout/i });
   await expect(logoutButton).toHaveCount(0);

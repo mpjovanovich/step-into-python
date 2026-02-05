@@ -1,15 +1,12 @@
-import path from "path";
-import { defineConfig } from "vitest/config";
+import { defineConfig, mergeConfig } from "vitest/config";
+import viteConfig from "./vite.config";
 
-export default defineConfig({
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+export default mergeConfig(
+  viteConfig,
+  defineConfig({
+    test: {
+      exclude: ["**/node_modules/**", "**/dist/**"],
+      include: ["**/src/**/*.test.ts"],
     },
-  },
-  test: {
-    exclude: ["**/node_modules/**", "**/dist/**"],
-    include: ["**/src/**/*.test.ts"],
-    globals: true,
-  },
-});
+  })
+);

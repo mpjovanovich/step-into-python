@@ -4,6 +4,7 @@ import {
   type CodeForStep,
   type CodeParseOptions,
 } from "@/domain/templateParser";
+import { beforeAll, describe, expect, it } from "vitest";
 
 describe("generates correct step count", () => {
   it("single step, single line", () => {

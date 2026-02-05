@@ -10,6 +10,5 @@ export default defineConfig({
   test: {
     exclude: ["**/node_modules/**", "**/dist/**"],
     include: ["**/*.test.ts"],
-    globals: true,
   },
 });

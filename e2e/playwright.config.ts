@@ -1,4 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const clientDir = path.resolve(__dirname, "../client");
 
 /**
  * Read environment variables from file.
@@ -16,12 +21,13 @@ export default defineConfig({
     // 5s per expect assertion. If this is too short we can up it.
     timeout: 5000,
   },
-  testDir: "./e2e",
+  testDir: "./",
+  testMatch: ["**/*.spec.ts"],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  globalTeardown: "./e2e/globalTeardown.ts",
+  globalTeardown: "./globalTeardown.ts",
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
@@ -55,15 +61,16 @@ export default defineConfig({
 
   webServer: [
     {
-      command: "npm run emulators",
-      port: 9099, // Auth emulator port
+      command: "npm run emulators", // Will use root level package.json
+      port: 9099, // This uses multiple ports, so just pick one to be monitored.
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
       stdout: "pipe",
       stderr: "pipe",
     },
     {
-      command: "vite",
+      cwd: clientDir,
+      command: "npm run dev",
       port: 5173,
       reuseExistingServer: !process.env.CI,
       timeout: 60000,

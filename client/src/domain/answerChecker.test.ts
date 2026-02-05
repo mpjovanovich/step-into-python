@@ -1,4 +1,5 @@
 import { allCorrect, checkAnswers } from "@/domain/answerChecker";
+import { describe, expect, it } from "vitest";
 
 describe("checks user answers", () => {
   it("gives null result for unanswered answer", () => {

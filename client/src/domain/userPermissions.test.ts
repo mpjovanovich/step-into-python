@@ -1,5 +1,6 @@
 import { canCreateUserOfRole } from "@/domain/userPermissions";
 import { UserRole } from "@/types/UserRole";
+import { describe, expect, it } from "vitest";
 
 describe("user permissions", () => {
   describe("ADMIN user", () => {

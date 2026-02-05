@@ -7,11 +7,22 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
-    "format": "prettier --write ."
+    "cleanup": "lsof -ti:8080,9099,5001,5173 | xargs kill -9 2>/dev/null || true",
+    "dev": "npm run cleanup && concurrently \"npm run emulators\" \"npm run dev:client\"",
+    "dev:client": "npm run dev --workspace=client",
+    "emulators": "firebase emulators:start --import=./seed",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test:e2e": "npm run cleanup && npx playwright test --config=e2e/playwright.config.ts",
+    "test:firestore": "vitest run --config vitest.firestore.config.ts"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.1",
     "concurrently": "^9.2.1",
     "eslint": "^9.39.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.0",
+    "playwright": "^1.58.1",
     "prettier": "^3.5.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.54.0",

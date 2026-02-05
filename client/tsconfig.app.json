@@ -7,7 +7,7 @@
       "@/*": ["./src/*"]
     },
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    "types": ["vite/client", "vitest/globals"],
+    "types": ["vite/client"],
     "useDefineForClassFields": true,
 
     /* Bundler mode */
@@ -21,7 +21,6 @@
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },

@@ -12,6 +12,5 @@ export default defineConfig({
   test: {
     exclude: ["**/node_modules/**", "**/dist/**"],
     include: ["firestore.rules.test.js"],
-    globals: true,
   },
 });
