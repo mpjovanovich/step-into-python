@@ -8,169 +8,169 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as AuthenticatedRouteImport } from "./routes/_authenticated";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as ResetPasswordIndexRouteImport } from "./routes/reset-password/index";
-import { Route as LoginIndexRouteImport } from "./routes/login/index";
-import { Route as AuthenticatedExercisesIndexRouteImport } from "./routes/_authenticated/exercises/index";
-import { Route as AuthenticatedExercisesExerciseIdIndexRouteImport } from "./routes/_authenticated/exercises/$exerciseId/index";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as ResetPasswordIndexRouteImport } from './routes/reset-password/index'
+import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as AuthenticatedExercisesIndexRouteImport } from './routes/_authenticated/exercises/index'
+import { Route as AuthenticatedExercisesExerciseIdIndexRouteImport } from './routes/_authenticated/exercises/$exerciseId/index'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: "/_authenticated",
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ResetPasswordIndexRoute = ResetPasswordIndexRouteImport.update({
-  id: "/reset-password/",
-  path: "/reset-password/",
+  id: '/reset-password/',
+  path: '/reset-password/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LoginIndexRoute = LoginIndexRouteImport.update({
-  id: "/login/",
-  path: "/login/",
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedExercisesIndexRoute =
   AuthenticatedExercisesIndexRouteImport.update({
-    id: "/exercises/",
-    path: "/exercises/",
+    id: '/exercises/',
+    path: '/exercises/',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 const AuthenticatedExercisesExerciseIdIndexRoute =
   AuthenticatedExercisesExerciseIdIndexRouteImport.update({
-    id: "/exercises/$exerciseId/",
-    path: "/exercises/$exerciseId/",
+    id: '/exercises/$exerciseId/',
+    path: '/exercises/$exerciseId/',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/login/": typeof LoginIndexRoute;
-  "/reset-password/": typeof ResetPasswordIndexRoute;
-  "/exercises/": typeof AuthenticatedExercisesIndexRoute;
-  "/exercises/$exerciseId/": typeof AuthenticatedExercisesExerciseIdIndexRoute;
+  '/': typeof IndexRoute
+  '/login/': typeof LoginIndexRoute
+  '/reset-password/': typeof ResetPasswordIndexRoute
+  '/exercises/': typeof AuthenticatedExercisesIndexRoute
+  '/exercises/$exerciseId/': typeof AuthenticatedExercisesExerciseIdIndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/login": typeof LoginIndexRoute;
-  "/reset-password": typeof ResetPasswordIndexRoute;
-  "/exercises": typeof AuthenticatedExercisesIndexRoute;
-  "/exercises/$exerciseId": typeof AuthenticatedExercisesExerciseIdIndexRoute;
+  '/': typeof IndexRoute
+  '/login': typeof LoginIndexRoute
+  '/reset-password': typeof ResetPasswordIndexRoute
+  '/exercises': typeof AuthenticatedExercisesIndexRoute
+  '/exercises/$exerciseId': typeof AuthenticatedExercisesExerciseIdIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/_authenticated": typeof AuthenticatedRouteWithChildren;
-  "/login/": typeof LoginIndexRoute;
-  "/reset-password/": typeof ResetPasswordIndexRoute;
-  "/_authenticated/exercises/": typeof AuthenticatedExercisesIndexRoute;
-  "/_authenticated/exercises/$exerciseId/": typeof AuthenticatedExercisesExerciseIdIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/login/': typeof LoginIndexRoute
+  '/reset-password/': typeof ResetPasswordIndexRoute
+  '/_authenticated/exercises/': typeof AuthenticatedExercisesIndexRoute
+  '/_authenticated/exercises/$exerciseId/': typeof AuthenticatedExercisesExerciseIdIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/login/"
-    | "/reset-password/"
-    | "/exercises/"
-    | "/exercises/$exerciseId/";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/login/'
+    | '/reset-password/'
+    | '/exercises/'
+    | '/exercises/$exerciseId/'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/login"
-    | "/reset-password"
-    | "/exercises"
-    | "/exercises/$exerciseId";
+    | '/'
+    | '/login'
+    | '/reset-password'
+    | '/exercises'
+    | '/exercises/$exerciseId'
   id:
-    | "__root__"
-    | "/"
-    | "/_authenticated"
-    | "/login/"
-    | "/reset-password/"
-    | "/_authenticated/exercises/"
-    | "/_authenticated/exercises/$exerciseId/";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/login/'
+    | '/reset-password/'
+    | '/_authenticated/exercises/'
+    | '/_authenticated/exercises/$exerciseId/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
-  LoginIndexRoute: typeof LoginIndexRoute;
-  ResetPasswordIndexRoute: typeof ResetPasswordIndexRoute;
+  IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  LoginIndexRoute: typeof LoginIndexRoute
+  ResetPasswordIndexRoute: typeof ResetPasswordIndexRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/_authenticated": {
-      id: "/_authenticated";
-      path: "";
-      fullPath: "/";
-      preLoaderRoute: typeof AuthenticatedRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/reset-password/": {
-      id: "/reset-password/";
-      path: "/reset-password";
-      fullPath: "/reset-password/";
-      preLoaderRoute: typeof ResetPasswordIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/login/": {
-      id: "/login/";
-      path: "/login";
-      fullPath: "/login/";
-      preLoaderRoute: typeof LoginIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/_authenticated/exercises/": {
-      id: "/_authenticated/exercises/";
-      path: "/exercises";
-      fullPath: "/exercises/";
-      preLoaderRoute: typeof AuthenticatedExercisesIndexRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/exercises/$exerciseId/": {
-      id: "/_authenticated/exercises/$exerciseId/";
-      path: "/exercises/$exerciseId";
-      fullPath: "/exercises/$exerciseId/";
-      preLoaderRoute: typeof AuthenticatedExercisesExerciseIdIndexRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password/': {
+      id: '/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password/'
+      preLoaderRoute: typeof ResetPasswordIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/exercises/': {
+      id: '/_authenticated/exercises/'
+      path: '/exercises'
+      fullPath: '/exercises/'
+      preLoaderRoute: typeof AuthenticatedExercisesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/exercises/$exerciseId/': {
+      id: '/_authenticated/exercises/$exerciseId/'
+      path: '/exercises/$exerciseId'
+      fullPath: '/exercises/$exerciseId/'
+      preLoaderRoute: typeof AuthenticatedExercisesExerciseIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedExercisesIndexRoute: typeof AuthenticatedExercisesIndexRoute;
-  AuthenticatedExercisesExerciseIdIndexRoute: typeof AuthenticatedExercisesExerciseIdIndexRoute;
+  AuthenticatedExercisesIndexRoute: typeof AuthenticatedExercisesIndexRoute
+  AuthenticatedExercisesExerciseIdIndexRoute: typeof AuthenticatedExercisesExerciseIdIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedExercisesIndexRoute: AuthenticatedExercisesIndexRoute,
   AuthenticatedExercisesExerciseIdIndexRoute:
     AuthenticatedExercisesExerciseIdIndexRoute,
-};
+}
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren
-);
+  AuthenticatedRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginIndexRoute: LoginIndexRoute,
   ResetPasswordIndexRoute: ResetPasswordIndexRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()

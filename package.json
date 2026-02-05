@@ -1,6 +1,7 @@
 {
   "name": "raffle-tracker",
   "private": true,
+  "type": "module",
   "workspaces": [
     "client"
   ],
@@ -10,8 +11,10 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
+    "eslint": "^9.39.2",
     "prettier": "^3.5.3",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0",
     "vitest": "^4.0.18"
   }
 }
