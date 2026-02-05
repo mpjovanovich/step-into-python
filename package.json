@@ -14,7 +14,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test:e2e": "npm run cleanup && npx playwright test --config=e2e/playwright.config.ts",
-    "test:firestore": "vitest run --config vitest.firestore.config.ts"
+    "test:firestore": "vitest run --config firestore/vitest.config.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.1",

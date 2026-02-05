@@ -2,9 +2,13 @@ import {
   assertFails,
   assertSucceeds,
   initializeTestEnvironment,
+  RulesTestEnvironment,
 } from "@firebase/rules-unit-testing";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import fs from "fs";
+import { beforeAll, beforeEach, describe, it } from "vitest";
 
 /*
  * This script requires the firebase emulator to be running.
@@ -14,7 +18,7 @@ import fs from "fs";
 const projectId = "stepintopython";
 
 describe("firestore database", () => {
-  let testEnv;
+  let testEnv: RulesTestEnvironment;
 
   beforeAll(async () => {
     testEnv = await initializeTestEnvironment({
@@ -22,7 +26,7 @@ describe("firestore database", () => {
       firestore: {
         host: "127.0.0.1",
         port: 8080,
-        rules: fs.readFileSync("firestore.rules", "utf8"),
+        rules: fs.readFileSync("firestore/firestore.rules", "utf8"),
       },
     });
   });
@@ -30,7 +34,7 @@ describe("firestore database", () => {
   describe("for errors collection", () => {
     describe("for unauthenticated user", () => {
       let authContext;
-      let db;
+      let db: firebase.firestore.Firestore;
 
       beforeEach(async () => {
         await testEnv.clearFirestore();
@@ -49,7 +53,7 @@ describe("firestore database", () => {
 
     describe("for authenticated user", () => {
       let authContext;
-      let db;
+      let db: firebase.firestore.Firestore;
 
       beforeEach(async () => {
         await testEnv.clearFirestore();
@@ -66,7 +70,7 @@ describe("firestore database", () => {
   describe("for exercises collection", () => {
     describe("for unauthenticated user", () => {
       let authContext;
-      let db;
+      let db: firebase.firestore.Firestore;
 
       beforeEach(async () => {
         await testEnv.clearFirestore();
@@ -85,7 +89,7 @@ describe("firestore database", () => {
 
     describe("for authenticated user", () => {
       let authContext;
-      let db;
+      let db: firebase.firestore.Firestore;
 
       beforeEach(async () => {
         await testEnv.clearFirestore();
@@ -106,7 +110,7 @@ describe("firestore database", () => {
   describe("for users collection", () => {
     describe("for unauthenticated user", () => {
       let authContext;
-      let db;
+      let db: firebase.firestore.Firestore;
 
       beforeEach(async () => {
         await testEnv.clearFirestore();
@@ -125,7 +129,7 @@ describe("firestore database", () => {
 
     describe("for authenticated user", () => {
       let authContext;
-      let db;
+      let db: firebase.firestore.Firestore;
 
       beforeEach(async () => {
         await testEnv.clearFirestore();

@@ -1,6 +1,6 @@
 {
   "firestore": {
-    "rules": "firestore.rules"
+    "rules": "firestore/firestore.rules"
   },
   "hosting": {
     "public": "dist",
