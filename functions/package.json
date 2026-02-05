@@ -20,6 +20,7 @@
     "firebase-functions": "^7.0.0"
   },
   "devDependencies": {
+    "@step-into-python/client": "*",
     "firebase-functions-test": "^3.4.1"
   },
   "private": true

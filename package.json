@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "client"
+    "client",
+    "functions"
   ],
   "scripts": {
     "build": "npm run build --workspaces",
