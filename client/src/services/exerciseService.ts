@@ -16,6 +16,7 @@ import {
   type DocumentData,
   type DocumentSnapshot,
 } from "firebase/firestore";
+import { fetchDevExercise } from "../../devTools/exerciseLoader";
 
 function createExercise(doc: DocumentSnapshot<DocumentData>): Exercise {
   // Firestore doesn't include the id as part of the document, so we have to manually add it.
@@ -44,19 +45,9 @@ function createExerciseService(db: Firestore): ExerciseService {
       return { data: createExercise(snap), error: null };
     },
 
-    async fetchDevExercise(): Promise<ServiceResponse<Exercise>> {
-      try {
-        const { fetchDevExercise } =
-          await import("../../devTools/exerciseLoader");
-        return { data: fetchDevExercise(), error: null };
-      } catch (error) {
-        return { data: null, error: error as string };
-      }
-    },
-
     async fetchById(exerciseId: string): Promise<ServiceResponse<Exercise>> {
       if (import.meta.env.DEV && exerciseId === "debug") {
-        return this.fetchDevExercise();
+        return fetchDevExercise();
       }
       return await this.fetchByIdFromDatabase(exerciseId);
     },

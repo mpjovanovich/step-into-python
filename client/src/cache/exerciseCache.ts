@@ -1,6 +1,7 @@
 import { type Exercise } from "@/types/Exercise";
 import type { ExerciseService } from "@/types/ExerciseService";
 import { type ServiceResponse } from "@/types/ServiceResponse";
+import { fetchDevExercise } from "../../devTools/exerciseLoader";
 
 // If we want to genericize this later we can, but for now YAGNI
 export interface ExerciseCache extends ExerciseService {
@@ -46,6 +47,10 @@ export function createExerciseCache(
     fetchById: async (
       exerciseId: string
     ): Promise<ServiceResponse<Exercise>> => {
+      if (import.meta.env.DEV && exerciseId === "debug") {
+        return fetchDevExercise();
+      }
+
       if (!storage.getItem(EXERCISES_KEY)) {
         const exercises = await loadExercises();
         if (exercises.error) {
