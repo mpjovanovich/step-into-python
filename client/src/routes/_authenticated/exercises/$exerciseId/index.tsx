@@ -76,8 +76,14 @@ function ExercisePage() {
             stepType={currentStep.stepType}
             allCorrect={allCorrect(checkAnswerResults)}
             canFocus={currentStep.answers.length === 0}
-            onPrevious={() => setStep(step - 1)}
-            onNext={() => setStep(step + 1)}
+            onPrevious={() => {
+              setStep(step - 1);
+              setUserAnswers([]);
+            }}
+            onNext={() => {
+              setStep(step + 1);
+              setUserAnswers([]);
+            }}
             onSubmit={() => {
               const completeExercise = async () => {
                 try {
