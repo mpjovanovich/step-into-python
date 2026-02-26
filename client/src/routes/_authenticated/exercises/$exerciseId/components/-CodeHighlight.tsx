@@ -1,16 +1,13 @@
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { createElement } from "react-syntax-highlighter";
-import { type ComponentType, type ReactNode, useMemo } from "react";
+import {
+  createElement,
+  type createElementProps,
+} from "react-syntax-highlighter";
+import { type ReactNode, useMemo } from "react";
 import { buildHighlightCodeWithSlots } from "../utils/-programOutputUtils";
 
-interface RendererNode {
-  type: "element" | "text";
-  value?: string | number;
-  tagName?: keyof JSX.IntrinsicElements | ComponentType<any>;
-  properties?: { className: string[]; [key: string]: unknown };
-  children?: RendererNode[];
-}
+type RendererNode = createElementProps["node"];
 
 const escapeRegex = (value: string): string =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
