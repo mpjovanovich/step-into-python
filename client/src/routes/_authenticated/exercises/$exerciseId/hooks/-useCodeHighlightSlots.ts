@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { buildHighlightCodeWithSlots } from "../utils/-programOutputUtils";
 import { buildSlotTokenRegex } from "../utils/-codeHighlightUtils";
+import { buildHighlightCodeWithSlots } from "../utils/-programOutputUtils";
 
 export function useCodeHighlightSlots(code: string): {
   highlightCode: string;

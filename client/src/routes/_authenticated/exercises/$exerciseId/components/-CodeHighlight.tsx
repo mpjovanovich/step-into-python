@@ -1,22 +1,27 @@
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { createElement } from "react-syntax-highlighter";
 import { type ReactNode } from "react";
+import {
+  createElement,
+  Prism as SyntaxHighlighter,
+} from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useCodeHighlightSlots } from "../hooks/-useCodeHighlightSlots";
 import {
   injectAnswerSlotsIntoNode,
   type RendererNode,
 } from "../utils/-codeHighlightUtils";
 
-const AnswerSlot = ({
+// Mini component:
+// Stable component reference so React doesn't unmount/remount slots on parent
+// re-renders (which would cause inputs inside slots to lose focus after keypress).
+function AnswerSlotRenderer({
   answerIndex,
   renderAnswerSlot,
 }: {
   answerIndex: number;
   renderAnswerSlot: (answerIndex: number) => ReactNode;
-}) => {
+}) {
   return renderAnswerSlot(answerIndex);
-};
+}
 
 const CodeHighlight = ({
   code,
@@ -30,7 +35,7 @@ const CodeHighlight = ({
 
   const createSlotNode = (answerIndex: number): RendererNode => ({
     type: "element",
-    tagName: AnswerSlot,
+    tagName: AnswerSlotRenderer, // tagName is the type of the element to render
     properties: {
       className: [],
       answerIndex,

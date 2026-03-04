@@ -39,7 +39,9 @@ const ProgramOutput = ({
                 setUserAnswers(newAnswers);
               }}
             />
-            <CodeInputResult result={checkAnswerResults[answerIndex] === true} />
+            <CodeInputResult
+              result={checkAnswerResults[answerIndex] === true}
+            />
           </span>
         )}
       />
