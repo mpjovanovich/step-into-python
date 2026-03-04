@@ -4,11 +4,11 @@ import { type createElementProps } from "react-syntax-highlighter";
 /* PRIVATE FUNCTIONS */
 /* ---------------------------- */
 
-export const escapeRegex = (value: string): string =>
+const escapeRegex = (value: string): string =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // This splits a react-syntax-highlighter text node into a list of nodes
-export function splitTextNodeWithAnswerSlots(
+function splitTextNodeWithAnswerSlots(
   node: RendererNode,
   slotTokenRegex: RegExp | null,
   slotTokenToIndex: ReadonlyMap<string, number>,

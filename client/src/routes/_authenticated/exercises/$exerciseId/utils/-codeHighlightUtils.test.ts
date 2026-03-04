@@ -1,30 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
   buildSlotTokenRegex,
-  escapeRegex,
   injectAnswerSlotsIntoNode,
-  splitTextNodeWithAnswerSlots,
   type RendererNode,
 } from "./-codeHighlightUtils";
 
-// Helper function for creating a node.
 const createSlotNode = (answerIndex: number): RendererNode => ({
   type: "element",
   tagName: "span",
   properties: { className: [], slotIndex: answerIndex },
   children: [],
-});
-
-describe("escapeRegex", () => {
-  it("escapes special regex characters", () => {
-    expect(escapeRegex(".*+?^${}()|[]\\")).toBe(
-      "\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\"
-    );
-  });
-
-  it("returns plain string unchanged when no special chars", () => {
-    expect(escapeRegex("hello")).toBe("hello");
-  });
 });
 
 describe("buildSlotTokenRegex", () => {
@@ -51,105 +36,29 @@ describe("buildSlotTokenRegex", () => {
   });
 });
 
-describe("splitTextNodeWithAnswerSlots", () => {
-  const slotRegex = buildSlotTokenRegex(["__SLOT0__", "__SLOT1__"]);
-  const slotMap = new Map([
-    ["__SLOT0__", 0],
-    ["__SLOT1__", 1],
-  ]);
-
-  it("leaves nodes unchanged when they contain no slot tokens to replace", () => {
-    const elementNode: RendererNode = {
-      type: "element",
-      tagName: "span",
-      properties: { className: [] },
-      children: [],
-    };
-    let result = splitTextNodeWithAnswerSlots(
-      elementNode,
-      slotRegex,
-      slotMap,
-      createSlotNode
-    );
-    expect(result).toEqual([elementNode]);
-
-    const textNoSlots: RendererNode = {
-      type: "text",
-      value: "plain code",
-    };
-    result = splitTextNodeWithAnswerSlots(
-      textNoSlots,
-      slotRegex,
-      slotMap,
-      createSlotNode
-    );
-    expect(result).toEqual([textNoSlots]);
-
-    const textWithNullRegex: RendererNode = {
-      type: "text",
-      value: "hello",
-    };
-    result = splitTextNodeWithAnswerSlots(
-      textWithNullRegex,
-      slotRegex,
-      slotMap,
-      createSlotNode
-    );
-    expect(result).toEqual([textWithNullRegex]);
-  });
-
-  it("splits text on slot tokens and inserts slot nodes in order", () => {
-    const node: RendererNode = {
-      type: "text",
-      value: "a __SLOT0__ b __SLOT1__ c",
-    };
-
-    const result = splitTextNodeWithAnswerSlots(
-      node,
-      slotRegex,
-      slotMap,
-      createSlotNode
-    );
-
-    expect(result).toHaveLength(5);
-    expect(result[0]).toEqual({ type: "text", value: "a " });
-    expect(result[1]).toEqual(createSlotNode(0));
-    expect(result[2]).toEqual({ type: "text", value: " b " });
-    expect(result[3]).toEqual(createSlotNode(1));
-    expect(result[4]).toEqual({ type: "text", value: " c" });
-  });
-
-  it("throws error when number of matches does not match the number of slot tokens", () => {
-    const node: RendererNode = {
-      type: "text",
-      value: "a __SLOT0__ __UNKNOWN__",
-    };
-    const map = new Map([["__SLOT0__", 0]]);
-    const regex = buildSlotTokenRegex(["__SLOT0__", "__UNKNOWN__"]);
-
-    expect(() =>
-      splitTextNodeWithAnswerSlots(node, regex, map, createSlotNode)
-    ).toThrow(
-      /Number of matches .* does not match the number of slot tokens .*/
-    );
-  });
-
-  it("throws error when text contains a slot token not in the map", () => {
-    const node: RendererNode = {
-      type: "text",
-      value: "a __SLOT0__ __UNKNOWN__",
-    };
-    const regex = buildSlotTokenRegex(["__SLOT0__", "__UNKNOWN__"]);
-
-    expect(() =>
-      splitTextNodeWithAnswerSlots(node, regex, slotMap, createSlotNode)
-    ).toThrow(/Unknown slot token: .*/);
-  });
-});
-
-// Integration of previous tests.
 describe("injectAnswerSlotsIntoNode", () => {
-  it("delegates text nodes to splitTextNodeWithAnswerSlots", () => {
+  it("returns text node unchanged when it contains no slot tokens", () => {
+    const node: RendererNode = { type: "text", value: "plain code" };
+    const regex = buildSlotTokenRegex(["__SLOT0__"]);
+    const map = new Map([["__SLOT0__", 0]]);
+    const result = injectAnswerSlotsIntoNode(node, regex, map, createSlotNode);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(node);
+  });
+
+  it("returns text node unchanged when regex is null", () => {
+    const node: RendererNode = { type: "text", value: "hello" };
+    const result = injectAnswerSlotsIntoNode(
+      node,
+      null,
+      new Map([["__SLOT0__", 0]]),
+      createSlotNode
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(node);
+  });
+
+  it("splits text on one slot token and inserts slot node", () => {
     const node: RendererNode = { type: "text", value: "x __SLOT0__ y" };
     const regex = buildSlotTokenRegex(["__SLOT0__"]);
     const map = new Map([["__SLOT0__", 0]]);
@@ -158,6 +67,25 @@ describe("injectAnswerSlotsIntoNode", () => {
     expect(result[0]).toEqual({ type: "text", value: "x " });
     expect(result[1]).toEqual(createSlotNode(0));
     expect(result[2]).toEqual({ type: "text", value: " y" });
+  });
+
+  it("splits text on multiple slot tokens and inserts slot nodes in order", () => {
+    const node: RendererNode = {
+      type: "text",
+      value: "a __SLOT0__ b __SLOT1__ c",
+    };
+    const regex = buildSlotTokenRegex(["__SLOT0__", "__SLOT1__"]);
+    const map = new Map([
+      ["__SLOT0__", 0],
+      ["__SLOT1__", 1],
+    ]);
+    const result = injectAnswerSlotsIntoNode(node, regex, map, createSlotNode);
+    expect(result).toHaveLength(5);
+    expect(result[0]).toEqual({ type: "text", value: "a " });
+    expect(result[1]).toEqual(createSlotNode(0));
+    expect(result[2]).toEqual({ type: "text", value: " b " });
+    expect(result[3]).toEqual(createSlotNode(1));
+    expect(result[4]).toEqual({ type: "text", value: " c" });
   });
 
   it("preserves element node without children", () => {
@@ -179,7 +107,7 @@ describe("injectAnswerSlotsIntoNode", () => {
     });
   });
 
-  it("recursively injects slots into child nodes", () => {
+  it("recursively injects slots into child text nodes", () => {
     const node: RendererNode = {
       type: "element",
       tagName: "span",
@@ -198,5 +126,36 @@ describe("injectAnswerSlotsIntoNode", () => {
       expect(element.children![1]).toEqual(createSlotNode(0));
       expect(element.children![2]).toEqual({ type: "text", value: " after" });
     }
+  });
+
+  it("throws when number of matches does not match the number of slot tokens", () => {
+    const node: RendererNode = {
+      type: "text",
+      value: "a __SLOT0__ __SLOT1__",
+    };
+    const regex = buildSlotTokenRegex(["__SLOT0__", "__SLOT1__"]);
+    const map = new Map([["__SLOT0__", 0]]);
+
+    expect(() =>
+      injectAnswerSlotsIntoNode(node, regex, map, createSlotNode)
+    ).toThrow(
+      /Number of matches .* does not match the number of slot tokens .*/
+    );
+  });
+
+  it("throws when text contains a slot token not in the map", () => {
+    const node: RendererNode = {
+      type: "text",
+      value: "a __SLOT0__ __UNKNOWN__",
+    };
+    const regex = buildSlotTokenRegex(["__SLOT0__", "__UNKNOWN__"]);
+    const map = new Map([
+      ["__SLOT0__", 0],
+      ["__SLOT1__", 1],
+    ]);
+
+    expect(() =>
+      injectAnswerSlotsIntoNode(node, regex, map, createSlotNode)
+    ).toThrow(/Unknown slot token: .*/);
   });
 });
