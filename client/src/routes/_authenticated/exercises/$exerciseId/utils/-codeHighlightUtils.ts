@@ -31,13 +31,6 @@ function splitTextNodeWithAnswerSlots(
     return [node];
   }
 
-  // Fail fast if we don't have the correct number of matches.
-  if (matches.length !== slotTokenToIndex.size) {
-    throw new Error(
-      `Number of matches (${matches.length}) does not match the number of slot tokens (${slotTokenToIndex.size})`
-    );
-  }
-
   const result: RendererNode[] = [];
   let previousIndex = 0;
 

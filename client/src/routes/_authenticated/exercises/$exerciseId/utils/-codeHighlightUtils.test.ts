@@ -128,19 +128,45 @@ describe("injectAnswerSlotsIntoNode", () => {
     }
   });
 
-  it("throws when number of matches does not match the number of slot tokens", () => {
+  it("allows each text node to contain a subset of slot tokens (e.g. when syntax highlighter splits one line into multiple nodes)", () => {
+    // Simulates one row tokenized into separate text nodes: first node has only
+    // __SLOT0__, second has only __SLOT1__. The step has 2 slots total, but we
+    // process each node independently, so we must not require matches.length ===
+    // slotTokenToIndex.size per node.
     const node: RendererNode = {
-      type: "text",
-      value: "a __SLOT0__ __SLOT1__",
+      type: "element",
+      tagName: "span",
+      properties: { className: [] },
+      children: [
+        { type: "text", value: 'prefix + __SLOT0__ + "' },
+        { type: "text", value: ". " },
+        { type: "text", value: " + __SLOT1__ + " },
+        { type: "text", value: '".' },
+      ],
     };
     const regex = buildSlotTokenRegex(["__SLOT0__", "__SLOT1__"]);
-    const map = new Map([["__SLOT0__", 0]]);
-
-    expect(() =>
-      injectAnswerSlotsIntoNode(node, regex, map, createSlotNode)
-    ).toThrow(
-      /Number of matches .* does not match the number of slot tokens .*/
-    );
+    const map = new Map([
+      ["__SLOT0__", 0],
+      ["__SLOT1__", 1],
+    ]);
+    const result = injectAnswerSlotsIntoNode(node, regex, map, createSlotNode);
+    expect(result).toHaveLength(1);
+    const element = result[0];
+    expect(element.type).toBe("element");
+    if (element.type === "element") {
+      expect(element.children).toHaveLength(8);
+      expect(element.children![0]).toEqual({
+        type: "text",
+        value: 'prefix + ',
+      });
+      expect(element.children![1]).toEqual(createSlotNode(0));
+      expect(element.children![2]).toEqual({ type: "text", value: ' + "' });
+      expect(element.children![3]).toEqual({ type: "text", value: ". " });
+      expect(element.children![4]).toEqual({ type: "text", value: " + " });
+      expect(element.children![5]).toEqual(createSlotNode(1));
+      expect(element.children![6]).toEqual({ type: "text", value: " + " });
+      expect(element.children![7]).toEqual({ type: "text", value: '".' });
+    }
   });
 
   it("throws when text contains a slot token not in the map", () => {
