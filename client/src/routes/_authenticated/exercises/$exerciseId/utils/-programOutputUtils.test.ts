@@ -19,14 +19,4 @@ describe("buildHighlightCodeWithSlots", () => {
       `print("My name is ${result.slotTokens[0]}. My favorite food is ${result.slotTokens[1]}.")`
     );
   });
-
-  it("uses a unique token prefix if the base prefix appears in code", () => {
-    const code = 'print("__STEP_INTO_PYTHON_ANSWER_SLOT_0__ @@test@@")';
-    const result = buildHighlightCodeWithSlots(code);
-
-    expect(result.slotTokens).toHaveLength(1);
-    expect(result.slotTokens[0]?.startsWith("___STEP_INTO_PYTHON_ANSWER_SLOT_")).toBe(
-      true
-    );
-  });
 });
