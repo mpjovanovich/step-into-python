@@ -1,16 +1,12 @@
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { createElement } from "react-syntax-highlighter";
+import { type ReactNode } from "react";
+import { useCodeHighlightSlots } from "../hooks/-useCodeHighlightSlots";
 import {
-  createElement,
-  type createElementProps,
-} from "react-syntax-highlighter";
-import { type ReactNode, useMemo } from "react";
-import { buildHighlightCodeWithSlots } from "../utils/-programOutputUtils";
-
-type RendererNode = createElementProps["node"];
-
-const escapeRegex = (value: string): string =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  injectAnswerSlotsIntoNode,
+  type RendererNode,
+} from "../utils/-codeHighlightUtils";
 
 const AnswerSlot = ({
   answerIndex,
@@ -22,107 +18,6 @@ const AnswerSlot = ({
   return renderAnswerSlot(answerIndex);
 };
 
-function splitTextNodeWithAnswerSlots(
-  node: RendererNode,
-  slotTokenRegex: RegExp | null,
-  slotTokenToIndex: ReadonlyMap<string, number>,
-  renderAnswerSlot: (answerIndex: number) => ReactNode
-): RendererNode[] {
-  if (node.type !== "text" || typeof node.value !== "string" || !slotTokenRegex) {
-    return [node];
-  }
-
-  const matches = [...node.value.matchAll(slotTokenRegex)];
-  if (matches.length === 0) {
-    return [node];
-  }
-
-  const result: RendererNode[] = [];
-  let previousIndex = 0;
-
-  for (const match of matches) {
-    const token = match[0];
-    const index = match.index ?? 0;
-    const answerIndex = slotTokenToIndex.get(token);
-
-    if (index > previousIndex) {
-      result.push({
-        type: "text",
-        value: node.value.slice(previousIndex, index),
-      });
-    }
-
-    if (answerIndex === undefined) {
-      result.push({
-        type: "text",
-        value: token,
-      });
-    } else {
-      result.push({
-        type: "element",
-        tagName: AnswerSlot,
-        properties: {
-          className: [],
-          answerIndex,
-          renderAnswerSlot,
-        },
-        children: [],
-      });
-    }
-
-    previousIndex = index + token.length;
-  }
-
-  if (previousIndex < node.value.length) {
-    result.push({
-      type: "text",
-      value: node.value.slice(previousIndex),
-    });
-  }
-
-  return result;
-}
-
-function injectAnswerSlotsIntoNode(
-  node: RendererNode,
-  slotTokenRegex: RegExp | null,
-  slotTokenToIndex: ReadonlyMap<string, number>,
-  renderAnswerSlot: (answerIndex: number) => ReactNode
-): RendererNode[] {
-  if (node.type === "text") {
-    return splitTextNodeWithAnswerSlots(
-      node,
-      slotTokenRegex,
-      slotTokenToIndex,
-      renderAnswerSlot
-    );
-  }
-
-  if (!node.children?.length) {
-    return [
-      {
-        ...node,
-        properties: node.properties ?? { className: [] },
-      },
-    ];
-  }
-
-  return [
-    {
-      ...node,
-      properties: node.properties ?? { className: [] },
-      children: node.children.flatMap((childNode) =>
-        injectAnswerSlotsIntoNode(
-          childNode,
-          slotTokenRegex,
-          slotTokenToIndex,
-          renderAnswerSlot
-        )
-      ),
-    },
-  ];
-}
-
 const CodeHighlight = ({
   code,
   renderAnswerSlot,
@@ -130,21 +25,19 @@ const CodeHighlight = ({
   code: string;
   renderAnswerSlot: (answerIndex: number) => ReactNode;
 }) => {
-  const { highlightCode, slotTokens } = useMemo(
-    () => buildHighlightCodeWithSlots(code),
-    [code]
-  );
-  const slotTokenToIndex = useMemo(
-    () => new Map(slotTokens.map((token, index) => [token, index])),
-    [slotTokens]
-  );
-  const slotTokenRegex = useMemo(() => {
-    if (slotTokens.length === 0) {
-      return null;
-    }
+  const { highlightCode, slotTokenToIndex, slotTokenRegex } =
+    useCodeHighlightSlots(code);
 
-    return new RegExp(slotTokens.map(escapeRegex).join("|"), "g");
-  }, [slotTokens]);
+  const createSlotNode = (answerIndex: number): RendererNode => ({
+    type: "element",
+    tagName: AnswerSlot,
+    properties: {
+      className: [],
+      answerIndex,
+      renderAnswerSlot,
+    },
+    children: [],
+  });
 
   return (
     <SyntaxHighlighter
@@ -166,7 +59,7 @@ const CodeHighlight = ({
             row as RendererNode,
             slotTokenRegex,
             slotTokenToIndex,
-            renderAnswerSlot
+            createSlotNode
           ).map((transformedNode, transformedNodeIndex) =>
             createElement({
               node: transformedNode,
