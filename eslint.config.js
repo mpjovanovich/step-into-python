@@ -7,7 +7,7 @@ import tseslint from "typescript-eslint";
 export default [
   // Global ignores
   {
-    ignores: ["**/dist/**", "**/*test*", "**/scripts/**"],
+    ignores: ["**/dist/**", "**/e2e/**", "**/*test*", "**/scripts/**"],
   },
 
   // Base config for all TypeScript files

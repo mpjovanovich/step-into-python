@@ -1,34 +1,27 @@
 import { BLANK_REGEX } from "@/constants";
 
-export const splitTemplateIntoParts = (
+// Answers within a template are mared as "@@answer@@";
+// delineated by double @@.
+// This prefix is used to identify the answer slots in the template.
+const ANSWER_SLOT_TOKEN_PREFIX = "__TOKEN_PREFIX";
+
+export interface HighlightCodeWithSlots {
+  highlightCode: string;
+  slotTokens: string[];
+}
+
+export const buildHighlightCodeWithSlots = (
   template: string
-): {
-  type: "code" | "input";
-  value: string;
-  answerIndex: number;
-}[] => {
-  const result: {
-    type: "code" | "input";
-    value: string;
-    answerIndex: number;
-  }[] = [];
-  const parts = template.split(BLANK_REGEX);
+): HighlightCodeWithSlots => {
+  const slotTokens: string[] = [];
+  const highlightCode = template.replace(BLANK_REGEX, () => {
+    const token = `${ANSWER_SLOT_TOKEN_PREFIX}${slotTokens.length}__`;
+    slotTokens.push(token);
+    return token;
+  });
 
-  for (const [i, part] of parts.entries()) {
-    result.push({
-      type: "code",
-      value: part,
-      answerIndex: 0,
-    });
-
-    if (i < parts.length - 1) {
-      result.push({
-        type: "input",
-        value: "",
-        answerIndex: i,
-      });
-    }
-  }
-
-  return result;
+  return {
+    highlightCode,
+    slotTokens,
+  };
 };

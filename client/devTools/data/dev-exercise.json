@@ -1,41 +1,32 @@
 {
   "course": "SDEV 120",
-  "title": "Truthy Values",
-  "order": 4.4,
+  "title": "Getting Input",
+  "order": 1.6,
   "descriptions": {
-    "1": "So far we've been comparing values explicitly for all data types. \nIn this example we want to make sure that the user did not enter an empty string for their name prior to printing a greeting. Note the comparison to \"\" (empty string). \nMany programming languages use a concept called truthiness (technically boolean coercion) to offer a more concise way to write these checks. That's what we'll explore in this lesson.",
-    "2": "In this snippet we've modified the previous example to use a truthy check by ommitting the comparison to \"\".\nAny non-empty string is considered truthy, meaning it behaves like True in a boolean context. So 'if name != \"\"' can be written simply as 'if name'.\nThis code works exactly the same as the previous example. Try running it yourself with a non-empty string and an empty string.",
-    "3": "We can use the same technique to check for empty string input. This code snippet shows an explicit way to check input and display a warning message if the input is empty.",
-    "4": "Now let's use a truthiness check. An empty string \"\" is considered falsy — it behaves like False. We can use the 'not' keyword to check is the input is empty.\nRecall that a double negative is a positive, so the condition will evaluate to True if the input is empty.\nTry running it. An empty input should give you the warning.",
-    "5": "Time to give it a try. Rewrite the comparison statements above using a truthiness checks. You can go back to previous steps if you need to review.",
-    "6": "Let's review:\n1) Any non-empty string is truthy — it behaves like True.\n2) An empty string is falsy — it behaves like False.\n3) We can use this to write cleaner conditions without explicit comparisons to \"\"."
+    "1": "In Python, we can get input from the user using the input() function.\nThis allows our programs to interact with users and collect information while the program is running.",
+    "2": "Just like the print() function, input() is followed by parentheses.\nWhen your program reaches an input() function, it pauses and waits for the user to type something and press Enter.",
+    "3": "The input() function takes a prompt as an argument - a message that is displayed to the user.\nThe prompt goes inside parentheses and can use either single quotes ('like this') or double quotes (\"like this\").\n\nNote: While Python accepts both quote styles, this tutorial uses double quotes for consistency.",
+    "4": "Whatever the user types becomes the result of the input() function.\nThis result is usually stored in a variable using the assignment operator (=)",
+    "5": "Time to try it out! Let's get the user's favorite star.",
+    "6": "Now let's get the user's favorite galaxy.",
+    "7": "Great! Now we can use this data in our program. Let's print what we learned about the user's astronomical preferences.",
+    "8": "Let's review:\n1) input() lets us get information from users while our program runs\n2) The program pauses at input() until the user presses Enter\n3) The prompt - the message to the user - goes in the parentheses\n4) The user's response is stored in a variable"
   },
   "instructions": {
-    "5": "Rewrite the functionality from the explicit comparisons section in the truthy comparison section below. It should do exactly the same thing."
+    "5": "Supply the prompt \"Enter your favorite star: \".\nTake care to include quotes and add the space after the colon.",
+    "6": "Create a variable named 'galaxy'. Call the input() function, supplying the prompt \"Enter your favorite galaxy: \".\nTake care to add the space after the colon."
   },
   "template": [
-    "1:4?name = input(\"Enter your name: \")",
-    "1:1?if name != \"\":",
-    "2:2?if name:",
-    "1:2?    print(\"Hello, \" + name + \"!\")",
-    "3:3?if name == \"\":",
-    "4:4?if not name:",
-    "3:4?    print(\"Name is required.\")",
-    "5?# EXPLICIT COMPARISONS",
-    "5?course = input(\"Enter course code: \")",
-    "5?if course != \"\":",
-    "5?    print(\"Success: Signed up for course \" + course)",
-    "5?",
-    "5?if course == \"\":",
-    "5?    print(\"Error: Course code is required.\")",
-    "5?",
-    "5?# TRUTHY COMPARISONS",
-    "5?course = input(\"Enter course code: \")",
-    "5?if @@course@@:",
-    "5?    print(\"Success: Signed up for course \" + course)",
-    "5?",
-    "5?if @@not course@@:",
-    "5?    print(\"Error: Course code is required.\")",
-    "5?"
+    "2:2?input()",
+    "3?# Get user's favorite stellar objects",
+    "3:3?input(\"Enter your favorite planet: \")",
+    "4?planet = input(\"Enter your favorite planet: \")",
+    "5?star = input(@@\"Enter your favorite star: \"@@)",
+    "6?@@galaxy@@ = @@input(\"Enter your favorite galaxy: \")@@",
+    "7?",
+    "7?# Print the results",
+    "7?print(planet)",
+    "7?print(star)",
+    "7?print(galaxy)"
   ]
 }
